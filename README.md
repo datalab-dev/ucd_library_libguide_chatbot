@@ -22,3 +22,9 @@ README.md       This file
 
 ## Project Team Members
 * Lead:  Carl Stahmer
+* Lead:  Pamela Reynolds
+* Federico Aprile
+* Ayana Carpenter
+* Duong Khuu
+* Yenyun Huang (Sebrina)
+* Phuong Quynh Tran
