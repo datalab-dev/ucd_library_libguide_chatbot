@@ -146,7 +146,12 @@ recursive_add_url <- function(data) {
 }
 
 
-result_df <- recursive_add_url(data)
+result_df <- recursive_add_url(data) 
+#not sure if the importance of this error after calling the function: 
+#<error/rlang_error>
+#  Error in `read_xml()`:
+#  ! `x` must be a single string, not a character `NA`.
+
 
 
   
