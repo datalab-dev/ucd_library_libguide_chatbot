@@ -152,6 +152,8 @@ result_df <- recursive_add_url(data)
 #  Error in `read_xml()`:
 #  ! `x` must be a single string, not a character `NA`.
 
+#save rds
+saveRDS(result_df, file = "/Users/quin/Documents/ucd/sts195/2025_startup_libguide_chatbot/data/added_url_recursion.rds")
 
 
   
