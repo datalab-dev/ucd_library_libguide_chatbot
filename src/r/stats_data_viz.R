@@ -41,7 +41,7 @@ histogram <- function(df, col, title, xlab) {
 
 # create and save the new df containing word and character counts
 chunks_count <- get_basic_stats(text_chunks_df, "sub_chunks")
-saveRDS(df_count, file = "/Users/sebrina/sts195/data/word_character_count.rds")
+saveRDS(chunks_count, file = "/Users/sebrina/sts195/data/word_character_count.rds")
 
 
 # create and save the box plots
