@@ -1,7 +1,8 @@
 library(xml2)
 library(rvest)
+library(stringr)
 
-full_data <- readRDS("/Users/quin/Documents/ucd/sts195/2025_startup_libguide_chatbot/data/added_url_recursion.rds")
+full_data <- readRDS("~/my_projects/my_R_stuff/data_sets/extracted_url_text.rds")
 
 # Extract the first 6 rows
 test_data <- full_data[1:6, ]
@@ -10,16 +11,16 @@ test_data <- full_data[1:6, ]
 # Get subheading
 extract_subheading <- function(node) {
   a_node <- xml_find_first(node, ".//a[normalize-space(text()) != '']")
-  if (!is.na(a_node) && nchar(xml_text(a_node)) > 0) {
+  if (!is.na(a_node) && nchar(xml_text(a_node)) > 0 && !(str_detect(html_text(a_node), "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"))) {
     return(xml_text(a_node))
   }
   
   div <- xml_find_all(node, "//div[contains(@class, 'l-content')]")
   box_ancestor <- xml_find_first(div, "//div[contains(@class, 's-lib-box')]")
   heading <- xml_find_first(box_ancestor, ".//h2[contains(@class, 's-lib-box-title')]")
-  if (!is.na(heading)) {
-    return(xml_text(heading))
-  }
+  if (!is.na(heading)){
+      return(xml_text(heading))
+    }
   
   return(NA_character_)
 }
