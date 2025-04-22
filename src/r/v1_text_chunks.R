@@ -14,7 +14,8 @@ extract_subheading <- function(node) {
     return(xml_text(a_node))
   }
   
-  box_ancestor <- xml_find_first(node, "ancestor::div[contains(@class, 's-lib-box')]")
+  div <- xml_find_all(node, "//div[contains(@class, 'l-content')]")
+  box_ancestor <- xml_find_first(div, "//div[contains(@class, 's-lib-box')]")
   heading <- xml_find_first(box_ancestor, ".//h2[contains(@class, 's-lib-box-title')]")
   if (!is.na(heading)) {
     return(xml_text(heading))
