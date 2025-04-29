@@ -18,16 +18,21 @@ models = [model.get("name") or model.get("model") or model.get("id") or "Unnamed
 
 st.session_state["model"] = st.selectbox("Choose your model", models)
 
-# # optional: result generator
-# def model_res_generator():
-#     stream = ollama.chat(
-#         model = st.session_state["model"]
-#         messages = st.session_stae["messages"]
-#         stream = True
-#     )
+# optional: result stream generator
+def model_res_generator():
+    stream = ollama.chat(
+        model = st.session_state["model"],
+        messages = st.session_state["messages"],
+        stream = True,
+    )
 
-#     for chunk in stream:
-#         yield chunk["message"]["context"]
+    for chunk in stream:
+        message = chunk.get("message", {})
+        if "content" in message:  # NOT context, but probably "content"
+            yield message["content"]
+        else:
+            yield "[No content found in message]"
+
 
 #display chat history on rerun
 for message in st.session_state['messages']:
@@ -42,10 +47,11 @@ if prompt := st.chat_input("What is up?"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        response = ollama.chat(
-            model= 'llama2', messages = st.session_state["messages"], stream = False
-        )
+        # response = ollama.chat(
+        #     model= 'llama2', messages = st.session_state["messages"], stream = False
+        # )
 
-        message = response["message"]["content"]
-        st.markdown(message)
+        #streaming response instead
+        message = st.write_stream(model_res_generator())
+        # st.markdown(message) #already did in write_stream
         st.session_state["messages"].append({'role': "assistant", "content": message})
