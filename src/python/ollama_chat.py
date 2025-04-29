@@ -1,6 +1,5 @@
 import ollama
 import streamlit as st
-import pprint
 
 st.title("Ollama Python Chatbox")
 
@@ -28,7 +27,7 @@ def model_res_generator():
 
     for chunk in stream:
         message = chunk.get("message", {})
-        if "content" in message:  # NOT context, but probably "content"
+        if "content" in message: 
             yield message["content"]
         else:
             yield "[No content found in message]"
@@ -47,10 +46,6 @@ if prompt := st.chat_input("What is up?"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        # response = ollama.chat(
-        #     model= 'llama2', messages = st.session_state["messages"], stream = False
-        # )
-
         #streaming response instead
         message = st.write_stream(model_res_generator())
         # st.markdown(message) #already did in write_stream
