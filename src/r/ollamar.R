@@ -18,9 +18,6 @@ repeat {
   cat("Bot:", response, "\n")
 }
 
-# next step: 1) initialize chat history?
-#            2) try out diff models
-
 
 # generalize function
 ollamar_chatbot <- function(model){
@@ -39,8 +36,40 @@ ollamar_chatbot <- function(model){
 }
 
 
+# chatbot remembers previous responses
+
+ollamar_history <- function(model) {
+  pull(model)
+  
+  # message system for user
+  message("To exit chatbot, type 'exit'!")
+  Sys.sleep(1)
+  
+  messages <- list()
+  
+  repeat {
+    user_input <- readline(prompt = "You: ")
+    if (tolower(user_input) == "exit") {
+      break
+    }
+    
+    messages <- append(messages, create_message(content=user_input))
+    
+    response <- chat(model, messages, output = "text")
+    cat("Bot:", response, "\n")
+    
+    messages <- append(messages, create_message(content=response, role='system'))
+  }
+}
+
+# after response 4 the chatbot kinda malfunctions...
+
+
 # Model: llama3.2
 ollamar_chatbot("llama3.2")
+ollamar_history('llama3.2')
 
 # Model: llama3.3
 ollamar_chatbot("llama3.3") # takes really long to run
+
+list_models()
