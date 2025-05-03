@@ -5,6 +5,10 @@
 # is working fine
 
 
+# 5/3 : fixed new line separators and putting corpus_sections and 
+# corpus_whole in outputs
+
+
 # df corpus_sections
 #   id, text 
 #   id of the subsection
@@ -16,6 +20,7 @@
 #     id of the root 
 #     text in this case refers to page title, all subsection titles and all of 
 #     the subsection text
+
 
 
 # load libraries
@@ -121,7 +126,7 @@ corpus_sections <- data.frame(
                corpus_work$sub_title, 
                corpus_work$sub_title_text,
                corpus_work$sub_title_url,
-               sep = " : "),
+               sep = "\n"),
   stringsAsFactors = FALSE
 )
   
@@ -134,16 +139,16 @@ corpus_working <- corpus_work
 corpus_working$lib_title <- as.character(corpus_working$lib_title)
 
 corpus_working <- corpus_working %>%
-  mutate(sub_text = paste(sub_title, sub_title_text, sub_title_url, sep = " : "))
+  mutate(sub_text = paste(sub_title, sub_title_text, sub_title_url, sep = "\n"))
 
 corpus_whole <- corpus_working %>%
   group_by(lib_title) %>%
   summarise(
-    text = paste(sub_text, collapse = " / "),
+    text = paste(sub_text, collapse = "\n"),
     .groups = "drop"
   ) %>%
   mutate(
-    text = paste(lib_title, text, sep = " / "), 
+    text = paste(lib_title, text, sep = "\n"), 
     ID = row_number()
   ) %>%
 select(ID, text)
