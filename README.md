@@ -37,21 +37,18 @@ library(xml2)
 library(rvest)
 library(httr)
 ```
-
 Data structure and text cleaning:
 ```
 library(dplyr)
 library(stringr)
 ```
-
-Data visualization
+Data visualization:
 ```
 library(ggplot2)
 library(gridExtra)
 library(grid)
 ```
-
-* Working with Ollama LLM
+Working with Ollama LLM:
 ```
 ollamar
 ```
