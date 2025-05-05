@@ -31,24 +31,24 @@ README.md       This file
 
 ## Necessary R Packages
 
-* Web scraping:
+Web scraping:
 ```
-xml2
-rvest
-httr
-```
-
-* Data structure and text cleaning:
-```
-dplyr
-stringr
+library(xml2)
+library(rvest)
+library(httr)
 ```
 
-* Data visualization
+Data structure and text cleaning:
 ```
-ggplot2
-gridExtra
-grid
+library(dplyr)
+library(stringr)
+```
+
+Data visualization
+```
+library(ggplot2)
+library(gridExtra)
+library(grid)
 ```
 
 * Working with Ollama LLM
