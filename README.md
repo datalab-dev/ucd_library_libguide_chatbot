@@ -77,3 +77,25 @@ Install Ollama in R:
 ```
 install.packages("ollamar")
 ```
+
+Getting started:
+```
+library(ollamar)
+
+test_connection()  # test connection to Ollama server
+# if you see "Ollama local server not running or wrong server," Ollama app/server isn't running
+
+# download a model
+pull("llama3.1")  # download a model (equivalent bash code: ollama run llama3.1)
+
+# generate a response/text based on a prompt; returns an httr2 response by default
+resp <- generate("llama3.1", "tell me a 5-word story")
+resp
+
+# list available models (models you've pulled/downloaded)
+list_models()
+                        name    size parameter_size quantization_level            modified
+1               codegemma:7b    5 GB             9B               Q4_0 2024-07-27T23:44:10
+2            llama3.1:latest  4.7 GB           8.0B               Q4_0 2024-07-31T07:44:33
+
+```
