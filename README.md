@@ -69,5 +69,11 @@ library(grid)
 ```
 Working with Ollama LLM:
 ```
-ollamar
+1. Download and install Ollama app
+2. Open/launch the Ollama app to start the local server.
+3. Install either the stable or latest/development version of ollamar.
+```
+Install Ollama in R:
+```
+install.packages("ollamar")
 ```
