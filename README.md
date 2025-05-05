@@ -28,3 +28,30 @@ README.md       This file
 * Duong Khuu
 * Yenyun Huang (Sebrina)
 * Phuong Quynh Tran
+
+## Necessary R Packages
+
+* Web scraping:
+```
+xml2
+rvest
+httr
+```
+
+* Data structure and text cleaning:
+```
+dplyr
+stringr
+```
+
+* Data visualization
+```
+ggplot2
+gridExtra
+grid
+```
+
+* Working with Ollama LLM
+```
+ollamar
+```
