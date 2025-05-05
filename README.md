@@ -20,6 +20,25 @@ src/py          Python source code
 README.md       This file
 ```
 
+# src/r Contents
+```
+file_a.R           description
+file_b.R           description
+```
+
+# src/python Contents
+```
+file_a.py          description
+file_b.py          description
+```
+
+# Outputs
+```
+file_a.rds         description
+file_b.rds         description
+```
+
+
 ## Project Team Members
 * Lead:  Carl Stahmer
 * Lead:  Pamela Reynolds
