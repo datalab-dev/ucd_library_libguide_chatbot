@@ -1,9 +1,10 @@
 library(ollamar)
 
 # main dataset
-data <- readRDS("~/my_projects/my_R_stuff/data_sets/corpus_sections.rds")
+corpus_sections <- readRDS("~/my_projects/my_R_stuff/data_sets/corpus_sections.rds")
 # head of data, for testing
 test_data <- readRDS("~/my_projects/my_R_stuff/data_sets/ollama_testing_data.rds")
+corpus_whole <- readRDS("~/my_projects/my_R_stuff/data_sets/corpus_whole.rds")
 
 
 
@@ -73,16 +74,64 @@ get_top_matches <- function(prompt_vector, embedding_df, top_n = 3) {
 
 #**This one is the VECTOR SPACE for the CORPUS SECTIONS**
 # Applying functions to our data and creating new data.frame
-text_embeddings <- lapply(data$text, get_text_embedding) # getting embeddings/vector space of each section chunk
-embedding_df <- data.frame(ID = data$ID) # creating the vector space dataframe for the SECTIONS (with their ID collected from the parent df)
+text_embeddings <- lapply(corpus_sections$text, get_text_embedding) # getting embeddings/vector space of each section chunk
+embedding_df <- data.frame(ID = corpus_sections$ID) # creating the vector space dataframe for the SECTIONS (with their ID collected from the parent df)
 embedding_df$text_embeddings <- text_embeddings # adding the respective vectors to the df
 
 saveRDS(embedding_df, "~/my_projects/my_R_stuff/output_sets/corpus_sections_vectors_df.rds") # saving df
 
 
 
+#**This one is the VECTOR SPACE for the CORPUS WHOLE**
+# Applying functions to our data and creating new data.frame
+text_embeddings_whole <- lapply(corpus_whole$text, get_text_embedding)
+embedding_df_whole <- data.frame(ID = corpus_whole$ID)
+embedding_df_whole$text_embeddings_whole <- text_embeddings_whole
+
+saveRDS(embedding_df_whole, "~/my_projects/my_R_stuff/output_sets/corpus_whole_vectors_df.rds")
 
 
+
+
+
+
+
+# COSINE SIMILARITY COMPARISON OVER **CORPUS SECTIONS**
+prompt2 <- "How would I find information about carbon emmissions from the agricultural industry?"
+prompt_vec2 <- get_text_embedding(prompt2)
+prompt3 <- "Where can I get information about representations of class in the works of Charles Dickens?"
+prompt_vec3 <- get_text_embedding(prompt3)
+
+get_top_matches(prompt_vec3, embedding_df)
+#' ID: 2240 
+#' Cosine Similarity: 0.6081561 
+#' 
+#' ID: 1045 
+#' Cosine Similarity: 0.5863628 
+#' 
+#' ID: 1073
+#' Cosine Similarity: 0.5863628 
+
+
+
+
+
+# COSINE SIMILARITY COMPARISON OVER **CORPUS WHOLE**
+prompt2_whole <- "How would I find information about carbon emmissions from the agricultural industry?"
+prompt_vec2_whole <- get_text_embedding(prompt2_whole)
+prompt3_whole <- "Where can I get information about representations of class in the works of Charles Dickens?"
+prompt_vec3_whole <- get_text_embedding(prompt3_whole)
+
+get_top_matches(prompt_vec3_whole, embedding_df_whole)
+#' ID: 82 
+#' Cosine Similarity: 0.586531 
+#' 
+#' ID: 58 
+#' Cosine Similarity: 0.577994 
+#' 
+#' ID: 13 
+#' Cosine Similarity: 0.5450107 
+message(corpus_whole$text[[13]])
 
 
 
