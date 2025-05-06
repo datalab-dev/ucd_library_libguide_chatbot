@@ -67,7 +67,7 @@ library(ggplot2)
 library(gridExtra)
 library(grid)
 ```
-Working with Ollama LLM:
+## Working with Ollama LLM:
 ```
 1. Download and install Ollama app
 2. Open/launch the Ollama app to start the local server.
