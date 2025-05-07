@@ -7,7 +7,7 @@ Links:
 * [Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)
 
 Flow Organization:
-* [Lucid Chart]([https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ](https://lucid.app/lucidchart/f6e956d2-5e6b-49f7-a731-82b50d297874/edit?invitationId=inv_9a6fe0aa-a178-4e50-b6e3-1171f8a51155&page=0_0#))
+* [Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-49f7-a731-82b50d297874/edit?invitationId=inv_9a6fe0aa-a178-4e50-b6e3-1171f8a51155&page=0_0#)
 
 ## File and Directory Structure
 
