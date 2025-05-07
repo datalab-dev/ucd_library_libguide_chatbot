@@ -22,7 +22,7 @@ Flow Organization:
 
 ## Methodologies
 1. Scrape Libguides to generate Corpus
-2. Comput vector embeddings for each document
+2. Compute vector embeddings for each document
 3. Compute the embedding of the user prompt, rank guides by cosine similarity, and select the top few relevant guides
 4. Construct a combined prompt of the query and LibGuide text and call LLM
 5. Return generated answer and links for the top LibGuides
@@ -44,8 +44,10 @@ README.md       This file
 
 ### src/r Contents
 ```
-file_a.R           description
-file_b.R           description
+appending_sub_pages.R           function to add sublinks of a page in a new row
+cosine_similarity.R           function to find cosine similarity between words
+get_html.R           function to get html content of a page
+get_sub_pages.R      
 ```
 
 ### src/python Contents
