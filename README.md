@@ -45,9 +45,12 @@ README.md       This file
 ### src/r Contents
 ```
 appending_sub_pages.R           function to add sublinks of a page in a new row
-cosine_similarity.R           function to find cosine similarity between words
-get_html.R           function to get html content of a page
-get_sub_pages.R      
+cosine_similarity.R             function to find cosine similarity between words
+get_html.R                      function to get html content of a page
+get_sub_pages.R
+make_relationship_df.R          function to make a relationship dataframe with the parent and child ids
+ollama.R                        initial ollama testing using R with basic terminal chatbot
+     
 ```
 
 ### src/python Contents
