@@ -9,6 +9,15 @@ Links:
 Flow Organization:
 * [Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-49f7-a731-82b50d297874/edit?invitationId=inv_9a6fe0aa-a178-4e50-b6e3-1171f8a51155&page=0_0#)
 
+## Project Team Members
+* Lead:  Carl Stahmer
+* Lead:  Pamela Reynolds
+* Federico Aprile
+* Ayana Carpenter
+* Duong Khuu
+* Yenyun Huang (Sebrina)
+* Phuong Quynh Tran
+
 ## Methodologies
 1. Scrape Libguides to generate Corpus
 2. Comput vector embeddings for each document
@@ -49,15 +58,6 @@ file_a.rds         description
 file_b.rds         description
 ```
 
-
-## Project Team Members
-* Lead:  Carl Stahmer
-* Lead:  Pamela Reynolds
-* Federico Aprile
-* Ayana Carpenter
-* Duong Khuu
-* Yenyun Huang (Sebrina)
-* Phuong Quynh Tran
 
 ## Necessary R Packages
 
