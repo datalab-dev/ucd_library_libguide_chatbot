@@ -9,6 +9,14 @@ Links:
 Flow Organization:
 * [Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-49f7-a731-82b50d297874/edit?invitationId=inv_9a6fe0aa-a178-4e50-b6e3-1171f8a51155&page=0_0#)
 
+## Methodologies
+1. Scrape Libguides to generate Corpus
+2. Comput vector embeddings for each document
+3. Compute the embedding of the user prompt, rank guides by cosine similarity, and select the top few relevant guides
+4. Construct a combined prompt of the query and LibGuide text and call LLM
+5. Return generated answer and links for the top LibGuides
+
+
 ## File and Directory Structure
 
 The directory structure for the project is:
