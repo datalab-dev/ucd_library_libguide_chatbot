@@ -45,12 +45,12 @@ README.md       This file
 ### src/r Contents
 ```
 appending_sub_pages.R           function to add sublinks of a page in a new row
-cosine_similarity.R             function to find cosine similarity between words
 get_html.R                      function to get html content of a page
 get_sub_pages.R
 make_relationship_df.R          function to make a relationship dataframe with the parent and child ids
 ollama.R                        initial ollama testing using R with basic terminal chatbot
-prepare_texts_for_analysis.R    contains the data cleaning tasks to create initial corpuses     
+prepare_texts_for_analysis.R    contains the data cleaning tasks to create initial corpuses
+v2_corpus_stats.R               calculating statistics of corpus sections' word/sentence counts.      
 ```
 
 ### src/python Contents
