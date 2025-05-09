@@ -46,26 +46,18 @@ cosine_similarity <- function(vec1, vec2) {
 # and return the top N most similar documents (default is 3)
 get_top_matches <- function(prompt_vector, embedding_df, top_n = 3) {
   
-  # Create an empty numeric vector to later store similarity scores for each document (based off the number of text chunk vectors)
-  similarities <- numeric(nrow(embedding_df))
+  # Use sapply to compute cosine similarities over all section vectors
+  similarities <- sapply(embedding_df$text_embeddings, function(doc_vector) {
+    cosine_similarity(prompt_vector, doc_vector)
+  })
   
-  # Loop through each row in the data frame (each chunk)
-  for (i in seq_len(nrow(embedding_df))) {
-    
-    # Extract the stored embedding vector for the current document
-    doc_vector <- embedding_df$text_embeddings[[i]]
-    
-    # Compute cosine similarity between the prompt and this document's vector
-    similarities[i] <- cosine_similarity(prompt_vector, doc_vector)
-  }
-  
-  # find the indices of the top N documents with highest similarity (sorted descending)
+  # Get top N indices
   top_indices <- order(similarities, decreasing = TRUE)[1:top_n]
   
-  # Print out the top matching results with spacing between them
+  # Print top results
   for (i in top_indices) {
-    cat("ID:", embedding_df$ID[i], "\n")  # Show the ID of the matching document
-    cat("Cosine Similarity:", similarities[i], "\n\n\n")  # Show the similarity score with spacing
+    cat("ID:", embedding_df$ID[i], "\n")
+    cat("Cosine Similarity:", similarities[i], "\n\n\n")
   }
 }
 
@@ -111,6 +103,7 @@ get_top_matches(prompt_vec3, embedding_df)
 #' 
 #' ID: 1073
 #' Cosine Similarity: 0.5863628 
+
 
 
 
