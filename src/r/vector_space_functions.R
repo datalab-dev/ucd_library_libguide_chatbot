@@ -1,10 +1,11 @@
 library(ollamar)
 
 # main dataset
-corpus_sections <- readRDS("~/my_projects/my_R_stuff/data_sets/corpus_sections.rds")
+corpus_sections <- readRDS("/Users/quin/Documents/ucd/sts195/2025_startup_libguide_chatbot/data/corpus_sections.rds")
 # head of data, for testing
 test_data <- readRDS("~/my_projects/my_R_stuff/data_sets/ollama_testing_data.rds")
-corpus_whole <- readRDS("~/my_projects/my_R_stuff/data_sets/corpus_whole.rds")
+corpus_whole <- readRDS("/Users/quin/Documents/ucd/sts195/2025_startup_libguide_chatbot/data/corpus_whole.rds")
+
 
 
 
@@ -70,7 +71,7 @@ text_embeddings <- lapply(corpus_sections$text, get_text_embedding) # getting em
 embedding_df <- data.frame(ID = corpus_sections$ID) # creating the vector space dataframe for the SECTIONS (with their ID collected from the parent df)
 embedding_df$text_embeddings <- text_embeddings # adding the respective vectors to the df
 
-saveRDS(embedding_df, "~/my_projects/my_R_stuff/output_sets/corpus_sections_vectors_df.rds") # saving df
+saveRDS(embedding_df, "/Users/quin/Documents/ucd/sts195/2025_startup_libguide_chatbot/data/corpus_sections_vectors_df.rds") # saving df
 
 
 
@@ -80,7 +81,7 @@ text_embeddings_whole <- lapply(corpus_whole$text, get_text_embedding)
 embedding_df_whole <- data.frame(ID = corpus_whole$ID)
 embedding_df_whole$text_embeddings_whole <- text_embeddings_whole
 
-saveRDS(embedding_df_whole, "~/my_projects/my_R_stuff/output_sets/corpus_whole_vectors_df.rds")
+saveRDS(embedding_df_whole, "/Users/quin/Documents/ucd/sts195/2025_startup_libguide_chatbot/data/corpus_whole_vectors_df.rds")
 
 
 
@@ -157,8 +158,37 @@ print(similarity3)
 # Example of top 3 most similar
 get_top_matches(prompt_vec,embedding_df,3)
 
+###################################################
+# Retrieve top match and ask librarian model 
 
+# 1. Define a new user prompt
+new_user_prompt <- "Where do I find resources about Deep Learning?"
 
+# 2. Get the embedding of the prompt
+new_prompt_vec <- get_text_embedding(new_user_prompt)
+
+# 3. Calculate cosine similarities to corpus_whole
+similarities_whole <- sapply(embedding_df_whole$text_embeddings_whole, function(doc_vector) {
+  cosine_similarity(new_prompt_vec, doc_vector)
+})
+
+# 4. Find top 1 match
+top_index <- which.max(similarities_whole)
+
+# 5. Retrieve the top matching context text
+matched_context <- corpus_whole$text[[top_index]]
+
+# 6. Call the librarian-tuned model with the context and the user prompt
+response <- ollamar::chat(
+  model = "librarian", 
+  messages = list(
+    list(role = "system", content = paste("Context:\n", matched_context)),
+    list(role = "user", content = new_user_prompt)
+  )
+)
+
+# 7. Print the librarian’s answer
+cat(response$message)
 
 
 
