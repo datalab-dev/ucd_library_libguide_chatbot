@@ -1,6 +1,5 @@
 ## Cleaning Corpus & Stats ##--------------------------------------------------
 
-library(ollamar)
 library(stringr)
 
 # original data that has sections with no title & url
@@ -26,14 +25,17 @@ length(wc[wc>89]) # above Q3
 # max = 394, min = 1, Q1 = 29, Q = 83
 # for wc = 1, sub_chunk only has the word "Article" -> could remove
 
+saveRDS(v2_corpus_section, './libbot_data/v2_corpus_section.RDS')
 
 ## Parsing Sentences & Stats ##-------------------------------------------------
 
 install.packages("rJava")
+install.packages("NLP")
 install.packages("openNLP")
 Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre1.8.0_451')
 
 library(rJava)
+library(NLP)
 library(openNLP)
 
 sentence_annotator <- Maxent_Sent_Token_Annotator()
@@ -51,5 +53,38 @@ for (n in 1:length(text)) {
 }
 
 summary(sentence_count)
+
 # Statistics on number of sentences in each section:
 # max = 18, minimum = 1, median = 3, mean = 3.348
+
+
+## Section Stats ## -----------------------------------------------------------
+
+text_chunks_df <- readRDS('./libbot_data/text_chunks_df.rds')
+extracted_url_text <- readRDS('')
+
+parent_id <- text_chunks_df$parent_id
+
+df <- data.frame()
+for (i in 1:1335) {
+  total <- length(parent_id[parent_id==i])
+  df <- rbind(df, c(i, total))
+}
+
+df <- cbind(df, extracted_url_text$url)
+names(df) <- c("parent_id", "section_count", "url")
+
+summary(df$section_count)
+# including counts 0, median 4, mean 5.55, max 42
+
+summary(df$section_count[df$section_count!=0])
+# excluding counts 0, median 5, mean 7.131, max 42
+
+df$section_count[df$setion_count!=0]
+
+
+# checking for urls with no sections..
+df2 <- df[df$section_count==0,]
+View(df2)
+## parent_id of concern: 20, 30 (maybe), ...
+
