@@ -43,27 +43,32 @@ saveRDS(libguide_full_data, "./libbot_data/libgude_full_data.rds")
 
 # given sentence_groups_df.rds with ~8k rows, column: ID, parent_ID, text
 
+sentence_groups_df <- readRDS("C:/Users/HOME/libbot_data/sentence_groups_df.rds")
+
 sentence_groups_df$pasted_text <- NA
 
-parent_ID <- sentence_groups_df$parent_ID
+parent_ID <- sentence_groups_df$chunk_id
 
-for (i in nrow(sentence_groups_df)) {
-  sentence_groups_df$pasted_text[i] <- paste(libguide_full_data$title[parent_ID[i]],
-                                             libguide_full_data$sub_title[parent_ID[i]],
+for (i in 1:nrow(sentence_groups_df)) {
+  id <- as.numeric(parent_ID[i])
+  sentence_groups_df$pasted_text[i] <- paste(libguide_full_data$title[id],
+                                             libguide_full_data$sub_title[id],
                                              sentence_groups_df$text[i])
 }
 
-
+saveRDS(sentence_groups_df, "./libbot_data/sentence_groups_df.rds")
 
 # Preparing to paste libguide links and extracted links -------------------
 
 sentence_groups_df$full_text <- NA
 
-for (i in nrow(sentence_groups_df)) {
-  sentence_groups_df$full_text[i] <- paste(libguide_full_data$title[parent_ID[i]],
-                                           '\n', libguide_full_data$sub_title[parent_ID[i]],
-                                           '\n', libguide_full_data$sub_title[parent_ID[i]],
+for (i in 1:nrow(sentence_groups_df)) {
+  id <- as.numeric(parent_ID[i])
+  sentence_groups_df$full_text[i] <- paste(libguide_full_data$title[id],
+                                           '\n', libguide_full_data$sub_title[id],
+                                           '\n', libguide_full_data$sub_title[id],
                                            '\n', sentence_groups_df$text[i],
-                                           '\n', libguide_full_data$sub_url[parent_ID[i]])
+                                           '\n', libguide_full_data$sub_url[id])
 }
+
 
