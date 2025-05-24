@@ -1,0 +1,43 @@
+library("servr")
+library("httpuv")
+library("stringr")
+library("ollamar")
+
+chatbot_handler <- function(env) {
+  query <- str_split(env[["QUERY_STRING"]], "=") [[1]]
+  msg <- if (length(query) > 1) {
+    URLdecode(query[2])
+  } else {
+    ""
+  }
+  response <- ollamar_history2("llama3.2", msg)
+  list(
+    status = 200L,
+    headers = list("Content-Type" = "text/plain"),
+    body = response
+  )
+}
+
+startServer("127.0.0.1", 8000, list(call = chatbot_handler))
+
+httd(dir = "~/sts195", port = 1234, browser = TRUE)
+
+
+# modified from ollamar.R file
+ollamar_history2 <- function(model, user_input) {
+  pull(model)
+  
+  # message system for user
+  message("To exit chatbot, type 'exit'!")
+  Sys.sleep(1)
+  
+  messages <- list()
+    
+    messages <- append(messages, create_message(content=user_input))
+    
+    response <- chat(model, messages, output = "text")
+
+    messages <- append(messages, create_message(content=response, role='system'))
+    
+    return(response)
+}
