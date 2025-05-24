@@ -23,7 +23,7 @@ startServer("127.0.0.1", 8000, list(call = chatbot_handler))
 httd(dir = "~/sts195", port = 1234, browser = TRUE)
 
 
-# modified from ollamar.R file
+# Modified from 'ollamar.R' file
 ollamar_history2 <- function(model, user_input) {
   pull(model)
   
