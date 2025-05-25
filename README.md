@@ -65,7 +65,8 @@ file_a.rds         description
 file_b.rds         description
 ```
 
-![LibBot](https://github.com/user-attachments/assets/29b98c38-4854-4b7e-ad4c-d3286cc4146b)
+![LibBot (1)](https://github.com/user-attachments/assets/cea27ea9-a6c3-4462-846d-3b7327ce19f6)
+
 
 ## Getting Started
 
