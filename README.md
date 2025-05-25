@@ -65,6 +65,10 @@ file_a.rds         description
 file_b.rds         description
 ```
 
+## Getting Started
+
+You will need the following folders, packages, and information for getting started 
+
 
 ## Necessary R Packages
 
