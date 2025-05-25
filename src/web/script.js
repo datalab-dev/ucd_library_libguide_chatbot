@@ -39,6 +39,6 @@ async function sendMessage() {
     const isDark = document.body.classList.contains("dark");
   
     modeToggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
-    logo.src = isDark ? "assets/libbot-dark.png" : "assets/libbot-light.png";
+    logo.src = isDark ? "assets/logo-dark.png" : "assets/logo-light.png";
   });
   

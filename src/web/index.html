@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LibBot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="light">
+    <!-- <header class="header">
+        <img src="/web/assets/logo-light.png" alt="LibBot Logo" class="logo">
+        <h1>LibBot</h1>
+    </header> -->
+
+    <header class="header">
+        <img id="logo" src="/web/assets/logo-light.png" alt="LibBot Logo" class="logo">
+        <h1>LibBot</h1>
+        <button id="mode-toggle">🌙 Dark Mode</button>
+    </header>
+
+
+    <main class="chat-wrapper">
+        <div id="chat-box" class="chat-box"></div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
