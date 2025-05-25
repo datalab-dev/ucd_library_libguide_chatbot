@@ -3,6 +3,7 @@
 This repository contains code for a project to develop a RAG/LLM system using UC Davis Library Lib Guides as the retreival set for queries based on Ollama.   The goal of the project is to create an "Ask a Librarian" chatbot that receives queries (prompts) from users and returns a text response based on a model finetuned with the UC Davis Library LibGuides and then, after the text response, includes a links to the most relevant LibGuide webpages based on a RAG system based on cosign similarity of the vector space of the prompt with the vector space of all of the LibGuides.
 
 ## Why:
+Acknowledging the presence of artificial intelligence in research and academia, our LibBot project aims to transform the pre-existing corpus of UC Davis library guides into a virtual librarian chatbot experience. The LibBot will assist students in research by routing users to the most relevant guides from the library’s vast array of resources. 
 
 Links:
 
@@ -28,49 +29,8 @@ Flow Organization:
 5. Return generated answer and links for the top LibGuides
 
 
-## File and Directory Structure
-
-The directory structure for the project is:
-
-```
-data/           Input and Output Data sets (in .gitignore)
-docs/           Supporting documents
-models/         Trained and serialized models
-notebooks/      Jupyter notebook source files
-src/r           R source code
-src/py          Python source code
-README.md       This file
-```
-
-### src/r Contents
-```
-appending_sub_pages.R           function to add sublinks of a page in a new row
-get_html.R                      function to get html content of a page
-get_sub_pages.R
-make_relationship_df.R          function to make a relationship dataframe with the parent and child ids
-ollama.R                        initial ollama testing using R with basic terminal chatbot
-prepare_texts_for_analysis.R    contains the data cleaning tasks to create initial corpuses
-v2_corpus_stats.R               calculating statistics of corpus sections' word/sentence counts.      
-```
-
-### src/python Contents
-```
-ollama_chat.py          initial ollama testing using python with UI chatbot
-ollama_testing.py       initial ollama testing using python with terminal chatbot  
-```
-
-### Outputs
-```
-file_a.rds         description
-file_b.rds         description
-```
-
-![LibBot (1)](https://github.com/user-attachments/assets/cea27ea9-a6c3-4462-846d-3b7327ce19f6)
-
-
 ## Getting Started
-
-You will need the following folders, packages, and information for getting started 
+To get started, you will need the you will need R and the necessary packages listed below, along with the following files and user guide. 
 
 
 ## Necessary R Packages
@@ -124,3 +84,63 @@ list_models()
 2            llama3.1:latest  4.7 GB           8.0B               Q4_0 2024-07-31T07:44:33
 
 ```
+
+## File and Directory Structure
+
+The directory structure for the project is:
+
+```
+data/           Input and Output Data sets (in .gitignore)
+docs/           Supporting documents
+models/         Trained and serialized models
+notebooks/      Jupyter notebook source files
+src/r           R source code
+src/py          Python source code
+README.md       This file
+```
+
+### src/r Contents
+```
+appending_sub_pages.R                function to add sublinks of a page in a new row
+get_html.R                           function to get html content of a page
+get_sub_pages.R
+localhost.R
+make_relationship_df.R               script to make a relationship dataframe with the parent and child ids
+ollama.R                             initial ollama testing using R with basic terminal chatbot
+paste_small_sections.R
+pasted_sentence_groups.R
+prepare_texts_for_analysis.R         contains the data cleaning tasks to create initial corpuses
+recursion.R
+scrape_lib_guides.R          
+scrape_title.R
+sentence_grouping.R
+sentence_grouping_for_large_chunks.R script to group large text chunks
+split_chunk_sentences.R              script to break chunks into sentences  
+stats_data_viz.R
+text_chunks.R
+unique_url_checker.R
+unnested_vector.R
+v2_corpus_stats.R                    calculating statistics of corpus sections' word/sentence counts.
+vector_space.R
+vector_space_functions.R
+xml_to_text.R
+     
+```
+
+### src/python Contents
+```
+ollama_chat.py          initial ollama testing using python with UI chatbot
+ollama_testing.py       initial ollama testing using python with terminal chatbot  
+```
+
+### Outputs
+```
+file_a.rds         description
+file_b.rds         description
+```
+
+A more thorough overview of outputs in a week-by-week format 
+## STS 195: Research in Data Studies, Spring 2025 Outputs and Workflow by Week
+
+![LibBot (1)](https://github.com/user-attachments/assets/cea27ea9-a6c3-4462-846d-3b7327ce19f6)
+
