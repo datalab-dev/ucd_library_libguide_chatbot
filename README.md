@@ -65,6 +65,8 @@ file_a.rds         description
 file_b.rds         description
 ```
 
+![LibBot](https://github.com/user-attachments/assets/29b98c38-4854-4b7e-ad4c-d3286cc4146b)
+
 ## Getting Started
 
 You will need the following folders, packages, and information for getting started 
