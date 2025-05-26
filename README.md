@@ -45,6 +45,10 @@ Data structure and text cleaning:
 ```
 library(dplyr)
 library(stringr)
+library(NLP)
+library(openNLP)
+library(openNLPmodels.en)
+library(rJava)
 ```
 Data visualization:
 ```
