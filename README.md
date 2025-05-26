@@ -45,10 +45,12 @@ Data structure and text cleaning:
 ```
 library(dplyr)
 library(stringr)
+library(tidyr)
 library(NLP)
 library(openNLP)
 library(openNLPmodels.en)
 library(rJava)
+library(jsonlite)
 ```
 Data visualization:
 ```
@@ -56,6 +58,16 @@ library(ggplot2)
 library(gridExtra)
 library(grid)
 ```
+Working with Ollama LLM: 
+```
+library(ollamar)
+```
+Setting up web interface:
+```
+library(servr)
+library(httpuv)
+```
+
 ## Working with Ollama LLM:
 ```
 1. Download and install Ollama app
