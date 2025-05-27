@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background-color: #f5f5f5;
+    background-color: #C5D7E4;
     color: #333;
     display: flex;
     flex-direction: column;
@@ -13,7 +13,7 @@ body {
     align-items: center;
     gap: 15px;
     padding: 15px 25px;
-    background-color: white;
+    background-color: #fbf7f0;
     border-bottom: 1px solid #ddd;
   }
   
@@ -55,7 +55,7 @@ body {
   
   .user {
     text-align: right;
-    color: #00897b;
+    color: #5c6a77;
     font-weight: 600;
   }
   
@@ -78,7 +78,7 @@ body {
   }
   
   button {
-    background-color: #00bfa5;
+    background-color: #5c6a77;
     color: white;
     font-weight: bold;
     border: none;
@@ -88,7 +88,7 @@ body {
   }
   
   button:hover {
-    background-color: #009e87;
+    background-color: #031C34;
   }
   
   body.dark {
@@ -97,7 +97,7 @@ body {
   }
   
   body.dark .header {
-    background-color: #2a2a2a;
+    background-color: #171110;
     border-bottom: 1px solid #444;
   }
   
@@ -122,10 +122,10 @@ body {
   }
   
   body.dark button {
-    background-color: #00bfa5;
+    background-color: #E87A1B;
   }
   
   body.dark button:hover {
-    background-color: #009e87;
+    background-color: #81180D;
   }
   
