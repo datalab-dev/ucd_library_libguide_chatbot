@@ -6,6 +6,8 @@ library(jsonlite)
 
 # Integrate final_demo_script into server
 
+chatbot_handler <- function(env) {
+  
 ###############################################################################
 ### LOAD DATA:
 #**REMEMBER TO CHANGE THE FILE PATH FOR THE DATA**
@@ -90,7 +92,6 @@ return_top_matches <- function(prompt, top_n){
 }
 
 
-chatbot_handler <- function(env) {
   query <- str_split(env[["QUERY_STRING"]], "=") [[1]]
   prompt <- if (length(query) > 1) {
     URLdecode(query[2])
