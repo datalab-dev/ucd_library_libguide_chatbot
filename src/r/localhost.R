@@ -13,6 +13,7 @@ ollamar_chatbot2 <- function(model, user_input) {
   return(response)
 }
 
+# 
 chatbot_handler <- function(env) {
   query <- str_split(env[["QUERY_STRING"]], "=") [[1]]
   prompt <- if (length(query) > 1) {
