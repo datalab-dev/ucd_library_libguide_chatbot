@@ -18,13 +18,14 @@ chatbot_handler <- function(env) {
   query <- str_split(env[["QUERY_STRING"]], "=")[[1]]
   msg <- if (length(query) > 1) URLdecode(query[2]) else ""
   
-  response <- ollamar_chatbot2("llama3.2", msg)
+  rag_response <- " hehe"
+  response <- paste(ollamar_chatbot2("llama3.2", msg), "\n\n", rag_response, sep = "")
   
   list(
     status = 200L,
     headers = list(
       "Content-Type" = "text/plain",
-      "Access-Control-Allow-Origin" = "*"  # ← critical for fetch() in browser
+      "Access-Control-Allow-Origin" = "*"  # ← critical for fetch() in browser!!
     ),
     body = response
   )
