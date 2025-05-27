@@ -30,8 +30,8 @@ Flow Organization:
 
 
 ## Getting Started
-To get started, you will need the you will need R and the necessary packages listed below, along with the following files and user guide. 
-
+To get started, you will need R and the necessary packages listed below, along with the following files and user guide. 
+INSERT THESE THINGS HERE ONCE COMPLETED
 
 ## Necessary R Packages
 
