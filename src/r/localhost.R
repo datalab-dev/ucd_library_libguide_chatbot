@@ -15,20 +15,22 @@ ollamar_chatbot2 <- function(model, user_input) {
 
 # 
 chatbot_handler <- function(env) {
-  query <- str_split(env[["QUERY_STRING"]], "=") [[1]]
-  prompt <- if (length(query) > 1) {
-    URLdecode(query[2])
-  } else {
-    ""
-  }
-  response <- ollamar_chatbot2("llama3.2", prompt)
+  query <- str_split(env[["QUERY_STRING"]], "=")[[1]]
+  msg <- if (length(query) > 1) URLdecode(query[2]) else ""
+  
+  response <- ollamar_chatbot2("llama3.2", msg)
   
   list(
     status = 200L,
-    headers = list("Content-Type" = "text/plain"),
+    headers = list(
+      "Content-Type" = "text/plain",
+      "Access-Control-Allow-Origin" = "*"  # ← critical for fetch() in browser
+    ),
     body = response
   )
 }
 
+
 startServer("127.0.0.1", 8000, list(call = chatbot_handler))
+
 
