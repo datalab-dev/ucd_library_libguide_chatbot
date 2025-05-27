@@ -52,11 +52,24 @@ get_top_matches <- function(prompt_vector, embedding_matrix_df, top_n = 3) {
   # Compute cosine similarities across corpus vector space
   similarities <- apply(embedding_matrix, 1, function(vec) cosine_similarity(prompt_vector, vec))
   
-  # Get top matches
-  top_indices <- order(similarities, decreasing = TRUE)[1:top_n]
+  # Create a data frame with index, similarity, and corresponding text
+  result_df <- data.frame(
+    index = seq_along(similarities),
+    similarity = similarities,
+    text = text_full_libguide$text  # This assumes the corpus text lives here
+  )
   
-  # Return indices and similarity scores
-  return(data.frame(index = top_indices, similarity = similarities[top_indices]))
+  #' Remove duplicate texts (keep first occurrence); there are some cases where specific
+  #' guides refer to the same text and external link on multiple pages, so this removes duplicates
+  result_df_unique <- result_df[!duplicated(result_df$text), ]
+  
+  # Order by similarity and select top_n
+  top_results <- result_df_unique[order(result_df_unique$similarity, decreasing = TRUE), ]
+  top_results <- head(top_results, top_n)
+  
+  #' Returning all of the components of top_results is helpful for when debugging or looking
+  #' into the individual cosine similarities of results
+  return(top_results)
 }
 
 ###############################################################################
