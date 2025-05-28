@@ -6,18 +6,24 @@
 
 ## Installation
 
-| 1) Clone/download the 'libbotR' repository (or its parent, 'startup_libguide_chatbot') found here:
+| 1) Clone/download the `libbotR` repository (or its parent, `startup_libguide_chatbot`) found here:
 
 -   [Github](https://github.com/datalab-dev/2025_startup_libguide_chatbot)
 
-| 2) In RStudio, install the package using the following:
-| (remember to modify the path so that it correctly leads to */startup_libguide_chatbot/libbotR*):
+| 2) This package was built using the `devtools` package, which you need to install as well. If you don't have it yet, run:
 
-```         
-devtools::install("/full/path/to/libbotR")
+``` r
+install.packages("devtools")
 ```
 
-### Loading the package:
+| 3) Finally, to install `libbotR` itself, use the following:
+| (remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/libbotR`):
+
+```         
+devtools::install("/full/path/to/startup_libguide_chatbot/libbotR")
+```
+
+## Loading the package:
 
 ```         
 library(libbotR)
@@ -29,7 +35,7 @@ library(libbotR)
 
 | This package does not include the embedding matrix or LibGuide text. You must load those datasets manually before using the functions.
 
-| The datasets can be found in the Google Drive linked below, inside of the 'final_data' directory/folder:
+| The datasets can be found in the Google Drive linked below, inside of the `final_data` directory/folder:
 
 -   [Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)
 
@@ -47,9 +53,9 @@ text_full_libguide.rds
 
 ------------------------------------------------------------------------
 
-### NOTE:
+**NOTE:**
 
-| Keep in mind that the 'libbotR' package depends on the packages below. They will be installed *automatically* upon installation of this package:
+| Keep in mind that the `libbotR` package depends on the packages below. They will be installed *automatically* upon installation of this package:
 
 ```         
 Ollamar
