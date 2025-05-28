@@ -19,13 +19,13 @@ install.packages("devtools")
 | 3) Finally, to install `libbotR` itself, use the following:
 | (remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/libbotR`):
 
-```         
+``` r
 devtools::install("/full/path/to/startup_libguide_chatbot/libbotR")
 ```
 
 ## Loading the package:
 
-```         
+``` r
 library(libbotR)
 ```
 
