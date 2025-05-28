@@ -89,30 +89,31 @@ return_top_matches <- function(prompt, top_n){
   # Get text wrapper and text information from text_full_libguide
   matched_entries <- text_full_libguide[top_indices, ]
   
-  # Create text wrapper out of the different componets
-  result_list <- lapply(seq_len(nrow(matched_entries)), function(i) {
+  # Create text wrapper out
+  result_list <- sapply(1:nrow(matched_entries), function(i) {
     row <- matched_entries[i, ]
-    list(
-      # id = row$local_id,
-      libguide_title = row$libguide_title,
-      libguide_url = row$libguide_url,
-      chunk_title = row$chunk_title,
-      section_url = if (!is.na(row$chunk_url)) row$chunk_url else NULL,
-      text = row$text,
-      external_url = row$external_url
+    entry_text <- paste0(
+      "[", i, "]\n",
+      "Main Libguide: ", row$libguide_title, "\n",
+      "Link: ", row$libguide_url, "\n\n",
+      
+      "Section: ", row$chunk_title, "\n",
+      ifelse(is.na(row$chunk_url) || row$chunk_url == "", "", paste0("Section Link: ", row$chunk_url, "\n")),
+      "External Resource: ", row$external_url, "\n\n",
+      
+      row$text, "\n\n\n"
     )
   })
   
-  # Return as JSON (for frontend to use to display information)
-  jsonlite::toJSON(result_list, pretty = TRUE, auto_unbox = TRUE)
+  cat(paste(result_list, collapse = ""))
 }
 
 
 
 # TESTS:
 # prompt1 <- "Where can I find information regarding climate change and bugs?"
-# json_result <- return_top_matches(prompt1, 3)
-# cat(json_result)
+# result <- return_top_matches(prompt1, 3)
+
 
 
 
