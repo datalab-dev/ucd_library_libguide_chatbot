@@ -31,9 +31,9 @@ library(libbotR)
 
 ------------------------------------------------------------------------
 
-## Necessary Datasets
+## Necessary Datasets and Ollama
 
-| This package does not include the embedding matrix or LibGuide text. You must load those datasets manually before using the functions.
+| This package does not include the embedding matrix or LibGuide text. You must load those datasets manually in order to use the functions.
 
 | The datasets can be found in the Google Drive linked below, inside of the `final_data` directory/folder:
 
@@ -51,15 +51,20 @@ emb_full_libguide_df.rds
 text_full_libguide.rds
 ```
 
+| Lastly, you will also need to install the `Ollama` app (software used to run LLMs locally), and have it running in the background when using the libbot chatbot or functions. This is where you can find the download:
+
+-   [Ollama](https://ollama.com/)
+
 ------------------------------------------------------------------------
 
 **NOTE:**
 
-| Keep in mind that the `libbotR` package depends on the packages below. They will be installed *automatically* upon installation of this package:
+| Keep in mind that `libbotR` also depends on the `ollamar` R package, which will be installed ***automatically*** upon installation of this package.
+| 
 
-```         
-Ollamar
-utils
-```
+#### `Ollama` software vs. the `ollamar` package:
+
+-   `Ollama` = a command-line tool and backend service for running and managing large language models locally on your machine.
+-   `ollamar` = R package that interfaces with the Ollama software backend, allowing us to use the language models directly from R—for tasks like the ones needed for the `libbotR` chatbot.
 
 ~*A Quarter For Data Science*~
