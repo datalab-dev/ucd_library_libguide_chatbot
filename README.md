@@ -31,7 +31,7 @@ Flow Organization:
 
 ## Getting Started
 To get started, you will need this user guide: 
-# [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
+### [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
 
 ## Necessary R Packages
 
