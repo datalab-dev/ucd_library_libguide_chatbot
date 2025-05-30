@@ -30,8 +30,8 @@ Flow Organization:
 
 
 ## Getting Started
-To get started, you will need R and the necessary packages listed below, along with the following files and user guide. 
-INSERT THESE THINGS HERE ONCE COMPLETED
+To get started, you will need this user guide: 
+[Getting started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
 
 ## Necessary R Packages
 
