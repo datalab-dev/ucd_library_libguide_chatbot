@@ -1,6 +1,6 @@
-# libbotR: R Package for UC Davis Library Chatbot 
+# libbotR: R Package for UC Davis Library Chat-bot 
 
-`libbotR` is an R package that helps match user prompts to semantically relevant content using text embeddings and cosine similarity. It was developed as part of a chatbot system for navigating the UC Davis Library Guides.
+`libbotR` is an R package that helps match user prompts to semantically relevant content using text embeddings and cosine similarity. It was developed as part of a chat-bot system for navigating the UC Davis Library Guides.
 
 ------------------------------------------------------------------------
 
@@ -33,13 +33,13 @@ library(libbotR)
 
 ## Ollama Installation
 
-| The `libbotR` package and chatbot **depend** on the `Ollama` [**app**]{.underline} and `ollamar` [**package**]{.underline}, to work. Here's an explanation for what these two are exactly, where to get them, and how to use them:
+| The `libbotR` package and chat-bot **depend** on the `Ollama` [**app**]{.underline} and `ollamar` [**package**]{.underline}, to work. Here's an explanation for what these two are exactly, where to get them, and how to use them:
 
 #### `Ollama` software vs. the `ollamar` package:
 
 -   `Ollama` = a software/app that can be used as a command-line tool, and as a back-end service for running and managing large language models locally on your machine.
 
-    `libbot` uses `Ollama`'s tools to run the library guide search, and also uses `Ollama`'s '**llama3'** LLM model specifically to help with the generative aspect of the chatbot.
+    `libbot` uses `Ollama`'s tools to run the library guide search, and also uses `Ollama`'s '**llama3'** LLM model specifically to help with the generative aspect of the chat-bot.
 
     -   [INSTALLATION]:
         1.  Download [Ollama](https://ollama.com/) and open it
@@ -56,7 +56,7 @@ library(libbotR)
 
         5.  That's it! Now Ollama can run in the background on your machine, and can therefore be used by the `libbotR` package successfully.
 
--   `ollamar` = an R package that interfaces with the Ollama software backend, allowing us to use the language models directly from R—for tasks like the ones needed for the `libbotR` chatbot (e.g. getting text-embeddings).
+-   `ollamar` = an R package that interfaces with the Ollama software back-end, allowing us to use the language models directly from R—for tasks like the ones needed for the `libbotR` chat-bot (e.g. getting text-embeddings).
 
     -   [INSTALLATION]:
 
