@@ -2,11 +2,11 @@
 
 ## Project Overview:
 
-This repository contains code for a project to develop a RAG/LLM system using UC Davis Library Lib Guides as the retreival set for queries based on Ollama. The goal of the project is to create an "Ask a Librarian" chatbot that receives queries (prompts) from users and returns a text response based on a model finetuned with the UC Davis Library LibGuides and then, after the text response, includes a links to the most relevant LibGuide webpages based on a RAG system based on cosign similarity of the vector space of the prompt with the vector space of all of the LibGuides.
+This repository contains code for a project to develop a RAG/LLM system using UC Davis Library Lib Guides as the retrieval set for queries based on Ollama. The goal of the project is to create an "Ask a Librarian" chat-bot that receives queries (prompts) from users and returns a text response based on a model fine-tuned with the UC Davis Library LibGuides and then, after the text response, includes a links to the most relevant LibGuide webpages based on a RAG system based on cosign similarity of the vector space of the prompt with the vector space of all of the LibGuides.
 
 ## Why:
 
-Acknowledging the presence of artificial intelligence in research and academia, our LibBot project aims to transform the pre-existing corpus of UC Davis library guides into a virtual librarian chatbot experience. The LibBot will assist students in research by routing users to the most relevant guides from the library’s vast array of resources.
+Acknowledging the presence of artificial intelligence in research and academia, our LibBot project aims to transform the pre-existing corpus of UC Davis library guides into a virtual librarian chat-bot experience. The LibBot will assist students in research by routing users to the most relevant guides from the library’s vast array of resources.
 
 Links:
 
@@ -187,4 +187,6 @@ file_b.rds         description
 
 ------------------------------------------------------------------------
 
-A more thorough overview of outputs in a week-by-week format \## STS 195: Research in Data Studies, Spring 2025 Outputs and Workflow by Week ![LibBot (2)](https://github.com/user-attachments/assets/17a63997-5e89-43f8-91d6-3f11add5983e)
+\## STS 195: Research in Data Studies, Spring 2025 Outputs and Workflow by Week ![LibBot (2)](https://github.com/user-attachments/assets/17a63997-5e89-43f8-91d6-3f11add5983e)
+
+~*A Quarter For Data Science*~
