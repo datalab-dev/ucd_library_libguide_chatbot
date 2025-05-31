@@ -2,7 +2,7 @@
 LibBot is a search-and-response chatbot that uses a combination of large language models (LLMs) and semantic search to answer questions and suggest relevant UC Davis Library resources. It includes a backend R server and a frontend web UI.
 
 ## Project Structure
-
+```
 2025_startup_libguide_chatbot/
 │
 ├── src/
@@ -14,7 +14,7 @@ LibBot is a search-and-response chatbot that uses a combination of large languag
 │   ├── index.html                  # Main UI
 │   ├── style.css                   # Styling
 │   └── script.js                   # Chat logic + animations
-
+```
 ---
 
 ## Backend Setup (R Server)
