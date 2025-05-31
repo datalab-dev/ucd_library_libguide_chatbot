@@ -31,27 +31,23 @@ Make sure the following R packages are installed:
 
 Also, ensure [Ollama](https://ollama.com) is installed and running locally.
 
-### Start the Server
-
-Run the following in R to launch the API server:
-
-
-source("src/r/localhost.R")
-
 ## Run the server:
 From within R:
+```
 source("src/r/localhost.R")
+```
 
 The server will start on:
 http://127.0.0.1:8000
 
 ---
 # Frontend Setup (Web UI)
-Option 1: Start a local web server (recommended)
+Start a local web server
 From the /web directory:
+```
 cd web
 python3 -m http.server 1234
-
+```
 Then open this in your browser:
 http://127.0.0.1:1234/index.html
 
