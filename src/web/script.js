@@ -1,3 +1,40 @@
+function typeHTML(element, html, speed = 10) {
+  const tokens = html.match(/(<[^>]+>|[^<]+)/g); // separate tags from text
+  let i = 0;
+
+  function typeToken() {
+    if (i >= tokens.length) return;
+
+    const token = tokens[i];
+
+    if (token.startsWith("<")) {
+      // Inject tags immediately
+      element.innerHTML += token;
+      i++;
+      typeToken(); // don’t delay tags
+    } else {
+      // Stream text content character by character
+      let j = 0;
+      const span = document.createElement("span");
+      element.appendChild(span);
+
+      function typeChar() {
+        if (j < token.length) {
+          span.innerHTML += token.charAt(j);
+          j++;
+          setTimeout(typeChar, speed);
+        } else {
+          i++;
+          typeToken(); // move to next token
+        }
+      }
+      typeChar();
+    }
+  }
+
+  typeToken();
+}
+
 async function sendMessage() {
     const inputBox = document.getElementById("user-input");
     const chatBox = document.getElementById("chat-box");
@@ -22,16 +59,21 @@ async function sendMessage() {
       const botReply = await response.text();
   
       // Typing effect
-      let i = 0;
-      function typeWriter() {
-        if (i < botReply.length) {
-          botDiv.textContent += botReply.charAt(i);
-          i++;
-          chatBox.scrollTop = chatBox.scrollHeight;
-          setTimeout(typeWriter, 10); // typing speed in ms
-        }
-      }
-      typeWriter();
+      // let i = 0;
+      // function typeWriter() {
+      //   if (i < botReply.length) {
+      //     botDiv.innerHTML += botReply.charAt(i);
+      //     i++;
+      //     chatBox.scrollTop = chatBox.scrollHeight;
+      //     setTimeout(typeWriter, 10); // typing speed in ms
+      //   }
+      // }
+      // typeWriter();
+
+      // botDiv.innerHTML = botReply;
+      typeHTML(botDiv, botReply, 10); // 10ms per character
+
+
       
     } catch (error) {
       botDiv.textContent = "⚠️ Failed to reach server.";
