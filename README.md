@@ -158,5 +158,4 @@ file_b.rds         description
 A more thorough overview of outputs in a week-by-week format 
 ## STS 195: Research in Data Studies, Spring 2025 Outputs and Workflow by Week
 
-![LibBot (1)](https://github.com/user-attachments/assets/cea27ea9-a6c3-4462-846d-3b7327ce19f6)
 
