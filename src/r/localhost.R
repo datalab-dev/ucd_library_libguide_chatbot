@@ -69,7 +69,11 @@ chatbot_handler <- function(env) {
     cat("User message received: ", msg, "\n")
     
     # Generate LLM response (Ollama)
-    llm_response <- generate("llama3.2", msg, output = "text")
+    summary_prompt <- paste0(
+      "Act as a librarian, please summarize the following query into one concise paragraph:\n\n",
+      msg
+    )
+    llm_response <- generate("llama3.2", summary_prompt, output = "text")
     
     # Retrieve relevant LibGuide entries using your custom RAG function
     rag_response <- capture.output(return_top_matches(
@@ -81,7 +85,7 @@ chatbot_handler <- function(env) {
     
     # Combine LLM and LibGuide response
     combined_response <- paste0(
-      "<strong>Based on your question:</strong><br>", llm_response,
+       llm_response,
       "<br><br><strong>Related UC Davis Library Resources:</strong><br>", 
       paste(rag_response, collapse = "<br>")
     )
