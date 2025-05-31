@@ -37,15 +37,27 @@ library(libbotR)
 
 #### `Ollama` software vs. the `ollamar` package:
 
--   `Ollama` = a software/app that can be used as a command-line tool, and more importantly for the sake of this package, it can be used as a back-end service for running and managing large language models locally on your machine.
+-   `Ollama` = a software/app that can be used as a command-line tool, and as a back-end service for running and managing large language models locally on your machine. The `libbot` chatbot uses `Ollama`'s tools to run the library guide search, and also uses `Ollama`'s '**llama3'** LLM model specifically to help with the generative aspect of the chatbot.
+
     -   [INSTALLATION]:
         1.  Download [Ollama](https://ollama.com/) and open it
+
         2.  A "Welcome to Ollama" screen will pop up. Click '**install'** (and input your password if needed)
+
         3.  A "Run your first model" screen will pop up. Simply **click 'Finish'.**
-        4.  That's it! Now Ollama can run in the background on your machine, and can therefore be used by the `libbotR` package successfully.
+
+        4.  Open **RStudio** and go to the **Terminal** window. Type the following to fully install the LLM model:
+
+            ``` bash
+            ollama pull llama3
+            ```
+
+        5.  That's it! Now Ollama can run in the background on your machine, and can therefore be used by the `libbotR` package successfully.
+
 -   `ollamar` = an R package that interfaces with the Ollama software backend, allowing us to use the language models directly from R—for tasks like the ones needed for the `libbotR` chatbot (e.g. getting text-embeddings).
+
     -   [INSTALLATION]:
-        1.  No need to install `ollamar` manually because it is **automatically** installed WITH the `libbotR` package.
+        -   `ollamar` is [automatically]{.underline} installed when `libbotR` is installed (so no need to do it manually).
 
 ------------------------------------------------------------------------
 
