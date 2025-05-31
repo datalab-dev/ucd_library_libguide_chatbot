@@ -37,7 +37,9 @@ library(libbotR)
 
 #### `Ollama` software vs. the `ollamar` package:
 
--   `Ollama` = a software/app that can be used as a command-line tool, and as a back-end service for running and managing large language models locally on your machine. The `libbot` chatbot uses `Ollama`'s tools to run the library guide search, and also uses `Ollama`'s '**llama3'** LLM model specifically to help with the generative aspect of the chatbot.
+-   `Ollama` = a software/app that can be used as a command-line tool, and as a back-end service for running and managing large language models locally on your machine.
+
+    `libbot` uses `Ollama`'s tools to run the library guide search, and also uses `Ollama`'s '**llama3'** LLM model specifically to help with the generative aspect of the chatbot.
 
     -   [INSTALLATION]:
         1.  Download [Ollama](https://ollama.com/) and open it
