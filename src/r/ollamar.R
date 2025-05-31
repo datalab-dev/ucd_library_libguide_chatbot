@@ -1,4 +1,4 @@
-install.packages("ollamar")
+
 
 library(ollamar)
 
@@ -73,3 +73,4 @@ ollamar_history('llama3.2')
 ollamar_chatbot("llama3.3") # takes really long to run
 
 list_models()
+
