@@ -1,53 +1,71 @@
-# LibBot: UC Davis Library Chatbot
-LibBot is a search-and-response chatbot that uses a combination of large language models (LLMs) and semantic search to answer questions and suggest relevant UC Davis Library resources. It includes a backend R server and a frontend web UI.
+# LibBot: UC Davis Library Chatbot Webpage
 
-## Project Structure
-```
-2025_startup_libguide_chatbot/
-│
-├── src/
-│   └── r/
-│       ├── final_demo_script.R     # Core embedding and search functions
-│       └── localhost.R             # HTTP server using `httpuv`
-│
-├── web/
-│   ├── index.html                  # Main UI
-│   ├── style.css                   # Styling
-│   └── script.js                   # Chat logic + animations
-```
----
+Before reading the specifics
 
-## Backend Setup (R Server)
+LibBot is a virtual librarian search-and-response chatbot, developed to support interdisciplinary academic research by combining LLM-based responses with reliable UC Davis Library resources and research tools.
+
+Simply put, the LibBot tool runs on a web browser page/tab found at <http://127.0.0.1:1234/index.html>, seamlessly combining two main components:
+
+1.  `libbotR` = custom R package that matches user prompts to semantically relevant content from the UC Davis Library Guides.
+2.  `Ollama` = software/app for running and managing large language models locally on your machine.
+
+> [**This README outlines how to get the LibBot web app working (including the back-end R server and front-end web UI).**]{.underline}
+
+------------------------------------------------------------------------
+
+## Back-end Setup (R Server)
 
 ### Requirements
 
 Make sure the following R packages are installed:
 
-- `httpuv`
-- `ollamar`
-- `jsonlite`
-- `stringr`
-- `servr`
-
-Also, ensure [Ollama](https://ollama.com) is installed and running locally.
-
-## Run the server:
-From within R:
+``` r
+library(httpuv)
+library(ollamar)
+library(jsonlite)
+library(stringr)
+library(servr)
 ```
+
+Also, ensure [Ollama](https://ollama.com) is installed and running locally (as outlined in the libbotR package README) + make sure to have installed the **llama3** model in an **RStudio** **Terminal** window by typing the following:
+
+``` zsh
+ollama pull llama3:8b
+```
+
+### Run the server:
+
+From within **RStudio** in the **console**:
+
+``` r
 source("src/r/localhost.R")
 ```
 
-The server will start on:
-http://127.0.0.1:8000
+(The server will start on: <http://127.0.0.1:8000>)
 
----
-# Frontend Setup (Web UI)
-Start a local web server
-From the /web directory:
-```
-cd web
-python3 -m http.server 1234
-```
-Then open this in your browser:
-http://127.0.0.1:1234/index.html
+------------------------------------------------------------------------
 
+## Frontend Setup (Web UI)
+
+To get the **UI** for the web-app working, do the following:
+
+1.  Open **RStudio** and go to the **Terminal** window.
+
+2.  Figure out where the 2025_startup_libguide_chatbot directory is saved on your machine.
+
+3.  Move to the /web directory inside of the 2025_startup_libguide_chatbot by typing the following:
+
+    ``` zsh
+    cd 2025_startup_libguide_chatbot/libbot_demo/web/
+    ```
+
+4.  Once you're inside of the /web directory, run the following to start up the **UI** server:
+
+    ``` zsh
+    cd web
+    python3 -m http.server 1234
+    ```
+
+5.  **LibBot is officially up and running!** You can find it on a browser window by typing the following:
+
+    <http://127.0.0.1:1234/index.html>
