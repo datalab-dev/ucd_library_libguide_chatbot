@@ -32,7 +32,7 @@ text_embeddings <- lapply(sentence_groups_df$pasted_text, get_text_embedding)
 sentence_groups_df$text_embeddings <- text_embeddings # adding the respective vectors to the df
 
 # SAVING VECTOR SPACE TO SAME DF (NESTED)
-# saveRDS(sentence_groups_df, "~/my_projects/my_R_stuff/output_sets/sentence_groups_df.rds")
+# saveRDS(sentence_groups_df, "~/my_projects/my_R_stuff/output_sets/emb_full_libguide_df.rds")
 
 # -----------------------------------------------------------------------------------------------------
 
