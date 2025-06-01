@@ -8,9 +8,9 @@ This repository contains code for a project to develop a RAG/LLM system using UC
 
 Acknowledging the presence of artificial intelligence in research and academia, our LibBot project aims to transform the pre-existing corpus of UC Davis library guides into a virtual librarian chatbot experience. The LibBot will assist students in research by routing users to the most relevant guides from the library’s vast array of resources.
 
-Links:
+**Links:**
 
--   [Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)
+[[Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)]
 
 Flow Organization: \* [Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-49f7-a731-82b50d297874/edit?invitationId=inv_9a6fe0aa-a178-4e50-b6e3-1171f8a51155&page=0_0#)
 
@@ -204,12 +204,9 @@ The basic directory structure for the project is:
                                           LibBot R package
 ```
 
-### Outputs
+### Data Output Structure:
 
-```         
-file_a.rds         description
-file_b.rds         description
-```
+#### [[Data Dictionary](https://docs.google.com/spreadsheets/d/1exjwKkVhQZlc18X9N3xGJDGEbcCvTbJCSRaJqXYWKn0/edit?usp=sharing)] = output metadata
 
 ------------------------------------------------------------------------
 
