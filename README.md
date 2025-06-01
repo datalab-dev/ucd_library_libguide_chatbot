@@ -40,6 +40,14 @@ Flow Organization: \* [Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-4
 
 ## Necessary R Packages
 
+Finalized custom LibBot package:
+
+[[INSTALLATION](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/main/libbot_demo/libbotR#readme)]
+
+``` r
+library(libbotR)
+```
+
 Web scraping:
 
 ``` r
@@ -80,12 +88,6 @@ Setting up web interface:
 ``` r
 library(servr)
 library(httpuv)
-```
-
-Finalized custom LibBot package:
-
-``` r
-library(libbotR)
 ```
 
 ------------------------------------------------------------------------
