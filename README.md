@@ -141,7 +141,7 @@ The basic directory structure for the project is:
   │       └── README.md     # Explains how to install and use the package
   │       └── ...
   │   └── web         # Contains LibBot web-page architecture
-  |       └── README.md     # Explains how to get LibBot web-page working and running
+  │       └── README.md     # Explains how to get LibBot web-page working and running
   │       └── ...
   │
   └── src             # Contains ALL of the R/Python source code 
