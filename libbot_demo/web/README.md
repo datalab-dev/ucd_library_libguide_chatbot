@@ -1,8 +1,8 @@
-# LibBot: UC Davis Library Chat-bot Webpage
+# LibBot: UC Davis Library Chatbot Webpage
 
 Before reading the specifics
 
-LibBot is a virtual librarian search-and-response chat-bot, developed to support interdisciplinary academic research by combining LLM-based responses with reliable UC Davis Library resources and research tools.
+LibBot is a virtual librarian search-and-response chatbot, developed to support interdisciplinary academic research by combining LLM-based responses with reliable UC Davis Library resources and research tools.
 
 Simply put, the LibBot tool runs on a web browser page/tab found at <http://127.0.0.1:1234/index.html>, seamlessly combining two main components:
 
@@ -51,9 +51,9 @@ To get the **UI** for the web-app working, do the following:
 
 1.  Open **RStudio** and go to the **Terminal** window.
 
-2.  Figure out where the 2025_startup_libguide_chat-bot directory is saved on your machine.
+2.  Figure out where the 2025_startup_libguide_chatbot directory is saved on your machine.
 
-3.  Move to the /web directory inside of the 2025_startup_libguide_chat-bot by typing the following:
+3.  Move to the /web directory inside of the 2025_startup_libguide_chatbot by typing the following:
 
     ``` zsh
     cd 2025_startup_libguide_chatbot/libbot_demo/web/
