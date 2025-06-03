@@ -62,7 +62,6 @@ To get the **UI** for the web-app working, do the following:
 4.  Once you're inside of the /web directory, run the following to start up the **UI** server:
 
     ``` zsh
-    cd web
     python3 -m http.server 1234
     ```
 
