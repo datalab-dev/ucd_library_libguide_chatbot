@@ -67,6 +67,6 @@ To get the **UI** for the web-app working, do the following:
 
 5.  **LibBot is officially up and running!** You can find it on a browser window by typing the following:
 
-    <http://127.0.0.1:1234/index.html>
+    <http://127.0.0.1:1234>
 
 ~*A Quarter For Data Science*~
