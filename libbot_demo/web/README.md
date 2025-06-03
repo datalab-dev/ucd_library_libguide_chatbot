@@ -38,7 +38,7 @@ ollama pull llama3:8b
 From within **RStudio** in the **console**:
 
 ``` r
-source("src/r/localhost.R")
+source("insert_path_to/2025_startup_libguide_chatbot/libbot_demo/web/localhost.R")
 ```
 
 (The server will start on: <http://127.0.0.1:8000>)
