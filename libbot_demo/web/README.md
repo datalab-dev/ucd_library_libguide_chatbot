@@ -4,7 +4,7 @@ Before reading the specifics
 
 LibBot is a virtual librarian search-and-response chatbot, developed to support interdisciplinary academic research by combining LLM-based responses with reliable UC Davis Library resources and research tools.
 
-Simply put, the LibBot tool runs on a web browser page/tab found at <http://127.0.0.1:1234/index.html>, seamlessly combining two main components:
+Simply put, the LibBot tool runs on a web browser page/tab found at <http://127.0.0.1:1234>, seamlessly combining two main components:
 
 1.  `libbotR` = custom R package that matches user prompts to semantically relevant content from the UC Davis Library Guides.
 2.  `Ollama` = software/app for running and managing large language models locally on your machine.
