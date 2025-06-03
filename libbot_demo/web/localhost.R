@@ -60,7 +60,8 @@ chatbot_handler <- function(env) {
     # Combine the LLM summary and library resource results into a formatted HTML response
     combined_response <- paste0(
       llm_response,
-      "<br><br><strong>Reliable resources from the UC Davis Library:</strong><br>", 
+      "<br><br><br><br><strong>Reliable resources from the UC Davis Library:</strong><br>
+      (Some resource links may require you to be signed into kerberos or on the UC Davis Library's VPN)<br><br>", 
       paste(rag_response, collapse = "<br>")
     )
     
@@ -86,5 +87,4 @@ stopAllServers()
 
 # Start the local server on port 8000 using `chatbot_handler` as the request processor
 startServer("127.0.0.1", 8000, list(call = chatbot_handler))
-
 
