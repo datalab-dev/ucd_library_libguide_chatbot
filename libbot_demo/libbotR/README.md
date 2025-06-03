@@ -1,4 +1,4 @@
-# libbotR: R Package for UC Davis Library Chatbot 
+# libbotR: R Package for UC Davis Library Chatbot
 
 `libbotR` is an R package that helps match user prompts to semantically relevant content using text embeddings and cosine similarity. It was developed as part of a chatbot system for navigating the UC Davis Library Guides.
 
@@ -17,7 +17,8 @@ install.packages("devtools")
 ```
 
 | 3) Finally, to install `libbotR` itself, use the following:
-| (remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/libbotR`):
+
+Rremember to modify the path so that it correctly leads to `/startup_libguide_chatbot/libbotR`:
 
 ``` r
 devtools::install("/full/path/to/startup_libguide_chatbot/libbotR")
@@ -41,7 +42,7 @@ library(libbotR)
 
     `libbot` uses `Ollama`'s tools to run the library guide search, and also uses `Ollama`'s '**llama3'** LLM model specifically to help with the generative aspect of the chatbot.
 
-    -   [INSTALLATION]:
+    -   [INSTALLATION]():
         1.  Download [Ollama](https://ollama.com/) and open it
 
         2.  A "Welcome to Ollama" screen will pop up. Click '**install'** (and input your password if needed)
@@ -58,7 +59,7 @@ library(libbotR)
 
 -   `ollamar` = an R package that interfaces with the Ollama software back-end, allowing us to use the language models directly from R—for tasks like the ones needed for the `libbotR` chatbot (e.g. getting text-embeddings).
 
-    -   [INSTALLATION]:
+    -   
 
         -   `ollamar` is [automatically]{.underline} installed when `libbotR` is installed (so no need to do it manually).
 
