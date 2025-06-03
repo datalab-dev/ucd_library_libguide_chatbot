@@ -2,10 +2,6 @@ install.packages("ollamar")
 
 library(ollamar)
 
-# first model: llama3.1
-
-pull("llama3.1")
-
 # setting up "chatbot" interface
 
 repeat {
@@ -58,7 +54,7 @@ ollamar_history <- function(model) {
     response <- chat(model, messages, output = "text")
     cat("Bot:", response, "\n")
     
-    messages <- append(messages, create_message(content=response, role='system'))
+    messages <- append(messages, create_message(content=response, role='assistant'))
   }
 }
 
@@ -72,4 +68,3 @@ ollamar_history('llama3.2')
 # Model: llama3.3
 ollamar_chatbot("llama3.3") # takes really long to run
 
-list_models()
