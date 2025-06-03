@@ -1,4 +1,4 @@
-install.packages("ollamar")
+
 
 library(ollamar)
 
@@ -58,8 +58,6 @@ ollamar_history <- function(model) {
   }
 }
 
-# after response 4 the chatbot kinda malfunctions...
-
 
 # Model: llama3.2
 ollamar_chatbot("llama3.2")
@@ -67,4 +65,3 @@ ollamar_history('llama3.2')
 
 # Model: llama3.3
 ollamar_chatbot("llama3.3") # takes really long to run
-
