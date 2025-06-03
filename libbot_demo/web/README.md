@@ -30,7 +30,7 @@ library(servr)
 Also, ensure [Ollama](https://ollama.com) is installed and running locally (as outlined in the libbotR package README) + make sure to have installed the **llama3** model in an **RStudio** **Terminal** window by typing the following:
 
 ``` zsh
-ollama pull llama3:8b
+ollama pull llama3:8b-q3_K_M
 ```
 
 ### Run the server:
