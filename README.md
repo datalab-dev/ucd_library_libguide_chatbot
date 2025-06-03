@@ -77,7 +77,7 @@ library(gridExtra)
 library(grid)
 ```
 
-Working with Ollama LLM:
+Working with Ollamar:
 
 ``` r
 library(ollamar)
@@ -97,7 +97,8 @@ library(httpuv)
 ```         
 1. Download and install Ollama app
 2. Open/launch the Ollama app to start the local server.
-3. Install either the stable or latest/development version of ollamar.
+3. Install this model and version from ollama by typing the following in the terminal:
+   ollama pull llama3:8b-q3_K_M
 ```
 
 Install Ollama in R:
@@ -115,7 +116,7 @@ test_connection()  # test connection to Ollama server
 # if you see "Ollama local server not running or wrong server," Ollama app/server isn't running
 
 # download a model
-pull("llama3:8b")  # download a model (equivalent bash code: ollama run llama3:8b)
+pull("llama3:8b-q3_K_M")  # download a model (equivalent bash code: ollama run llama3:8b)
 
 # generate a response/text based on a prompt; returns an httr2 response by default
 resp <- generate("llama3:8b", "tell me a 5-word story")
@@ -125,7 +126,7 @@ resp
 list_models()
 
    NAME                        ID              SIZE      MODIFIED    
-1. llama3:8b                   365c1bd3c000    4.7 GB    2 weeks ago
+1. llama3:8b-q3_K_M         365c1bd3c000     4.7 GB   2 weeks ago
 ...
 ```
 
