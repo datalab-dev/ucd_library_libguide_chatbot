@@ -52,7 +52,7 @@ library(libbotR)
         4.  Open **RStudio** and go to the **Terminal** window. Type the following to fully install the LLM model:
 
             ``` zsh
-            ollama pull llama3:8b
+            ollama pull llama3:8b-q3_K_M
             ```
 
         5.  That's it! Now Ollama can run in the background on your machine, and can therefore be used by the `libbotR` package successfully.
