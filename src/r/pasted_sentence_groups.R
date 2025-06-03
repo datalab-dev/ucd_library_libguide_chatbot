@@ -94,7 +94,7 @@ for (i in 1:nrow(text_full_libguide)) {
   text_full_libguide$parent_id[i] = chunk_id
   text_full_libguide$libguide_title[i] = added_parent_title$title[original_id]
   text_full_libguide$libguide_url[i] = added_parent_title$url[original_id]
-  text_full_libguide$external_url[i] = text_chunks_df$sub_url[chunk_id]
+  text_full_libguide$external_url[i] = text_chunks_df$sub_url[as.numeric(sentence_groups_df$chunk_id[i])]
   text_full_libguide$chunk_title[i] = text_chunks_df$sub_title[sentence_groups_df$chunk_id[i]]
 }
 
@@ -105,4 +105,3 @@ text_full_libguide <- text_full_libguide[c("local_id", "parent_id", "text", "lib
 # when chunk_url == libguide_url
 
 saveRDS(text_full_libguide, "./libbot_data/text_full_libguide.rds")
-dim(text_full_libguide)
