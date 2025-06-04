@@ -4,7 +4,7 @@
 
 This repository contains code for a project to develop a RAG/LLM system using UC Davis Library Lib Guides as the retrieval set for queries based on Ollama. The goal of the project is to create an "Ask a Librarian" chatbot that receives queries (prompts) from users and returns a text response based on a model fine-tuned with the UC Davis Library LibGuides and then, after the text response, includes a links to the most relevant LibGuide webpages based on a RAG system based on cosign similarity of the vector space of the prompt with the vector space of all of the LibGuides*.
 
-* Our LibBot currently contains libguide texts up to February 28, 2025
+\* Our LibBot currently contains libguide texts up to February 28, 2025
 
 ## Why:
 
