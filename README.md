@@ -4,7 +4,7 @@
 
 This repository contains code for a project to develop a RAG/LLM system using UC Davis Library Lib Guides as the retrieval set for queries based on Ollama. The goal of the project is to create an "Ask a Librarian" chatbot that receives queries (prompts) from users and returns a text response based on a model fine-tuned with the UC Davis Library LibGuides and then, after the text response, includes a links to the most relevant LibGuide webpages based on a RAG system based on cosign similarity of the vector space of the prompt with the vector space of all of the LibGuides*.
 
-\* Our LibBot currently contains libguide texts up to February 28, 2025
+\* Our LibBot currently contains libguide texts up to February 28, 2025.
 
 ## Why:
 
@@ -38,6 +38,7 @@ Flow Organization: \* [Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-4
 
 > If you wish to use the LibBot tool, you can get started at this user guide: \### [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
 
+/* Note: The LibBot is trained on UC Davis Library Guides and works with Ollama to produce an AI-Generated summary. As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
 ------------------------------------------------------------------------
 
 ## Necessary R Packages
