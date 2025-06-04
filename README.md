@@ -36,9 +36,9 @@ Flow Organization: \* [Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-4
 
 ## Getting Started
 
-If you wish to use the LibBot* tool, you can get started at this user guide: [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
+If you wish to use the LibBot** tool, you can get started at this user guide: [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
 
-> \* Note: The LibBot is trained on UC Davis Library Guides and works with Ollama to produce an AI-Generated summary. As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
+> \** Note: The LibBot is trained on UC Davis Library Guides and works with Ollama to produce an AI-Generated summary. As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
 ------------------------------------------------------------------------
 
 ## Necessary R Packages
