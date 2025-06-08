@@ -4,17 +4,17 @@
 
 This repository contains code for a project to develop a RAG/LLM system using UC Davis Library Lib Guides as the retrieval set for queries based on Ollama. The goal of the project is to create an "Ask a Librarian" chatbot that receives queries (prompts) from users and returns a text response based on a model fine-tuned with the UC Davis Library LibGuides and then, after the text response, includes a links to the most relevant LibGuide webpages based on a RAG system based on cosign similarity of the vector space of the prompt with the vector space of all of the LibGuides*.
 
-\* Our LibBot currently contains libguide texts up to February 28, 2025.
+> NOTE: Our LibBot currently works with libguides based on a final scrape conducted on February 20th, 2025; we acknowledge that the libguide data has been updated since then. The additional guides will be incorporated in the next iteration of LibBot.
 
 ## Why:
 
 Acknowledging the presence of artificial intelligence in research and academia, our LibBot project aims to transform the pre-existing corpus of UC Davis library guides into a virtual librarian chatbot experience. The LibBot will assist students in research by routing users to the most relevant guides from the library’s vast array of resources. 
 
-**Links:**
+## Links:
 
-[[Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)]
+#### [[Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)]
 
-Flow Organization: \* [Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-49f7-a731-82b50d297874/edit?invitationId=inv_9a6fe0aa-a178-4e50-b6e3-1171f8a51155&page=0_0#)
+#### [[Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-49f7-a731-82b50d297874/edit?invitationId=inv_9a6fe0aa-a178-4e50-b6e3-1171f8a51155&page=0_0#)]: Flow Organization
 
 ## Project Team Members
 
@@ -36,16 +36,16 @@ Flow Organization: \* [Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-4
 
 ## Getting Started
 
-If you wish to use the LibBot** tool, you can get started with this user guide: [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
+### If you wish to use the LibBot** tool, you can get started with this user guide: [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
 
-> \** Note: The LibBot is trained on UC Davis Library Guides and works with Ollama to produce an AI-Generated summary. As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
+> Note: The LibBot is trained on UC Davis Library Guides and works with Ollama to produce an AI-Generated summary. As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
 ------------------------------------------------------------------------
 
 ## Necessary R Packages
 
 Finalized custom LibBot package:
 
-[[INSTALLATION](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/main/libbot_demo/libbotR#readme)]
+#### [[INSTALLATION](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/main/libbot_demo/libbotR#readme)]
 
 ``` r
 library(libbotR)
@@ -97,20 +97,18 @@ library(httpuv)
 
 ## Working with Ollama LLM:
 
-```         
-1. Download and install Ollama app
-2. Open/launch the Ollama app to start the local server.
-3. Install this model and version from ollama by typing the following in the terminal:
-   ollama pull llama3:8b-q3_K_M
-```
+**Ollama App**
+* Download [Ollama](https://ollama.com/) and run it.
 
-Install Ollama in R:
+**Ollama in R**
+* _ollamar_ is automatically installed when the _libbotR_ package is installed.
+  - If you wish to install the _ollamar_ package on its own run the following in RStudio:
+     ``` r
+     install.packages("ollamar")
+     ```
 
-``` r
-install.packages("ollamar")
-```
 
-Getting started example:
+Example of Ollama Usage in R:
 
 ```         
 library(ollamar)
@@ -119,7 +117,7 @@ test_connection()  # test connection to Ollama server
 # if you see "Ollama local server not running or wrong server," Ollama app/server isn't running
 
 # download a model
-pull("llama3:8b-q3_K_M")  # download a model (equivalent bash code: ollama run llama3:8b)
+pull("llama3:8b")  # download a model (equivalent bash code: ollama run llama3:8b)
 
 # generate a response/text based on a prompt; returns an httr2 response by default
 resp <- generate("llama3:8b", "tell me a 5-word story")
@@ -129,13 +127,13 @@ resp
 list_models()
 
    NAME                        ID              SIZE      MODIFIED    
-1. llama3:8b-q3_K_M         365c1bd3c000     4.7 GB   2 weeks ago
+1. llama3:8b         365c1bd3c000            4.7 GB   2 weeks ago
 ...
 ```
 
 ------------------------------------------------------------------------
 
-## File and Directory Structure
+## GitHub File and Directory Structure
 
 The basic directory structure for the project is:
 
@@ -210,13 +208,17 @@ The basic directory structure for the project is:
                                           LibBot R package
 ```
 
-### Data Output Structure:
+---
 
-#### [[Data Dictionary](https://docs.google.com/spreadsheets/d/1exjwKkVhQZlc18X9N3xGJDGEbcCvTbJCSRaJqXYWKn0/edit?usp=sharing)] = output metadata
+## Google Drive Data Output Structure:
 
-------------------------------------------------------------------------
+>All of the datasets and outputs from this project, and their corresponding metadata, have been recorded in this Data Dictionary:
+#### [[Data Dictionary](https://docs.google.com/spreadsheets/d/1exjwKkVhQZlc18X9N3xGJDGEbcCvTbJCSRaJqXYWKn0/edit?usp=sharing)] 
+#### [[Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)]
 
-| STS 195: Research in Data Studies, Spring 2025 Outputs and Workflow by Week
+---
+
+## STS 195: Research in Data Studies, Spring 2025 Outputs and Workflow by Week
 
 ![LibBot (2)](https://github.com/user-attachments/assets/17a63997-5e89-43f8-91d6-3f11add5983e)
 
