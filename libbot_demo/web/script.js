@@ -95,3 +95,14 @@ async function sendMessage() {
     modeToggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
     logo.src = isDark ? "assets/logo-dark.png" : "assets/logo-light.png";
   });
+  
+  document.addEventListener("DOMContentLoaded", function () {
+  const inputBox = document.getElementById("user-input");
+
+  inputBox.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent default behavior like submitting a form
+      sendMessage(); // Call your existing sendMessage function
+    }
+  });
+});
