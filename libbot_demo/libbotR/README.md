@@ -13,7 +13,7 @@
 | 2) Open RStudio (download it if you don't already have it) and go to the console window to type the following:
 
 ``` r
-setwd("/path/startup_libguide_chatbot/libbot_demo/libbotR")
+setwd("/path/2025_startup_libguide_chatbot/libbot_demo/libbotR")
 ```
 >NOTE:
 >Remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/libbotR`:
