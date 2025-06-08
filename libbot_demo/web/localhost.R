@@ -1,9 +1,9 @@
 ###############################################################################
 ### LOAD PACKAGES:
-library("servr")
-library("httpuv")
-library("stringr")
-library("ollamar")
+library(servr)
+library(httpuv)
+library(stringr)
+library(ollamar)
 library(jsonlite)
 library(libbotR)
 
@@ -12,11 +12,11 @@ library(libbotR)
 #**REMEMBER TO CHANGE THE FILE PATH FOR THE DATA**
 
 # Vector Space of Corpus Text
-vector_file_path = "~/my_projects/my_R_stuff/output_sets/emb_full_libguide_df.rds"
+vector_file_path <- "~/my_projects/my_R_stuff/output_sets/emb_full_libguide_df.rds" # CHANGE THIS
 embedding_full_libguide <- readRDS(vector_file_path)
 
 # Text Wrapper + Corpus Text
-text_file_path <- "~/my_projects/my_R_stuff/output_sets/text_full_libguide.rds"
+text_file_path <- "~/my_projects/my_R_stuff/output_sets/text_full_libguide.rds" # CHANGE THIS
 text_full_libguide <- readRDS(text_file_path)
 
 ###############################################################################
