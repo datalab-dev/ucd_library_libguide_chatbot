@@ -109,7 +109,15 @@ text_full_libguide.rds
     >NOTE:
     >Setting the working directory now to make the next step easier. Remember to replace 'YOUR-PATH' with the correct path that leads to the `/2025_startup_libguide_chatbot/` directory on YOUR computer.
 
-2. Then load the server by running the _localhost_ script by typing the following in the console:
+2. Open the _localhost.R_ script in **RStudio** and edit the file paths in the **LOAD DATA** section, so that the script can use the datasets with YOUR correct file path:
+   ``` r
+   vector_file_path <- "/YOUR-PATH/emb_full_libguide_df.rds"
+
+   text_file_path <- "/YOUR-PATH/text_full_libguide.rds"
+   ```
+Replace 'YOUR-PATH' with the correct path that leads to `emb_full_libguide_df.rds` and `text_full_libguide.rds`, depending on where you downloaded them to.
+
+3. Then load the server by running the _localhost.R_ script by typing the following in the console:
     ``` r
     source("localhost.R")
     ```
@@ -123,10 +131,10 @@ text_full_libguide.rds
 
 1. Still in **RStudio**, go to the **Terminal** window and type the following:
     ``` bash
-    cd 2025_startup_libguide_chatbot/libbot_demo/web/
+    cd /YOUR-PATH/2025_startup_libguide_chatbot/libbot_demo/web/
     ```
     >NOTE:
-    >Make sure you know where the `/2025_startup_libguide_chatbot/` directory.
+    >Make sure once again, replace 'YOUR-PATH' with the correct path that leads to the `/2025_startup_libguide_chatbot/` directory on your computer.
 
 2. Now that you've moved into the /web directory, run the following to start up the **UI** server:
 
