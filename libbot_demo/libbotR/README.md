@@ -13,7 +13,7 @@
 2) Open **RStudio** and type the following in the console window:
 
      ``` r
-     setwd("/YOUR-PATH/2025_startup_libguide_chatbot/libbot_demo/libbotR")
+     setwd("/YOUR-PATH/2025_startup_libguide_chatbot/libbot_demo/")
      ```
      >NOTE:
      >Remember to replace 'YOUR-PATH' with the correct path that leads to the `/2025_startup_libguide_chatbot/` directory on YOUR computer.
@@ -29,6 +29,11 @@
      ``` r
      devtools::install("libbotR")
      ```
+5) When installing the console may prompt you to _update_ other R packages. You can safely ignore this by just pressing 'Enter' or 'Return' on your keyboard. You'll know **libbotR** is fully installed when you see:
+     ``` r
+     * DONE (libbotR)
+     ```   
+
 
 ### Loading the package:
 
