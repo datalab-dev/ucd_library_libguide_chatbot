@@ -16,7 +16,7 @@
 setwd("/path/2025_startup_libguide_chatbot/libbot_demo/libbotR")
 ```
 >NOTE:
->Remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/libbotR`:
+>Remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/`:
 
 | 3) This package was built using the `devtools` package. If you don't have it yet, run the following in the RStudio console:
 
@@ -42,7 +42,7 @@ library(libbotR)
 
 ## Package Dependencies
 
-| The `libbotR` package **depends** on the `Ollama` [**app**]{.underline} and `ollamar` [**package**]{.underline}, to work. Here's an explanation for what these two are exactly, where to get them, and how to use them:
+| The `libbotR` package **depends** on the `Ollama` [**app**] and `ollamar` [**package**], to work. Here's an explanation for what these two are exactly, where to get them, and how to use them:
 
 #### `Ollama` software vs. the `ollamar` package:
 
@@ -71,6 +71,7 @@ library(libbotR)
 
         -   `ollamar` is [automatically]{.underline} installed when `libbotR` is installed (so no need to do it manually).
 
+---
 
 
 ~*A Quarter For Data Science*~
