@@ -104,7 +104,7 @@ text_full_libguide.rds
 
 1. Open **RStudio** and type the following in the console window:
     ``` r
-    setwd("/YOUR-PATH/2025_startup_libguide_chatbot/libbot_demo/libbotR")
+    setwd("/YOUR-PATH/2025_startup_libguide_chatbot/libbot_demo/web/")
     ```
     >NOTE:
     >Setting the working directory now to make the next step easier. Remember to replace 'YOUR-PATH' with the correct path that leads to the `/2025_startup_libguide_chatbot/` directory on YOUR computer.
