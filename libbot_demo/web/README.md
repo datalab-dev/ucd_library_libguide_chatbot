@@ -38,9 +38,8 @@ install.packages("servr")      ==> library(servr)
      ```
 5. That's it! Now _Ollama_ can run in the background on your machine, so that the _libbotR_ package can successfully work.
 
-### Ollama Package:
-* _ollamar_ is automatically installed when the _libbotR_ package is installed.
-  - If you wish to install the _ollamar_ package on its own run the following in RStudio:
+### Ollamar Package:
+* To install _ollamar_, run the following in the RStudio console or in a script:
      ``` r
      install.packages("ollamar")
      ```
