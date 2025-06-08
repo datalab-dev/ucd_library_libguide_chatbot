@@ -39,7 +39,12 @@ Acknowledging the presence of artificial intelligence in research and academia, 
 ### If you wish to use the LibBot** tool, you can get started with this user guide: [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
 
 > Note: The LibBot is trained on UC Davis Library Guides and works with Ollama to produce an AI-Generated summary. As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
+
+<br>
+
 ------------------------------------------------------------------------
+
+<br>
 
 ## Necessary R Packages
 
@@ -93,7 +98,11 @@ library(servr)
 library(httpuv)
 ```
 
+<br>
+
 ------------------------------------------------------------------------
+
+<br>
 
 ## Working with Ollama LLM:
 
@@ -131,7 +140,11 @@ list_models()
 ...
 ```
 
+<br>
+
 ------------------------------------------------------------------------
+
+<br>
 
 ## GitHub File and Directory Structure
 
@@ -208,7 +221,11 @@ The basic directory structure for the project is:
                                           LibBot R package
 ```
 
+<br>
+
 ---
+
+<br>
 
 ## Google Drive Data Output Structure:
 
@@ -216,7 +233,11 @@ The basic directory structure for the project is:
 #### [[Data Dictionary](https://docs.google.com/spreadsheets/d/1exjwKkVhQZlc18X9N3xGJDGEbcCvTbJCSRaJqXYWKn0/edit?usp=sharing)] 
 #### [[Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)]
 
+<br>
+
 ---
+
+<br>
 
 ## STS 195: Research in Data Studies, Spring 2025 Outputs and Workflow by Week
 
