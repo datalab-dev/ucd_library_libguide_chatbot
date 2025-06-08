@@ -10,7 +10,7 @@
 
 -   [Github](https://github.com/datalab-dev/2025_startup_libguide_chatbot)
 
-2) Open RStudio (download it if you don't already have it) and go to the console window to type the following:
+2) Open **RStudio** and type the following in the console window:
 
 ``` r
 setwd("/path/2025_startup_libguide_chatbot/libbot_demo/libbotR")
