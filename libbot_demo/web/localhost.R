@@ -43,7 +43,7 @@ chatbot_handler <- function(env) {
     
     # Create a librarian-style summary prompt to send to the LLM
     summary_prompt <- paste0(
-      "Act as the user's librarian at an academic research library. Please summarize the user's query in one concise and informative paragraph. Briefly explain the topic the user is asking about, and then suggest reliable strategies or places to find more information, such as library databases, archives, or catalogs. Focus your answer on peer-reviewed and library materials; do not make up specific book titles or sources — only refer to general or commonly known resources, or give search strategies. Also, don't provide information in bullet point format, keep everything in brief paragraph style.\n\n",
+      "Act as the user's librarian at an academic research library. Please summarize the user's query in one concise and informative paragraph. Briefly explain the topic the user is asking about, and then suggest reliable strategies or places to find more information, such as library databases, archives, or catalogs. Focus your answer on peer-reviewed and library materials; do not make up specific book titles or sources — only refer to general or commonly known resources, or give search strategies. If you cannot find resources/information for a specific prompt, it is okay to mention that. Also, don't provide information in bullet point format, keep everything in brief paragraph style.\n\n",
       msg
     )
     # Use the LLM (Ollama via `generate()`) to generate a summary paragraph based on the user's message
