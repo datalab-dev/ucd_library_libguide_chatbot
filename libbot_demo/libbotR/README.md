@@ -42,7 +42,8 @@ library(libbotR)
 
 ## Package Dependencies
 
-| The `libbotR` package **depends** on the `Ollama` [**app**] and `ollamar` [**package**], to work. Here's an explanation for what these two are exactly, where to get them, and how to use them:
+| The `libbotR` package **depends** on the `Ollama` [**app**] and `ollamar` [**package**], to work. If you already have both of these set up on your machine, you may ignore the rest of this README. Otherwise, here's an explanation for what these two are exactly and how to install them:
+
 <br>
 
 ### `Ollama` software vs. the `ollamar` package:
