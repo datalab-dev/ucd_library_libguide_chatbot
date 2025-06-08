@@ -19,13 +19,17 @@ Simply put, the LibBot tool runs on a browser web-app found at <http://127.0.0.1
 
 ## Back-end Setup (R Server) Dependencies:
 
-### R Packages:
+### LibBot R Package:
+>Visit the LibBot R package [README.md](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/main/libbot_demo/libbotR) for details on installing it.
+
+
+### Other R Packages:
 
 ``` r
-install.packages("httpuv")     ==> library(httpuv)
-install.packages("jsonlite")   ==> library(jsonlite)
-install.packages("stringr")    ==> library(stringr)
-install.packages("servr")      ==> library(servr)
+install.packages("httpuv")     
+install.packages("jsonlite")
+install.packages("stringr")
+install.packages("servr")
 ```
 
 ### Ollama App:
