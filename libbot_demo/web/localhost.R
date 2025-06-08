@@ -63,7 +63,8 @@ chatbot_handler <- function(env) {
       llm_response,
       "<br><br><br><br><strong>Reliable resources from the UC Davis Library:</strong><br><i>
       (Some resource links may require you to be signed into kerberos or on the UC Davis Library's VPN)</i><br><br>", 
-      paste(rag_response, collapse = "<br>")
+      paste(rag_response, collapse = "<br>"),
+      "============================================================================="
     )
     
     # Return combined response
