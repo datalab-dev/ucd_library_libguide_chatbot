@@ -16,7 +16,7 @@
      setwd("/path/2025_startup_libguide_chatbot/libbot_demo/libbotR")
      ```
      >NOTE:
-     >Remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/`:
+     >Remember to modify the path so that it correctly leads to the `/2025_startup_libguide_chatbot/` directory.
 
 3) This package was built using the `devtools` package. If you don't have it yet, run the following in the RStudio console:
 
