@@ -10,21 +10,29 @@
 
 -   [Github](https://github.com/datalab-dev/2025_startup_libguide_chatbot)
 
-| 2) This package was built using the `devtools` package, which you need to install as well. If you don't have it yet, run:
+| 2) Open RStudio (download it if you don't already have it) and go to the console window to type the following:
+
+``` r
+setwd("/path/startup_libguide_chatbot/libbot_demo/libbotR")
+```
+>NOTE:
+>Remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/libbotR`:
+
+| 3) This package was built using the `devtools` package. If you don't have it yet, run the following in the RStudio console:
 
 ``` r
 install.packages("devtools")
 ```
 
-| 3) Finally, to install `libbotR` itself, use the following:
-
-Rremember to modify the path so that it correctly leads to `/startup_libguide_chatbot/libbotR`:
+| 4) Finally, to install `libbotR` itself, run the following in the console:
 
 ``` r
-devtools::install("/full/path/to/startup_libguide_chatbot/libbotR")
+devtools::install("libbotR")
 ```
 
 ### Loading the package:
+
+>Once the package has been installed, it can be loaded into any R session or script using the following:
 
 ``` r
 library(libbotR)
@@ -32,9 +40,9 @@ library(libbotR)
 
 ------------------------------------------------------------------------
 
-## Ollama Installation
+## Package Dependencies
 
-| The `libbotR` package and chatbot **depend** on the `Ollama` [**app**]{.underline} and `ollamar` [**package**]{.underline}, to work. Here's an explanation for what these two are exactly, where to get them, and how to use them:
+| The `libbotR` package **depends** on the `Ollama` [**app**]{.underline} and `ollamar` [**package**]{.underline}, to work. Here's an explanation for what these two are exactly, where to get them, and how to use them:
 
 #### `Ollama` software vs. the `ollamar` package:
 
@@ -52,37 +60,17 @@ library(libbotR)
         4.  Open **RStudio** and go to the **Terminal** window. Type the following to fully install the LLM model:
 
             ``` zsh
-            ollama pull llama3:8b-q3_K_M
+            ollama pull llama3:8b
             ```
 
-        5.  That's it! Now Ollama can run in the background on your machine, and can therefore be used by the `libbotR` package successfully.
+        5.  That's it! Now Ollama can run in the background on your machine, so that the `libbotR` package can successfully work.
 
 -   `ollamar` = an R package that interfaces with the Ollama software back-end, allowing us to use the language models directly from R—for tasks like the ones needed for the `libbotR` chatbot (e.g. getting text-embeddings).
 
-    -   
+    -   [INSTALLATION]():
 
         -   `ollamar` is [automatically]{.underline} installed when `libbotR` is installed (so no need to do it manually).
 
-------------------------------------------------------------------------
 
-## Necessary Datasets
-
-| This package does not include the embedding matrix or LibGuide text. You must load those datasets manually in order to use the functions.
-
-| The datasets can be found in the Google Drive linked below, inside of the `final_data` directory/folder:
-
--   [Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)
-
-*`Data frame with text embeddings (rows = guide sections, cols = vector dimensions)`*
-
-```         
-emb_full_libguide_df.rds
-```
-
-*`Data frame with full text, titles, URLs, and other metadata`*
-
-```         
-text_full_libguide.rds
-```
 
 ~*A Quarter For Data Science*~
