@@ -47,6 +47,21 @@ install.packages("servr")      ==> library(servr)
 
 <br>
 
+------------------------------------------------------------------------
+
+<br>
+
+## Front-End Dependencies
+
+### Python:
+>In order to run the front-end server to load the UI for the web-app, Python needs to be installed on your machine.
+- Download [Python](https://www.python.org/downloads/) (latest version)
+
+
+
+
+<br>
+
 ---
 
 <br>
