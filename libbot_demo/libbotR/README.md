@@ -8,35 +8,35 @@
 
 1) Clone/download the `libbotR` repository (or its parent, `startup_libguide_chatbot`) found here:
 
--   [Github](https://github.com/datalab-dev/2025_startup_libguide_chatbot)
+     -   [Github](https://github.com/datalab-dev/2025_startup_libguide_chatbot)
 
 2) Open **RStudio** and type the following in the console window:
 
-``` r
-setwd("/path/2025_startup_libguide_chatbot/libbot_demo/libbotR")
-```
->NOTE:
->Remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/`:
+     ``` r
+     setwd("/path/2025_startup_libguide_chatbot/libbot_demo/libbotR")
+     ```
+     >NOTE:
+     >Remember to modify the path so that it correctly leads to `/startup_libguide_chatbot/`:
 
 3) This package was built using the `devtools` package. If you don't have it yet, run the following in the RStudio console:
 
-``` r
-install.packages("devtools")
-```
+     ``` r
+     install.packages("devtools")
+     ```
 
 4) Finally, to install `libbotR` itself, run the following in the console:
 
-``` r
-devtools::install("libbotR")
-```
+     ``` r
+     devtools::install("libbotR")
+     ```
 
 ### Loading the package:
 
 >Once the package has been installed, it can be loaded into any R session or script using the following:
 
-``` r
-library(libbotR)
-```
+     ``` r
+     library(libbotR)
+     ```
 
 ------------------------------------------------------------------------
 
