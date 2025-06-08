@@ -32,7 +32,7 @@
 
 ### Loading the package:
 
->Once the package has been installed, it can be loaded into any R session or script using the following:
+>Once the package has been installed, it can be loaded into any R session in the console or a script using the following:
 
 ``` r
 library(libbotR)
