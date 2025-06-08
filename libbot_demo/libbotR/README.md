@@ -34,9 +34,9 @@
 
 >Once the package has been installed, it can be loaded into any R session or script using the following:
 
-     ``` r
-     library(libbotR)
-     ```
+``` r
+library(libbotR)
+```
 
 ------------------------------------------------------------------------
 
@@ -62,7 +62,10 @@
 **`ollamar`** = an R package that interfaces with the _Ollama_ software back-end, allowing us to use the language models directly from R—for tasks like the ones needed for the _libbotR_ chatbot (e.g. getting text-embeddings).
 
 **[ INSTALLATION ]**:
-1. _ollamar_ is **_automatically_** installed when _libbotR_ is installed (so no need to do it manually).
+1. In RStudio, run the following in the console or in a script:
+     ``` r
+     install.packages("ollamar")
+     ```
 
 ---
 <br>
