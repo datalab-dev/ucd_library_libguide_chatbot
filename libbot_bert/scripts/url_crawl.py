@@ -8,10 +8,10 @@
 import time
 import logging
 import sqlite3
-from typing import List, Set
+from typing import List, Any
 from urllib.parse import urljoin, urlparse, urlunparse
 from pathlib import Path
-
+import re
 import requests
 from lxml import html
 import pandas as pd
@@ -27,6 +27,10 @@ HEADERS = { # rquests specifications
 }
 REQUEST_TIMEOUT = 15
 DELAY_BETWEEN_REQUESTS = 2
+
+# API params discovered in the site's JS (chatgpt help on this)
+API_ACTION = 170
+SITE_ID = 21608
 
 
 # logging fetches and other events
@@ -46,18 +50,96 @@ def fetch_page(url: str, session: requests.Session) -> str:
     resp.raise_for_status()
     return resp.text
 
+# compiled regexes once
+HREF_RE = re.compile(r'href=[\'"]([^\'"]+)[\'"]', flags=re.IGNORECASE)
+ABS_URL_RE = re.compile(r'^https?://', flags=re.IGNORECASE)
+SLUG_RE = re.compile(r'^[A-Za-z0-9][A-Za-z0-9\-_]*/?[A-Za-z0-9\-_]+$')  # short-ish slug or token
+
+def fetch_guides_via_api(base_site_url: str = INDEX_URL, action: int = API_ACTION, site_id: int = SITE_ID) -> List[str]:
+    """
+    Call the site's API and return a deduplicated list of ABSOLUTE URLs (http(s) or root-relative turned absolute).
+    This version aggressively avoids adding HTML fragments or long text blobs.
+    """
+    api_url = urljoin(base_site_url, "index_process.php")
+    params = {"action": str(action), "site_id": str(site_id)}
+    s = requests.Session()
+    s.headers.update(HEADERS)
+    resp = s.get(api_url, params=params, timeout=REQUEST_TIMEOUT)
+    resp.raise_for_status()
+    data = resp.json()
+
+    candidates: List[str] = []
+
+    def walk(o: Any):
+        """Recursively walk JSON and collect *candidate* strings."""
+        if isinstance(o, dict):
+            # prefer obvious fields first
+            for k in ("url", "href", "link", "slug", "guide_url", "guide_link"):
+                if k in o and isinstance(o[k], str) and o[k].strip():
+                    candidates.append(o[k].strip())
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for item in o:
+                walk(item)
+        elif isinstance(o, str):
+            s = o.strip()
+            if not s:
+                return
+            # If the string looks like embedded HTML, extract href attributes inside it (if any)
+            if ("<" in s and ">" in s) or "href=" in s:
+                for href in HREF_RE.findall(s):
+                    candidates.append(href.strip())
+                return
+            # Skip strings that are huge or have newlines (likely text blobs)
+            if len(s) > 200 or "\n" in s:
+                return
+            # If it's an absolute URL, keep
+            if ABS_URL_RE.match(s):
+                candidates.append(s)
+                return
+            # If it's a root-relative path, keep
+            if s.startswith("/"):
+                candidates.append(s)
+                return
+            # If it looks like a short slug token (e.g., ABG-202 or some/slug), accept
+            if SLUG_RE.match(s):
+                candidates.append(s)
+                return
+            # else ignore
+            return
+
+    walk(data)
+
+    # Normalize to absolute and dedupe preserving order
+    out: List[str] = []
+    seen = set()
+    for c in candidates:
+        if not c:
+            continue
+        abs_url = urljoin(base_site_url, c)
+        # sanity: only http/s
+        if not abs_url.startswith(("http://", "https://")):
+            continue
+        # final sanity: no angle brackets, not excessively long
+        if "<" in abs_url or ">" in abs_url or len(abs_url) > 300:
+            continue
+        if abs_url not in seen:
+            seen.add(abs_url)
+            out.append(abs_url)
+    return out
 
 
-# parsing helper
-def parse_links_with_xpath(html_text: str, base_url: str, xpath_expr: str) -> List[str]:
-    # parse HTML text using lxml and extract hrefs using the XPath that's in main()
-    # xpath_expr should select href attributes
+# # parsing helper
+# def parse_links_with_xpath(html_text: str, base_url: str, xpath_expr: str) -> List[str]:
+#     # parse HTML text using lxml and extract hrefs using the XPath that's in main()
+#     # xpath_expr should select href attributes
     
-    tree = html.fromstring(html_text)
-    raw_hrefs = tree.xpath(xpath_expr)
-    # normalize to absolute URLs
-    abs_hrefs = [urljoin(base_url, href) for href in raw_hrefs if href and isinstance(href, str)]
-    return abs_hrefs
+#     tree = html.fromstring(html_text)
+#     raw_hrefs = tree.xpath(xpath_expr)
+#     # normalize to absolute URLs
+#     abs_hrefs = [urljoin(base_url, href) for href in raw_hrefs if href and isinstance(href, str)]
+#     return abs_hrefs
 
 
 # cleaning + dedupe
@@ -120,7 +202,6 @@ def insert_urls(db_path: Path, urls: List[str], source: str = None) -> int:
     """
     if not urls:
         return 0
-
     with sqlite3.connect(str(db_path)) as conn:
         cur = conn.cursor()
         before = conn.total_changes
@@ -134,6 +215,7 @@ def insert_urls(db_path: Path, urls: List[str], source: str = None) -> int:
     return after - before
 
 
+
 def get_all_urls(db_path: Path) -> List[str]:
     """
     Return all URLs from the DB ordered by insertion id.
@@ -143,46 +225,38 @@ def get_all_urls(db_path: Path) -> List[str]:
     return df["url"].tolist()
 
 
-
 def main():
     # prepare DB
     ensure_db_and_table(DB_PATH)
 
     # prepare HTTP session with the headers
-    s = requests.Session()
-    s.headers.update(HEADERS)
+    # s = requests.Session()
+    # s.headers.update(HEADERS)
 
-    # fetch index
+
+    #trying to fetch via API
     try:
-        idx_html = fetch_page(INDEX_URL, s)
+        raw_links = fetch_guides_via_api()
     except Exception as e:
-        logging.error(f"Failed to fetch index page: {e}")
+        logging.error(f"API fetch failed: {e}. Exiting.")
         return
 
-    # xpath to grab the correct links
-    xpath_expr = '//div[@class="s-lib-box s-lib-border-round s-lib-box-idx-guide-list"]//a[@class="bold"]/@href'
+    logging.info(f"API returned {len(raw_links)} candidate links (before cleaning).")
 
-
-    # extract raw hrefs and run them through the url cleaning function
-    raw_links = parse_links_with_xpath(idx_html, INDEX_URL, xpath_expr)
-    logging.info(f"Found {len(raw_links)} raw links on the index page.")
+    # Clean & dedupe using same helper
     picks = clean_urls(raw_links)
-    logging.info(f"Found {len(raw_links)} raw links on the index page.")
+    logging.info(f"{len(picks)} links remain after cleaning/dedupe.")
 
-
-
-
-    # insert into DB
-    new_count = insert_urls(DB_PATH, picks, source=INDEX_URL)
+    # Insert into DB
+    new_count = insert_urls(DB_PATH, picks, source=f"api?action={API_ACTION}&site_id={SITE_ID}")
     logging.info(f"Inserted {new_count} new URLs into {DB_PATH}")
 
-    # dump a CSV snapshot for easy use later
+    # write snapshot CSV
     all_urls = get_all_urls(DB_PATH)
     csv_out = DB_PATH.with_suffix(".csv")
     pd.DataFrame({"url": all_urls}).to_csv(csv_out, index=False)
     logging.info(f"Wrote CSV snapshot with {len(all_urls)} URLs to {csv_out}")
 
-    # polite delay before finishing
     time.sleep(DELAY_BETWEEN_REQUESTS)
 
 
