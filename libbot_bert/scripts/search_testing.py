@@ -160,7 +160,7 @@ def search(query: str, k: int = 10) -> pd.DataFrame:
 if __name__ == "__main__":
 
 
-    example_query = "Help me find research resources for architecture"
+    example_query = "I want to get information on American literature"
 
     results = search(example_query, k=TOP_K)
     print(f"Top {len(results)} results for query: {example_query}\n")
