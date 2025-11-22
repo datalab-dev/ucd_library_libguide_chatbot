@@ -14,7 +14,7 @@ import math
 # ====== CONFIG ====================
 CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
 TEXT_COL = "text"                           # text column in df
-BERT_CHECKPOINT = "bert-base-uncased"
+BERT_CHECKPOINT = "bert-large-cased"
 BATCH_SIZE = 16                             # how many rows processed at once
 
 SAVE_CSV_PATH = "/dsl/libbot/data/embeddings_bert_meanpool.csv"

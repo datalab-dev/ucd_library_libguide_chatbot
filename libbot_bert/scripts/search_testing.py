@@ -6,42 +6,64 @@ from transformers import AutoTokenizer, AutoModel
 import os
 
 # -------- CONFIG (change paths if needed) --------
-EMB_NPY_PATH = "/dsl/libbot/data/embeddings_bert_meanpool.npy"
+EMB_PATH = "/dsl/libbot/data/embeddings_bert_meanpool.npy"
 CSV_PATH     = "/dsl/libbot/data/text_full_libguide.csv"
 TEXT_COL     = "text"
 TITLE_COL    = "chunk_title" 
 URL_COL      = "libguide_url"
-BERT_CHECKPOINT = "bert-base-uncased"
+BERT_CHECKPOINT = "bert-large-cased"
 TOP_K = 2
 
 # ------------------------------------------------
 
-# ---- global runtime state (loaded once) ----
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# load embeddings + normalize (done once)
-if not os.path.exists(EMB_NPY_PATH):
-    raise FileNotFoundError(f"Embedding file not found: {EMB_NPY_PATH}")
 
-emb_matrix = np.load(EMB_NPY_PATH)                     # (n, dim)
+
+
+# load embeddings + normalize
+if not os.path.exists(EMB_PATH):
+    raise FileNotFoundError(f"Embedding file not found: {EMB_PATH}")
+
+
+
+
+# ----------------NORM STUFF--------------------------------
+
+emb_matrix = np.load(EMB_PATH)                     # (n = text chunks/observations, dim = dimension of embedding; 1024)
 n_rows, emb_dim = emb_matrix.shape
-# L2-normalize rows -> used to compute cosine similarity with dot product
-emb_norms = np.linalg.norm(emb_matrix, axis=1, keepdims=True)
-emb_norms = np.clip(emb_norms, 1e-9, None)
-emb_matrix_normed = emb_matrix / emb_norms             # (n, dim)
 
-# load original dataframe (for metadata retrieval)
+# L2 normalization of rows removes magnitude so we only compare direction (semantic direction)
+# and because cosine similarity is a NORMALIZED dot product
+# NOTE: L2 normalization is basically about scaling a vector so that all that matters is
+# direction, not lenght (as you are essentially placing the vector in the unit sphere)
+#  --> keep in mind LLAMA-based embedding models already normalize the output vectors INTERNALLY
+
+emb_norms = np.linalg.norm(emb_matrix, axis=1, keepdims=True)
+emb_norms = np.clip(emb_norms, 1e-9, None) # clipping norms that are too small (ensuring no vector has a norm 0)
+emb_matrix_normed = emb_matrix / emb_norms             # (n, dim) --> unit vector length
+
+
+# ------------------------------------------------
+
+
+
+# load original dataframe (for text)
 df = pd.read_csv(CSV_PATH)
 if len(df) != n_rows:
     # Not required but helpful for debugging; still proceed if lengths differ
     print(f"Warning: embedding rows ({n_rows}) != dataframe rows ({len(df)})")
 
-# load model + tokenizer once
+# load model + tokenizer
 tokenizer = AutoTokenizer.from_pretrained(BERT_CHECKPOINT)
 model = AutoModel.from_pretrained(BERT_CHECKPOINT).to(device)
 model.eval()
 
-# ---------- helper: mean pooling (same function used when embeddings were created) ----------
+
+
+
+
+# ---------- mean pooling --------------
 def mean_pool_from_model(outputs_last_hidden, attention_mask):
     """
     last_hidden: (batch, seq_len, dim)
@@ -56,7 +78,11 @@ def mean_pool_from_model(outputs_last_hidden, attention_mask):
     token_counts = torch.clamp(token_counts, min=1e-9)        # avoid div0
     return sum_hidden / token_counts                          # (batch, dim)
 
-# ---------- embed a single query text (returns L2-normalized numpy vector) ----------
+
+
+
+
+# ---------- embed a single query text  ----------
 def embed_query(text: str) -> np.ndarray:
     """
     Compute a mean-pooled embedding for the input text and return a L2-normalized numpy vector.
@@ -84,18 +110,22 @@ def embed_query(text: str) -> np.ndarray:
         return emb
     return emb / norm
 
-# ---------- reusable search function ----------
+
+
+
+# ---------- search function ----------
 def search(query: str, k: int = 10) -> pd.DataFrame:
     """
-    Query the embedding index and return a DataFrame with top-k results.
-    Columns returned: ['chunk_title','libguide_url','text','score'] sorted by descending score.
+    Query the embedding index and return a df with top-k results.
+    Columns returned: ['chunk_title','libguide_url','text','score'] sorted by descending score
     """
+
     # compute normalized query embedding
     q_emb = embed_query(query)               # (dim,)
     if q_emb.shape[0] != emb_dim:
         raise ValueError(f"Query embedding dim {q_emb.shape[0]} != stored dim {emb_dim}")
 
-    # fast cosine similarity via dot product with pre-normalized embeddings
+    # cosine similarity via dot product with pre-normalized embeddings
     sims = emb_matrix_normed.dot(q_emb)      # (n,)
 
     # get top-k indices (descending by similarity)
@@ -122,9 +152,16 @@ def search(query: str, k: int = 10) -> pd.DataFrame:
     topk_rows = topk_rows.sort_values("score", ascending=False).reset_index(drop=True)
     return topk_rows
 
-# ---------- simple CLI example ----------
+
+
+
+
+# ---------- simple output  ----------
 if __name__ == "__main__":
-    example_query = "give me resources for architecture research"
+
+
+    example_query = "Help me find research resources for architecture"
+
     results = search(example_query, k=TOP_K)
     print(f"Top {len(results)} results for query: {example_query}\n")
     for i, row in results.iterrows():
