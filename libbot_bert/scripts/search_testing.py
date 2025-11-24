@@ -8,7 +8,7 @@ import os
 logging.set_verbosity_error()
 
 # -------- CONFIG (change paths if needed) --------
-EMB_PATH = "/dsl/libbot/data/embeddings_last4_meanpool.npy"
+EMB_PATH = "/dsl/libbot/data/embeddings_last4_meanpool_full.npy"
 CSV_PATH     = "/dsl/libbot/data/text_full_libguide.csv"
 TEXT_COL     = "text"
 TITLE_COL    = "chunk_title" 
