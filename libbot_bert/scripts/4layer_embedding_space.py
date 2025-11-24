@@ -11,8 +11,8 @@ TEXT_COL = "text"
 BERT_CHECKPOINT = "bert-large-cased"   # or another local checkpoint
 BATCH_SIZE = 16                        # tune if OOM
 NUM_ROWS = None                         # None -> process all rows
-OUT_NPY = "/dsl/libbot/data/embeddings_last4_meanpool_full.npy"
-OUT_CSV = "/dsl/libbot/data/embeddings_last4_meanpool_full.csv"  # optional wide CSV
+OUT_NPY = "/dsl/libbot/data/embeddings_last4_meanpool.npy"
+OUT_CSV = "/dsl/libbot/data/embeddings_last4_meanpool.csv"  # optional wide CSV
 # ----------------------------
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
