@@ -2,11 +2,13 @@
 import numpy as np
 import pandas as pd
 import torch
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, AutoModel, logging
 import os
 
+logging.set_verbosity_error()
+
 # -------- CONFIG (change paths if needed) --------
-EMB_PATH = "/dsl/libbot/data/embeddings_bert_meanpool.npy"
+EMB_PATH = "/dsl/libbot/data/embeddings_last4_meanpool.npy"
 CSV_PATH     = "/dsl/libbot/data/text_full_libguide.csv"
 TEXT_COL     = "text"
 TITLE_COL    = "chunk_title" 
@@ -163,7 +165,7 @@ if __name__ == "__main__":
     example_query = "I want to get information on American literature"
 
     results = search(example_query, k=TOP_K)
-    print(f"Top {len(results)} results for query: {example_query}\n")
+    print(f"\nTop {len(results)} results for query: {example_query}\n")
     for i, row in results.iterrows():
         print(f"{i+1:2d}. score={row['score']:.4f}")
         print(f"    Title: {row.get(TITLE_COL, '')}")
