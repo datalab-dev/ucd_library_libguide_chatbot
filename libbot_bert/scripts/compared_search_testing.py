@@ -6,8 +6,8 @@ from transformers import AutoTokenizer, AutoModel
 # ================================
 # CONFIG — update to your paths
 # ================================
-MEANLAST_PATH = "/dsl/libbot/data/emb_meanlast_300.npy"
-LAST4MEAN_PATH = "/dsl/libbot/data/emb_last4mean_300.npy"
+MEANLAST_PATH = "/dsl/libbot/data/embeddings_bert_meanpool.npy"
+LAST4MEAN_PATH = "/dsl/libbot/data/embeddings_last4_meanpool.npy"
 CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
 TEXT_COL = "text"
 TITLE_COL = "chunk_title"
