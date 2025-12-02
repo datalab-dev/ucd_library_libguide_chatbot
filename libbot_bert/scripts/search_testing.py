@@ -7,7 +7,7 @@ import os
 logging.set_verbosity_error()
 
 # -------- CONFIG (change paths if needed) --------
-EMB_PATH = "/dsl/libbot/data/embeddings_last4_meanpool_full.npy"
+EMB_PATH = "/dsl/libbot/data/embeddings_last4_meanpool.npy"
 CSV_PATH     = "/dsl/libbot/data/text_full_libguide.csv"
 TEXT_COL     = "text"
 TITLE_COL    = "chunk_title" 
@@ -160,8 +160,7 @@ def search(query: str, k: int = 10) -> pd.DataFrame:
 # ---------- simple output  ----------
 if __name__ == "__main__":
 
-
-    example_query = "I want to get information on American literature"
+    example_query = "Help me find zoo and animal science resources"
 
     results = search(example_query, k=TOP_K)
     print(f"\nTop {len(results)} results for query: {example_query}\n")
