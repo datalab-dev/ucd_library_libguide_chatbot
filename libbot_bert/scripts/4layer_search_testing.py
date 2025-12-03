@@ -48,6 +48,9 @@ def embed_query(text: str) -> np.ndarray:
     Uses the same model + pooling logic used to create stored embeddings.
     """
 
+    # FIX: define `inputs` (it was missing before)
+    inputs = tokenizer(text, return_tensors="pt", truncation=True).to(device)
+
     with torch.no_grad():
         outputs = model(**inputs)
         hidden = outputs.hidden_states[-4:]    # list of 4 tensors
@@ -59,6 +62,7 @@ def embed_query(text: str) -> np.ndarray:
 
     norm = np.linalg.norm(emb)
     return emb / max(norm, 1e-9)
+
 
 # ---------- search function ----------
 def search(query, k=TOP_K) -> pd.DataFrame:
