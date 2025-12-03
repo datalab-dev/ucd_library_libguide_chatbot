@@ -46,86 +46,49 @@ def embed_query(text: str) -> np.ndarray:
     Compute a mean-pooled embedding for the input text and return a L2-normalized numpy vector.
     Uses the same model + pooling logic used to create stored embeddings.
     """
-    # handle None or NaN gracefully
-    if text is None:
-        text = ""
-    text = str(text)
-
-    # tokenize single example (no padding needed for single example)
-    inputs = tokenizer(text, truncation=True, return_tensors="pt")
-    inputs = {k: v.to(device) for k, v in inputs.items()}
 
     with torch.no_grad():
-        outputs = model(**inputs, output_hidden_states=True, return_dict=True)
+        outputs = model(**inputs)
+        hidden = outputs.hidden_states[-4:]    # list of 4 tensors
+        stacked = torch.stack(hidden).mean(0)  # (1, seq, dim)
 
-    last_hidden = outputs.last_hidden_state         # (1, seq_len, dim)
-    attn_mask = inputs["attention_mask"]            # (1, seq_len)
-    emb = mean_pool_from_model(last_hidden, attn_mask)  # (1, dim)
-    emb = emb.squeeze(0).cpu().numpy()                 # -> (dim,)
+    mask = inputs["attention_mask"].unsqueeze(-1).float()
+    pooled = (stacked * mask).sum(1) / mask.sum(1)
+    emb = pooled.squeeze(0).cpu().numpy()
 
     norm = np.linalg.norm(emb)
-    if norm < 1e-9:
-        return emb
-    return emb / norm
-
-
-
+    return emb / max(norm, 1e-9)
 
 # ---------- search function ----------
-def search(query: str, k: int = 10) -> pd.DataFrame:
+def search(query, k=TOP_K) -> pd.DataFrame:
     """
     Query the embedding index and return a df with top-k results.
     Columns returned: ['chunk_title','libguide_url','text','score'] sorted by descending score
     """
+    q = embed_text(query)
+    
+    sims = emb_matrix_normed @ q
+    idx = np.argsort(-sims)[:k]
+    scores = sims[idx]
 
-    # compute normalized query embedding
-    q_emb = embed_query(query)               # (dim,)
-    if q_emb.shape[0] != emb_dim:
-        raise ValueError(f"Query embedding dim {q_emb.shape[0]} != stored dim {emb_dim}")
+    out = df.loc[idx, [TITLE_COL, URL_COL, TEXT_COL]].copy()
+    out["score"] = scores
+    return out.sort_values("score", ascending=False).reset_index(drop=True)
+    
 
-    # cosine similarity via dot product with pre-normalized embeddings
-    sims = emb_matrix_normed.dot(q_emb)      # (n,)
-
-    # get top-k indices (descending by similarity)
-    if k <= 0:
-        return pd.DataFrame(columns=[TITLE_COL, URL_COL, TEXT_COL, "score"])
-    k = min(k, len(sims))
-    topk_idx = np.argsort(-sims)[:k]
-    topk_scores = sims[topk_idx]
-
-    # collect metadata and scores into a DataFrame
-    # handle missing columns gracefully
-    cols = []
-    for col in [TITLE_COL, URL_COL, TEXT_COL]:
-        if col in df.columns:
-            cols.append(col)
-        else:
-            # create empty placeholder column if missing
-            df[col] = ""
-            cols.append(col)
-
-    topk_rows = df.loc[topk_idx, cols].reset_index(drop=True).copy()
-    topk_rows["score"] = topk_scores
-    # ensure ordering by score descending
-    topk_rows = topk_rows.sort_values("score", ascending=False).reset_index(drop=True)
-    return topk_rows
-
-
-
-
-
-# ---------- simple output  ----------
+# ---------- output  ----------
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python search_testing.py \"your query here\"")
+        sys.exit(1)
 
-    example_query = "Help me find zoo and animal science resources"
+    query = " ".join(sys.argv[1:])
+    results = search(query)
 
-    results = search(example_query, k=TOP_K)
-    print(f"\nTop {len(results)} results for query: {example_query}\n")
+    print(f"\nTop {len(results)} results for: {query}\n")
     for i, row in results.iterrows():
-        print(f"{i+1:2d}. score={row['score']:.4f}")
-        print(f"    Title: {row.get(TITLE_COL, '')}")
-        print(f"    URL:   {row.get(URL_COL, '')}")
-        txt = row.get(TEXT_COL, "")
-        print("    Text:", repr(txt[:200]) + ("..." if len(txt) > 200 else ""))
+        print(f"{i+1}. score={row['score']:.4f}")
+        print("   Title:", row[TITLE_COL])
+        print("   URL:  ", row[URL_COL])
+        print("   Text:", repr(row[TEXT_COL][:200]) + ("..." if len(row[TEXT_COL]) > 200 else ""))
         print()
-
