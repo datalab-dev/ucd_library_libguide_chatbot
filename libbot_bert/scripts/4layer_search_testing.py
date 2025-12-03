@@ -66,7 +66,7 @@ def search(query, k=TOP_K) -> pd.DataFrame:
     Query the embedding index and return a df with top-k results.
     Columns returned: ['chunk_title','libguide_url','text','score'] sorted by descending score
     """
-    q = embed_text(query)
+    q = embed_query(query)
     
     sims = emb_matrix_normed @ q
     idx = np.argsort(-sims)[:k]
