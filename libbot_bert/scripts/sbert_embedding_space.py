@@ -5,7 +5,7 @@ import numpy as np
 # ---------- CONFIG ----------
 CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
 TEXT_COL = "text"
-MODEL_NAME = "sentence-transformers/multi-qa-mpnet-base-cos-v1"
+MODEL_NAME = "https://huggingface.co/sentence-transformers/multi-qa-mpnet-base-cos-v1"
 OUT_NPY = "/dsl/libbot/data/embeddings_sbert.npy"
 BATCH_SIZE = 16   # adjust if needed
 # ----------------------------
