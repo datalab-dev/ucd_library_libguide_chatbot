@@ -15,10 +15,14 @@ creates embedding vector space using a Sentence Bert (multi-qa-mpnet-base-cos-v1
 
 
 
+
+<br>
+<br>
+<br>
+<br>
+
+
 ___
-
-
-
 
 **bert_lastlayer_search.py**\
 Search script for the BERT last-layer embedding space
@@ -37,11 +41,13 @@ Compares them with a search function.
 
 
 
+<br>
+<br>
+<br>
+<br>
+
+
 ___
-
-
-
-
 
 **bert_testing.py**\
 early simple testing of bert with single text chunk
