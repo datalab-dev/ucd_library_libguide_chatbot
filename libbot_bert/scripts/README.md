@@ -38,6 +38,11 @@ ___
 Uses both embeddings from BERT (last hidden layer, and the last 4 hidden layers).
 Compares them with a search function.
 
+___
+
+**sbert_search.py**\
+Search script for the SBERT multi-qa-mpnet-base-cos-v1 embedding space
+
 
 
 
