@@ -1,31 +1,46 @@
 ___
 
-**4layer_embedding_space.py**\
+**bert_4layer_embedding_space.py**\
 creates embedding vector space using a mean pool over the last 4 hidden layers of BERT
 
 ___
 
-**embedding_space.py**\
+**bert_lastlayer_embedding_space.py**\
 creates embedding vector space using a mean pool over just the last hidden layer
 
 ___
 
-**testing_small_embedding_space.py**\
-loads dataframe and selects subset of text. Computes embeddings for the subset with two methods (mean_last and las4_mean). Also has a comparison function in it to quickly check the two.
+**sbert_embedding_space.py**
+creates embedding vector space using a Sentence Bert (multi-qa-mpnet-base-cos-v1 model)
+
+
 
 ___
 
-**search_testing.py**\
-general search script
+
+
+
+**bert_lastlayer_search.py**\
+Search script for the BERT last-layer embedding space
 
 ___
 
+**bert_4layer_search.py**
+Search script for the BERT last-4-layers embedding space
 
-**compared_search_testing.py**\
-Uses both embeddings from the last hidden layer, and the last 4 hidden layers.
+___
+
+**bert_compared_search.py**\
+Uses both embeddings from BERT (last hidden layer, and the last 4 hidden layers).
 Compares them with a search function.
 
+
+
+
 ___
+
+
+
 
 
 **bert_testing.py**\
