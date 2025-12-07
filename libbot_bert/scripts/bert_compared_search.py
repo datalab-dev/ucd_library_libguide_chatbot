@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import pandas as pd
+import sys
 from transformers import AutoTokenizer, AutoModel
 
 # ================================
@@ -59,14 +60,14 @@ def compare_search(query, emb_a, emb_b, top_k=5):
         outputs = model(**inputs, return_dict=True)
         hs = outputs.hidden_states  # tuple of 25 layers
 
-    # ---- mean-last (single last layer) ----
-    last = outputs.last_hidden_state                # (1, seq, hidden)
+    # ---- mean-last ----
+    last = outputs.last_hidden_state
     q_last = mean_pool_tokens_from_hidden(last, inputs["attention_mask"]).squeeze(0)
     q_last = q_last.cpu().numpy()
     q_last = q_last / (np.linalg.norm(q_last) + 1e-12)
 
     # ---- last4-mean ----
-    last4 = torch.stack(hs[-4:], dim=0).mean(dim=0)  # (1, seq, hidden)
+    last4 = torch.stack(hs[-4:], dim=0).mean(dim=0)
     q_last4 = mean_pool_tokens_from_hidden(last4, inputs["attention_mask"]).squeeze(0)
     q_last4 = q_last4.cpu().numpy()
     q_last4 = q_last4 / (np.linalg.norm(q_last4) + 1e-12)
@@ -89,10 +90,17 @@ def compare_search(query, emb_a, emb_b, top_k=5):
 
 
 # ======================================================
-# Example usage
+# CLI usage
 # ======================================================
 if __name__ == "__main__":
-    # compare_search("American literature research guides", emb_meanlast, emb_last4mean, top_k=5)
-    # compare_search("Help me find data science resources", emb_meanlast, emb_last4mean, top_k=5)
-    # compare_search("Information on architecture", emb_meanlast, emb_last4mean, top_k=5)
-    compare_search("Help me find zoo and animal science resources", emb_meanlast, emb_last4mean, top_k=5)
+    # sys.argv[0] = script name
+    # sys.argv[1:] = list of queries
+
+    if len(sys.argv) < 2:
+        print("Usage: python search.py \"your query here\" [more queries...]")
+        sys.exit(1)
+
+    queries = sys.argv[1:]
+
+    for q in queries:
+        compare_search(q, emb_meanlast, emb_last4mean, top_k=5)
