@@ -1,0 +1,16 @@
+[workspace]
+authors = ["Federico Aprile <fgaprile@ucdavis.edu>"]
+channels = ["conda-forge"]
+name = "libbot_bert"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = "==3.10"
+numpy = "*"
+pandas = "*"
+pytorch = "*"
+transformers = "*"
+sentence-transformers = "*"
