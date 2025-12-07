@@ -14,3 +14,5 @@ pandas = "*"
 pytorch = "*"
 transformers = "*"
 sentence-transformers = "*"
+pyarrow = "<14"
+
