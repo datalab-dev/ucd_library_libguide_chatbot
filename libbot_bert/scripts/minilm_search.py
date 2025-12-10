@@ -1,28 +1,26 @@
 import sys
 import numpy as np
 import pandas as pd
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, util
 
 # ---------- CONFIG ----------
 CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
-EMB_PATH = "/dsl/libbot/data/embeddings_qwen.npy"
+EMB_PATH = "/dsl/libbot/data/embeddings_minilm.npy"
 TEXT_COL = "text"
 TITLE_COL = "chunk_title"
 URL_COL = "libguide_url"
-MODEL_NAME = "Qwen/Qwen3-Embedding-0.6B"
-TOP_K = 5
+MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+TOP_K = 3
 # ----------------------------
-
-
 
 def semantic_search(query, df, embeddings, model, top_k=TOP_K):
     # encode query
-    query_emb = model.encode(query, prompt_name="query", convert_to_numpy=True)    
+    query_emb = model.encode(query, convert_to_numpy=True)
 
     # compute cosine similarity for all rows
     # util.cos_sim treats the first argument as a batch of 1 vector, so it interprets it as (1, 768)
     # so does the comparison with all the different embeddings
-    scores = model.similarity(query_emb, embeddings)[0].numpy() # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
+    scores = util.cos_sim(query_emb, embeddings)[0].cpu().numpy() # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
 
 
     # produces a list of row numbers, sorted by similarity
@@ -60,7 +58,7 @@ if __name__ == "__main__":
     embeddings = np.load(EMB_PATH)
 
     print("Loading model:", MODEL_NAME)
-    model = SentenceTransformer(MODEL_NAME, trust_remote_code=True)
+    model = SentenceTransformer(MODEL_NAME)
 
     # --- perform search ---
     results = semantic_search(query, df, embeddings, model)
