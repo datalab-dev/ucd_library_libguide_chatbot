@@ -28,7 +28,8 @@ all_embs = model.encode(
     texts,
     batch_size=BATCH_SIZE,
     show_progress_bar=True,
-    convert_to_numpy=True
+    convert_to_numpy=True,
+    normalize_embeddings=True
 )
 
 print("Embedding matrix shape:", all_embs.shape)

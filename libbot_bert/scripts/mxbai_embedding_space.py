@@ -22,7 +22,7 @@ texts = df[TEXT_COL].fillna("").astype(str).tolist()
 print("Rows to embed:", len(texts))
 
 # Load Sentence-BERT model
-model = SentenceTransformer(MODEL_NAME, truncate_dim=384)
+model = SentenceTransformer(MODEL_NAME)
 print("Model loaded:", MODEL_NAME)
 
 # Encode in batches
