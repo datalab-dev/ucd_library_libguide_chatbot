@@ -12,14 +12,17 @@ TEXT_COL = "text"
 TITLE_COL = "chunk_title"
 URL_COL = "libguide_url"
 MODEL_NAME = "mixedbread-ai/mxbai-embed-large-v1"
-TOP_K = 5
+TOP_K = 3
 # ----------------------------
 
 
 
 def semantic_search(query, df, embeddings, model, top_k=TOP_K):
     # encode query
-    query_emb = model.encode(query, prompt_name="query", normalize_embeddings=True, convert_to_numpy=True)
+    query_emb = model.encode(
+        query,
+        normalize_embeddings=True,
+        convert_to_numpy=True)
 
     # compute cosine similarity for all rows
     # util.cos_sim treats the first argument as a batch of 1 vector, so it interprets it as (1, 768)
