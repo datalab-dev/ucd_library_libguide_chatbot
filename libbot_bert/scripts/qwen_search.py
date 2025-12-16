@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 import pandas as pd
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, util
 
 # ---------- CONFIG ----------
 CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
@@ -22,7 +22,7 @@ def semantic_search(query, df, embeddings, model, top_k=TOP_K):
     # compute cosine similarity for all rows
     # util.cos_sim treats the first argument as a batch of 1 vector, so it interprets it as (1, 768)
     # so does the comparison with all the different embeddings
-    scores = model.similarity(query_emb, embeddings)[0].numpy() # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
+    scores = util.cos_sim(query_emb, embeddings)[0].numpy() # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
 
 
     # produces a list of row numbers, sorted by similarity
