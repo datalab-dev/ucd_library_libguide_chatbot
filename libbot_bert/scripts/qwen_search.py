@@ -10,37 +10,77 @@ TEXT_COL = "text"
 TITLE_COL = "chunk_title"
 URL_COL = "libguide_url"
 MODEL_NAME = "Qwen/Qwen3-Embedding-0.6B"
-TOP_K = 5
+TOP_K = 3
 # ----------------------------
 
+# filters out duplicates
+def cleaned_semantic_search(query, df, embeddings, model, top_k=TOP_K):
 
-
-def semantic_search(query, df, embeddings, model, top_k=TOP_K):
     # encode query
     query_emb = model.encode(query, prompt_name="query", normalize_embeddings=True, convert_to_numpy=True)    
-
+    
     # compute cosine similarity for all rows
-    # util.cos_sim treats the first argument as a batch of 1 vector, so it interprets it as (1, 768)
+  # util.cos_sim treats the first argument as a batch of 1 vector, so it interprets it as (1, 768)
     # so does the comparison with all the different embeddings
-    scores = util.cos_sim(query_emb, embeddings)[0].cpu().numpy() # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
-
-
-    # produces a list of row numbers, sorted by similarity
-    top_idx = np.argsort(-scores)[:top_k]
-
-
-    # making list of dictionaries
-    # each dictionary is one of the top k returned texts, including title and url
+    scores = util.cos_sim(query_emb, embeddings)[0].cpu().numpy()  # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
+    
+    # Get more candidates than needed to account for deduplication
+    # Fetch 3x top_k as buffer (or all rows if corpus is small)
+    candidate_count = min(top_k * 3, len(scores))
+    top_idx = np.argsort(-scores)[:candidate_count]
+    
+    # Track seen texts and build deduplicated results
+    seen_texts = set()
     results = []
+    
     for idx in top_idx:
         row = df.iloc[idx]
+        text = row[TEXT_COL]
+        
+        # Skip if we've already seen this exact text
+        if text in seen_texts:
+            continue
+        
+        seen_texts.add(text)
         results.append({
             "score": float(scores[idx]),
-            "text": row[TEXT_COL],
+            "text": text,
             "title": row[TITLE_COL],
             "url": row[URL_COL]
         })
+        
+        # Stop once we have enough unique results
+        if len(results) == top_k:
+            break
+    
     return results
+
+# def semantic_search(query, df, embeddings, model, top_k=TOP_K):
+#     # encode query
+#     query_emb = model.encode(query, prompt_name="query", normalize_embeddings=True, convert_to_numpy=True)    
+
+#     # compute cosine similarity for all rows
+#     # util.cos_sim treats the first argument as a batch of 1 vector, so it interprets it as (1, 768)
+#     # so does the comparison with all the different embeddings
+#     scores = util.cos_sim(query_emb, embeddings)[0].cpu().numpy() # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
+
+
+#     # produces a list of row numbers, sorted by similarity
+#     top_idx = np.argsort(-scores)[:top_k]
+
+
+#     # making list of dictionaries
+#     # each dictionary is one of the top k returned texts, including title and url
+#     results = []
+#     for idx in top_idx:
+#         row = df.iloc[idx]
+#         results.append({
+#             "score": float(scores[idx]),
+#             "text": row[TEXT_COL],
+#             "title": row[TITLE_COL],
+#             "url": row[URL_COL]
+#         })
+#     return results
 
 
 if __name__ == "__main__":
@@ -63,7 +103,7 @@ if __name__ == "__main__":
     model = SentenceTransformer(MODEL_NAME, trust_remote_code=True)
 
     # --- perform search ---
-    results = semantic_search(query, df, embeddings, model)
+    results = cleaned_semantic_search(query, df, embeddings, model)
 
     # --- print results ---
     print("\nTop results:\n")
