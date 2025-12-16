@@ -26,7 +26,7 @@ SAVE_NPY_PATH = "/dsl/libbot/data/embeddings_bert_meanpool.npy"
 
 
 # ------------- Load data ----------
-df = pd.read_csv(CSV_PATH)
+df = pd.read_csv(CSV_PATH, encoding='utf-8')
 text_chunks = df[TEXT_COL].fillna("").astype(str).tolist()
 num_rows, num_cols = df.shape
 n = len(text_chunks)

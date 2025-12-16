@@ -15,7 +15,7 @@ BATCH_SIZE = 16   # adjust if needed
 # ----------------------------
 
 # Load text data
-df = pd.read_csv(CSV_PATH)
+df = pd.read_csv(CSV_PATH, encoding='utf-8')
 texts = df[TEXT_COL].fillna("").astype(str).tolist()
 print("Rows to embed:", len(texts))
 

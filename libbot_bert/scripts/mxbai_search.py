@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     # --- load resources ---
     print("Loading dataframe...")
-    df = pd.read_csv(CSV_PATH)
+    df = pd.read_csv(CSV_PATH, encoding='utf-8')
 
     print("Loading embeddings...")
     embeddings = np.load(EMB_PATH)

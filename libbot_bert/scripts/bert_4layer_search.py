@@ -31,7 +31,7 @@ emb_norms = np.linalg.norm(emb_matrix, axis=1, keepdims=True)
 emb_norms = np.clip(emb_norms, 1e-9, None)  # clipping norms that are too small (ensuring no vector has a norm 0)
 emb_matrix_normed = emb_matrix / emb_norms            # (n, dim) --> unit vector length
 
-df = pd.read_csv(CSV_PATH) # loading text df
+df = pd.read_csv(CSV_PATH, encoding='utf-8') # loading text df
 # ------------------------------------------------
 
 

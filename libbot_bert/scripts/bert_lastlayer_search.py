@@ -50,7 +50,7 @@ emb_matrix_normed = emb_matrix / emb_norms             # (n, dim) --> unit vecto
 
 
 # load original dataframe (for text)
-df = pd.read_csv(CSV_PATH)
+df = pd.read_csv(CSV_PATH, encoding='utf-8')
 if len(df) != n_rows:
     # Not required but helpful for debugging; still proceed if lengths differ
     print(f"Warning: embedding rows ({n_rows}) != dataframe rows ({len(df)})")

@@ -20,7 +20,7 @@ MODEL_NAME = "bert-large-cased"
 # ======================================================
 emb_meanlast = np.load(MEANLAST_PATH)
 emb_last4mean = np.load(LAST4MEAN_PATH)
-df = pd.read_csv(CSV_PATH)
+df = pd.read_csv(CSV_PATH, encoding='utf-8')
 
 n1, d1 = emb_meanlast.shape
 n2, d2 = emb_last4mean.shape

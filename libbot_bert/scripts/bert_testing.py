@@ -15,7 +15,7 @@ CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
 text_col = "text"
 
 
-df = pd.read_csv(CSV_PATH)
+df = pd.read_csv(CSV_PATH, encoding='utf-8')
 num_rows, num_cols = df.shape
 
 print(num_rows, num_cols)

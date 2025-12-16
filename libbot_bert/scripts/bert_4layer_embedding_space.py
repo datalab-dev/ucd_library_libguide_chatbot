@@ -19,7 +19,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
 # load text data
-df = pd.read_csv(CSV_PATH)
+df = pd.read_csv(CSV_PATH, encoding='utf-8')
 if NUM_ROWS is None:
     texts = df[TEXT_COL].fillna("").astype(str).tolist()
 else:
