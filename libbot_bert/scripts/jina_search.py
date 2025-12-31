@@ -13,17 +13,21 @@ MODEL_NAME = "jinaai/jina-embeddings-v3"
 TOP_K = 3
 # ----------------------------
 
+
 # filters out duplicates
 def cleaned_semantic_search(query, df, embeddings, model, top_k=TOP_K):
 
     # encode query
-    query_emb = model.encode(query, task="retrieval.query", normalize_embeddings=True, convert_to_numpy=True)    
+    query_emb = model.encode(
+        query,
+        task="retrieval.query",
+        normalize_embeddings=True,
+        convert_to_numpy=True)    
     
     # compute cosine similarity for all rows
-  # util.cos_sim treats the first argument as a batch of 1 vector, so it interprets it as (1, 768)
-    # so does the comparison with all the different embeddings
-    scores = util.cos_sim(query_emb, embeddings)[0].cpu().numpy()  # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
-    
+    scores = np.dot(query_emb, embeddings.T)  # equivalent to cosine sim since embeddings are normalized
+
+
     # Get more candidates than needed to account for deduplication
     # Fetch 3x top_k as buffer (or all rows if corpus is small)
     candidate_count = min(top_k * 3, len(scores))
