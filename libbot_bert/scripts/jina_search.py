@@ -1,0 +1,90 @@
+import sys
+import numpy as np
+import pandas as pd
+from sentence_transformers import SentenceTransformer, util
+
+# ---------- CONFIG ----------
+CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
+EMB_PATH = "/dsl/libbot/data/embeddings_jina_code.npy"
+TEXT_COL = "text"
+TITLE_COL = "chunk_title"
+URL_COL = "libguide_url"
+MODEL_NAME = "jinaai/jina-embeddings-v3"
+TOP_K = 3
+# ----------------------------
+
+# filters out duplicates
+def cleaned_semantic_search(query, df, embeddings, model, top_k=TOP_K):
+
+    # encode query
+    query_emb = model.encode(query, task="retrieval.query", normalize_embeddings=True, convert_to_numpy=True)    
+    
+    # compute cosine similarity for all rows
+  # util.cos_sim treats the first argument as a batch of 1 vector, so it interprets it as (1, 768)
+    # so does the comparison with all the different embeddings
+    scores = util.cos_sim(query_emb, embeddings)[0].cpu().numpy()  # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
+    
+    # Get more candidates than needed to account for deduplication
+    # Fetch 3x top_k as buffer (or all rows if corpus is small)
+    candidate_count = min(top_k * 3, len(scores))
+    top_idx = np.argsort(-scores)[:candidate_count]
+    
+    # Track seen texts and build deduplicated results
+    seen_texts = set()
+    results = []
+    
+    for idx in top_idx:
+        row = df.iloc[idx]
+        text = row[TEXT_COL]
+        
+        # Skip if we've already seen this exact text
+        if text in seen_texts:
+            continue
+        
+        seen_texts.add(text)
+        results.append({
+            "score": float(scores[idx]),
+            "text": text,
+            "title": row[TITLE_COL],
+            "url": row[URL_COL]
+        })
+        
+        # Stop once we have enough unique results
+        if len(results) == top_k:
+            break
+    
+    return results
+
+
+if __name__ == "__main__":
+    # --- get the prompt from the user ---
+    if len(sys.argv) < 2:
+        print("Usage: python search.py \"your query here\"")
+        sys.exit(1)
+
+    query = sys.argv[1]
+    print(f"Query: {query}\n")
+
+    # --- load resources ---
+    print("Loading dataframe...")
+    df = pd.read_csv(CSV_PATH, encoding='utf-8')
+
+    print("Loading embeddings...")
+    embeddings = np.load(EMB_PATH)
+
+    print("Loading model:", MODEL_NAME)
+    model = SentenceTransformer(MODEL_NAME, trust_remote_code=True)
+
+    # --- perform search ---
+    results = cleaned_semantic_search(query, df, embeddings, model)
+
+    # --- print results ---
+    print("\nTop results:\n")
+    for i, r in enumerate(results, 1): #loop through results (dictionaries) and give a counter for each starting at 1 (stored in i)
+        print(f"----- Result {i} -----")
+        print(f"Score: {r['score']:.4f}")
+        print(f"Title: {r['title']}")
+        print(f"URL:   {r['url']}")
+        print("Text:")
+        print(r["text"])
+        print()
