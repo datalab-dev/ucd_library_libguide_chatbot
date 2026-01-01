@@ -28,6 +28,7 @@ print("Model loaded:", MODEL_NAME)
 # Encode in batches
 all_embs = model.encode(
     texts,
+    prompt_name="passage",
     batch_size=BATCH_SIZE,
     show_progress_bar=True,
     convert_to_numpy=True,
