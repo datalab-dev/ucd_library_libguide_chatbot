@@ -21,7 +21,6 @@ def semantic_search(query, df, embeddings, model, top_k=TOP_K):
     # encode query
     query_emb = model.encode(
         query,
-        prompt_name="query",
         normalize_embeddings=True,
         convert_to_numpy=True)
 
