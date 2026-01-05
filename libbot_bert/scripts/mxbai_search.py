@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
-from sentence_transformers.util import cos_sim
+from sentence_transformers.util import cos_sim, dot_score
 
 
 # ---------- CONFIG ----------
@@ -10,6 +10,7 @@ CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
 EMB_PATH = "/dsl/libbot/data/embeddings_mxbai.npy"
 TEXT_COL = "text"
 TITLE_COL = "chunk_title"
+LIBTITLE_COL = "libguide_title"
 URL_COL = "libguide_url"
 MODEL_NAME = "mixedbread-ai/mxbai-embed-large-v1"
 TOP_K = 3
@@ -27,7 +28,7 @@ def semantic_search(query, df, embeddings, model, top_k=TOP_K):
     # compute cosine similarity for all rows
     # util.cos_sim treats the first argument as a batch of 1 vector, so it interprets it as (1, 768)
     # so does the comparison with all the different embeddings
-    scores = cos_sim(query_emb, embeddings)[0].cpu().numpy() # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
+    scores = dot_score(query_emb, embeddings)[0].cpu().numpy() # util.cos_sim returns a PyTorch tensor ==> .numpy() can only be called on a CPU tensor
 
 
     # produces a list of row numbers, sorted by similarity
@@ -42,6 +43,7 @@ def semantic_search(query, df, embeddings, model, top_k=TOP_K):
         results.append({
             "score": float(scores[idx]),
             "text": row[TEXT_COL],
+            "libguide_title": row[LIBTITLE_COL],
             "title": row[TITLE_COL],
             "url": row[URL_COL]
         })
@@ -76,6 +78,7 @@ if __name__ == "__main__":
         print(f"----- Result {i} -----")
         print(f"Score: {r['score']:.4f}")
         print(f"Title: {r['title']}")
+        print(f"Libguide: {r['libguide_title']}")
         print(f"URL:   {r['url']}")
         print("Text:")
         print(r["text"])
