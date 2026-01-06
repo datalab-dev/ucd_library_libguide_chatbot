@@ -8,6 +8,7 @@ CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
 EMB_PATH = "/dsl/libbot/data/embeddings_jina_code.npy"
 TEXT_COL = "text"
 TITLE_COL = "chunk_title"
+LIB_TITLE_COL = "libguide_title"
 URL_COL = "libguide_url"
 MODEL_NAME = "jinaai/jina-embeddings-v3"
 TOP_K = 3
@@ -50,7 +51,8 @@ def cleaned_semantic_search(query, df, embeddings, model, top_k=TOP_K):
             "score": float(scores[idx]),
             "text": text,
             "title": row[TITLE_COL],
-            "url": row[URL_COL]
+            "url": row[URL_COL],
+            "libguide_title": row[LIB_TITLE_COL]
         })
         
         # Stop once we have enough unique results
@@ -82,12 +84,13 @@ if __name__ == "__main__":
     # --- perform search ---
     results = cleaned_semantic_search(query, df, embeddings, model)
 
-    # --- print results ---
+   # --- print results ---
     print("\nTop results:\n")
     for i, r in enumerate(results, 1): #loop through results (dictionaries) and give a counter for each starting at 1 (stored in i)
         print(f"----- Result {i} -----")
         print(f"Score: {r['score']:.4f}")
         print(f"Title: {r['title']}")
+        print(f"Libguide: {r['libguide_title']}")
         print(f"URL:   {r['url']}")
         print("Text:")
         print(r["text"])

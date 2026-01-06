@@ -10,7 +10,7 @@ CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
 EMB_PATH = "/dsl/libbot/data/embeddings_mxbai.npy"
 TEXT_COL = "text"
 TITLE_COL = "chunk_title"
-LIBTITLE_COL = "libguide_title"
+LIB_TITLE_COL = "libguide_title"
 URL_COL = "libguide_url"
 MODEL_NAME = "mixedbread-ai/mxbai-embed-large-v1"
 TOP_K = 3
@@ -43,7 +43,7 @@ def semantic_search(query, df, embeddings, model, top_k=TOP_K):
         results.append({
             "score": float(scores[idx]),
             "text": row[TEXT_COL],
-            "libguide_title": row[LIBTITLE_COL],
+            "libguide_title": row[LIB_TITLE_COL],
             "title": row[TITLE_COL],
             "url": row[URL_COL]
         })
