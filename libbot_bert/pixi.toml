@@ -7,6 +7,26 @@ version = "0.1.0"
 
 [tasks]
 
+[tasks.ollama-serve]
+cmd = "ollama serve"
+env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+
+[tasks.ollama-pull]
+cmd = "ollama pull"
+env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+
+[tasks.ollama-list]
+cmd = "ollama list"
+env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+
+[tasks.ollama-run]
+cmd = "ollama run"
+env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+
+[tasks.ollama-rm]
+cmd = "ollama rm"
+env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+
 [dependencies]
 python = "==3.10"
 numpy = "*"
@@ -15,4 +35,8 @@ pytorch = "*"
 transformers = "*"
 sentence-transformers = "*"
 pyarrow = "<14"
+einops = ">=0.8.1,<0.9"
+ollama-python = "*"
+ollama = ">=0.13.5,<0.14"
+chromadb = ">=1.2.1,<2"
 
