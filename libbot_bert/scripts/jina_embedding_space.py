@@ -12,6 +12,7 @@ os.environ["TRANSFORMERS_CACHE"] = "/dsl/libbot/data/huggingface_cache"
 P_PATH = "/dsl/libbot/data/combined_text_full_libguide.parquet"
 COMB_TEXT_COL = "combined_text"
 MODEL_NAME = "jinaai/jina-embeddings-v3"
+MODEL_REVISION = "f1944de8402dcd5f2b03f822a4bc22a7f2de2eb9"
 OUT_NPY = "/dsl/libbot/data/embeddings_jina_code.npy"
 BATCH_SIZE = 16   # adjust if needed
 # ----------------------------
@@ -27,9 +28,10 @@ print("Rows to embed:", len(texts))
 
 # Load model
 model = SentenceTransformer(
-    MODEL_NAME,
-    trust_remote_code=True,
-    )
+        MODEL_NAME,
+        trust_remote_code=True,
+        revision=MODEL_REVISION
+        )
 print("Model loaded:", MODEL_NAME)
 
 # Encode in batches
