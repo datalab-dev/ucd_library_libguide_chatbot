@@ -1,21 +1,21 @@
 import sys
 import numpy as np
 import pandas as pd
-from sentence_transformers import SentenceTransformer, util
+from sentence_transformers import SentenceTransformer
 
 # ---------- CONFIG ----------
-CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
+CSV_PATH = "/dsl/libbot/data/combined_text_full_libguide.csv"
 EMB_PATH = "/dsl/libbot/data/embeddings_jina_code.npy"
-TEXT_COL = "text"
-TITLE_COL = "chunk_title"
+
 LIB_TITLE_COL = "libguide_title"
+TITLE_COL = "chunk_title"
+TEXT_COL = "text"
 URL_COL = "libguide_url"
+
 MODEL_NAME = "jinaai/jina-embeddings-v3"
 MODEL_REVISION = "f1944de8402dcd5f2b03f822a4bc22a7f2de2eb9"
 TOP_K = 3
 # ----------------------------
-
-
 
 # filters out duplicates
 def cleaned_semantic_search(query, df, embeddings, model, top_k=TOP_K):
@@ -74,13 +74,13 @@ if __name__ == "__main__":
     print(f"\nQuery: {query}\n")
 
     # --- load resources ---
-    print("Loading dataframe...")
+    print("\033[34mLoading dataframe...\033[0m")
     df = pd.read_csv(CSV_PATH, encoding='utf-8')
 
-    print("Loading embeddings...")
+    print("\033[34mLoading embeddings...\033[0m")
     embeddings = np.load(EMB_PATH)
 
-    print("Loading model:", MODEL_NAME)
+    print("\033[34mLoading model: \033[0m", MODEL_NAME)
     model = SentenceTransformer(
         MODEL_NAME,
         trust_remote_code=True,
@@ -91,13 +91,13 @@ if __name__ == "__main__":
     results = cleaned_semantic_search(query, df, embeddings, model)
 
    # --- print results ---
-    print("\nTop results:\n")
+    print("\n\033[1;30mTop results:\033[0m\n")
     for i, r in enumerate(results, 1): #loop through results (dictionaries) and give a counter for each starting at 1 (stored in i)
-        print(f"----- Result {i} -----")
-        print(f"Score: {r['score']:.4f}")
-        print(f"Title: {r['title']}")
-        print(f"Libguide: {r['libguide_title']}")
-        print(f"URL:   {r['url']}")
-        print("Text:")
+        print(f"----- \033[1;32mResult {i} \033[0m-----")
+        print(f"\033[32mScore: \033[0m{r['score']:.4f}")
+        print(f"\033[32mLibguide: \033[0m{r['libguide_title']}")
+        print(f"\033[32mTitle: \033[0m{r['title']}")
+        print(f"\033[32mURL:   \033[0m{r['url']}")
+        print("\033[32mText:\033[0m")
         print(r["text"])
         print()
