@@ -11,8 +11,10 @@ TITLE_COL = "chunk_title"
 LIB_TITLE_COL = "libguide_title"
 URL_COL = "libguide_url"
 MODEL_NAME = "jinaai/jina-embeddings-v3"
+MODEL_REVISION = "f1944de8402dcd5f2b03f822a4bc22a7f2de2eb9"
 TOP_K = 3
 # ----------------------------
+
 
 
 # filters out duplicates
@@ -69,7 +71,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     query = sys.argv[1]
-    print(f"Query: {query}\n")
+    print(f"\nQuery: {query}\n")
 
     # --- load resources ---
     print("Loading dataframe...")
@@ -79,7 +81,11 @@ if __name__ == "__main__":
     embeddings = np.load(EMB_PATH)
 
     print("Loading model:", MODEL_NAME)
-    model = SentenceTransformer(MODEL_NAME, trust_remote_code=True)
+    model = SentenceTransformer(
+        MODEL_NAME,
+        trust_remote_code=True,
+        revision=MODEL_REVISION
+        )
 
     # --- perform search ---
     results = cleaned_semantic_search(query, df, embeddings, model)
