@@ -9,33 +9,19 @@ os.environ["TRANSFORMERS_CACHE"] = "/dsl/libbot/data/huggingfce_cache"
 
 
 # ---------- CONFIG ----------
-CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
-TEXT_COL = "text"
-LIB_TITLE_COL = "libguide_title"
+# CSV_PATH = "/dsl/libbot/data/text_full_libguide.csv"
+P_PATH = "/dsl/libbot/data/combined_text_full_libguide.parquet"
+COMB_TEXT_COL = "combined_text"
 MODEL_NAME = "Qwen/Qwen3-Embedding-0.6B"
 OUT_NPY = "/dsl/libbot/data/embeddings_qwen.npy"
 BATCH_SIZE = 16   # adjust if needed
 # ----------------------------
 
 # Load text data
-df = pd.read_csv(CSV_PATH, encoding='utf-8')
+df = pd.read_parquet(P_PATH)
 
-# prepare texts + titles to embed
-lib_titles = df[LIB_TITLE_COL].fillna("").astype(str).tolist()
-text_chunks = df[TEXT_COL].fillna("").astype(str).tolist()
-
-texts = []   # combined strings
-
-for i in range(len(df)):
-    title = lib_titles[i]
-    text_chunk = text_chunks[i]
-
-    if title.strip() == "":
-        combined = text_chunk
-    else:
-        combined = title + ": " + text_chunk
-
-    texts.append(combined)
+# prepare texts to embed
+texts = df[COMB_TEXT_COL].astype(str).tolist()
 
 
 print("Rows to embed:", len(texts))
