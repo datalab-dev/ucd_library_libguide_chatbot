@@ -71,7 +71,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     query = sys.argv[1]
-    print(f"\nQuery: {query}\n")
+    print(f"\n\n\033[1;30mQuery:\033[0m {query}\n")
 
     # --- load resources ---
     print("\033[34mLoading dataframe...\033[0m")
