@@ -23,4 +23,4 @@ df["combined_text"] = (
 
 # Save outputs
 df.to_csv(OUTPUT_CSV, index=False, encoding="utf-8")
-df.to_parquet(OUTPUT_PARQUET, index=False)
+df.to_parquet(OUTPUT_PARQUET, index=False) # saving also as parquet for efficiency
