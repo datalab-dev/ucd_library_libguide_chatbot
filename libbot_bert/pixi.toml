@@ -39,4 +39,5 @@ einops = ">=0.8.1,<0.9"
 ollama-python = "*"
 ollama = ">=0.13.5,<0.14"
 chromadb = ">=1.2.1,<2"
+psutil = ">=7.2.1,<8"
 
