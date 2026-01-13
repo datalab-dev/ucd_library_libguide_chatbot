@@ -5,7 +5,8 @@ from sentence_transformers import SentenceTransformer
 import torch
 
 # ---------- CONFIG ----------
-CSV_PATH = "/dsl/libbot/data/combined_text_full_libguide.csv"
+# CSV_PATH = "/dsl/libbot/data/combined_text_full_libguide.csv"
+P_PATH = "/dsl/libbot/data/combined_text_full_libguide.parquet"
 EMB_PATH = "/dsl/libbot/data/embeddings_qwen.npy"
 
 LIB_TITLE_COL = "libguide_title"
@@ -78,7 +79,8 @@ if __name__ == "__main__":
 
     # --- load resources ---
     print("\033[34mLoading dataframe...\033[0m")
-    df = pd.read_csv(CSV_PATH, encoding='utf-8')
+    df = pd.read_parquet(P_PATH) # parquet format
+
 
     print("\033[34mLoading embeddings...\033[0m")
     embeddings = np.load(EMB_PATH)
