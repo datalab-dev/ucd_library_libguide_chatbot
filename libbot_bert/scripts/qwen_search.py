@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
+import torch
 
 # ---------- CONFIG ----------
 CSV_PATH = "/dsl/libbot/data/combined_text_full_libguide.csv"
@@ -14,6 +15,9 @@ URL_COL = "libguide_url"
 
 MODEL_NAME = "Qwen/Qwen3-Embedding-0.6B"
 TOP_K = 3
+
+# set threads for faster querying
+torch.set_num_threads(16)
 # ----------------------------
 
 # filters out duplicates
@@ -80,9 +84,19 @@ if __name__ == "__main__":
     embeddings = np.load(EMB_PATH)
 
     print("\033[34mLoading model: \033[0m", MODEL_NAME)
+    
+    # QWEN-0.6B LOADING
     model = SentenceTransformer(
         MODEL_NAME,
-        trust_remote_code=True)
+        device="cpu",
+        model_kwargs={
+            "torch_dtype": torch.float32,
+            },
+        tokenizer_kwargs={"padding_side": "left"},
+        trust_remote_code=True
+        )
+
+    
 
     # --- perform search ---
     results = cleaned_semantic_search(query, df, embeddings, model)
