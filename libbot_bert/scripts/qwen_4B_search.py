@@ -75,6 +75,8 @@ def cleaned_semantic_search(query, df, embeddings, model, top_k=TOP_K):
 
 
 
+# ============== MAIN  ==============
+
 if __name__ == "__main__":
     # --- get the prompt from the user ---
     if len(sys.argv) < 2:
