@@ -33,6 +33,8 @@ def cleaned_semantic_search(query, df, embeddings, model, top_k=TOP_K):
         convert_to_numpy=True
     )    
     
+    # print("Embedding matrix shape:", query_emb.shape)
+
     # compute cosine similarity for all rows
     scores = np.dot(query_emb, embeddings.T)
     
