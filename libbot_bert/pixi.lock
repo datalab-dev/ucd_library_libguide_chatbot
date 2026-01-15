@@ -71,6 +71,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/google-auth-2.45.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/googleapis-common-protos-1.72.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/grpcio-1.62.2-py310h1b8f574_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/grpcio-tools-1.62.2-py310h76e45a6_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/h11-0.16.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/h2-4.3.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/hf-xet-1.2.1-py310hb823017_0.conda
@@ -201,6 +202,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pydantic-core-2.41.5-py310hd8f68c5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pygments-2.19.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyjwt-2.10.1-pyhd8ed1ab_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/pymilvus-1.1.0-pyhd8ed1ab_1.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyopenssl-25.3.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pypika-0.48.9-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyproject_hooks-1.2.0-pyhd8ed1ab_1.conda
@@ -262,6 +264,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_utils-0.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025b-h78e105d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ucx-1.16.0-h1e563ba_5.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/ujson-5.11.0-py310h25320af_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/urllib3-2.3.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/uvicorn-0.40.0-pyhc90fa1f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/uvicorn-standard-0.40.0-h4cd5af1_0.conda
@@ -1077,6 +1080,21 @@ packages:
   license_family: APACHE
   size: 1003053
   timestamp: 1713390837539
+- conda: https://conda.anaconda.org/conda-forge/linux-64/grpcio-tools-1.62.2-py310h76e45a6_0.conda
+  sha256: 3a84813cf827b5322841d3e16da0202faacfd17ef231f29a663cd4b3aa061cc3
+  md5: 45350a2be2f2b82df6f93e6a4938b000
+  depends:
+  - grpcio >=1.62.2
+  - libgcc-ng >=12
+  - libstdcxx-ng >=12
+  - protobuf >=4.21.6,<5.0dev
+  - python >=3.10,<3.11.0a0
+  - python_abi 3.10.* *_cp310
+  - setuptools
+  license: Apache-2.0
+  license_family: APACHE
+  size: 2274977
+  timestamp: 1713480181609
 - conda: https://conda.anaconda.org/conda-forge/noarch/h11-0.16.0-pyhd8ed1ab_0.conda
   sha256: f64b68148c478c3bfc8f8d519541de7d2616bf59d44485a5271041d40c061887
   md5: 4b69232755285701bc86a5afe4d9933a
@@ -2756,6 +2774,19 @@ packages:
   license_family: MIT
   size: 25093
   timestamp: 1732782523102
+- conda: https://conda.anaconda.org/conda-forge/noarch/pymilvus-1.1.0-pyhd8ed1ab_1.tar.bz2
+  sha256: ea2121a1c4ecd40e7159c65a52e7f053d936270a20c396d5025f6288713b418b
+  md5: eabe62ea37cad9c97534992a6b6e3c85
+  depends:
+  - grpcio >=1.22.0
+  - grpcio-tools >=1.22.0
+  - python >=3.6
+  - requests >=2.22.0
+  - ujson >=2.0.0
+  license: Apache-2.0
+  license_family: APACHE
+  size: 48040
+  timestamp: 1620167170414
 - conda: https://conda.anaconda.org/conda-forge/noarch/pyopenssl-25.3.0-pyhd8ed1ab_0.conda
   sha256: e3a1216bbc4622ac4dfd36c3f8fd3a90d800eebc9147fa3af7eab07d863516b3
   md5: ddf01a1d87103a152f725c7aeabffa29
@@ -3508,6 +3539,20 @@ packages:
   license_family: BSD
   size: 7060807
   timestamp: 1715100313101
+- conda: https://conda.anaconda.org/conda-forge/linux-64/ujson-5.11.0-py310h25320af_1.conda
+  sha256: 38a7e66ed6860bf14f27ca4217bcbcd1903116d92c91ca6d95da8a3bc7b006f9
+  md5: 8a5288d0d33fcd77225da56ff0bb58c8
+  depends:
+  - python
+  - __glibc >=2.17,<3.0.a0
+  - libgcc >=14
+  - libstdcxx >=14
+  - libgcc >=14
+  - python_abi 3.10.* *_cp310
+  license: BSD-3-Clause
+  license_family: BSD
+  size: 59529
+  timestamp: 1756674016596
 - conda: https://conda.anaconda.org/conda-forge/noarch/urllib3-2.3.0-pyhd8ed1ab_0.conda
   sha256: 114919ffa80c328127dab9c8e7a38f9d563c617691fb81fccb11c1e86763727e
   md5: 32674f8dbfb7b26410ed580dd3c10a29
