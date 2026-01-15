@@ -23,8 +23,11 @@ torch.set_num_threads(16)
 
 # =============== NEW DEDUPLICATION SEARCH FUNCTION ===============
 # filters out duplicates and aggregates sources (because we still care about the different guides/sections)
-def cleaned_semantic_search(query, df, embeddings, model, top_k=TOP_K):
+def cleaned_semantic_search(base_query, df, embeddings, model, top_k=TOP_K):
     
+    # repeat the query for better results with Qwen (decoder models benefit from more context)
+    query = f"{base_query} {base_query}"
+
     # encode query
     query_emb = model.encode(
         query,
@@ -83,8 +86,8 @@ if __name__ == "__main__":
         print("Usage: python search.py \"your query here\"")
         sys.exit(1)
 
-    query = sys.argv[1]
-    print(f"\n\n\033[1;30mQuery:\033[0m {query}\n")
+    base_query = sys.argv[1]
+    print(f"\n\n\033[1;30mQuery:\033[0m {base_query}\n")
 
     # --- load resources ---
     print("\033[34mLoading dataframe...\033[0m")
@@ -110,7 +113,7 @@ if __name__ == "__main__":
     
 
     # --- perform search ---
-    results = cleaned_semantic_search(query, df, embeddings, model)
+    results = cleaned_semantic_search(base_query, df, embeddings, model)
 
     # ---- new print results with sources ----
     print("\n\033[1;30mTop results:\033[0m\n")
