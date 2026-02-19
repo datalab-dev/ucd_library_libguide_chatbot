@@ -26,7 +26,9 @@ torch.set_num_threads(16)
 def cleaned_semantic_search(base_query, df, embeddings, model, top_k=TOP_K):
     
     # repeat the query for better results with Qwen (decoder models benefit from more context)
-    query = f"{base_query} {base_query}"
+    # query = f"{base_query} {base_query}"
+
+    query = base_query
 
     # encode query
     query_emb = model.encode(
