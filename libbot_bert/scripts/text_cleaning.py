@@ -15,7 +15,7 @@ print(f"Cleaning column: '{TEXT_COL}'")
 # Store original for comparison
 original_sample = df[TEXT_COL].iloc[99]
 
-# Clean the text column
+# Clean the text column; had Claude help me find specific formatting issues/cases
 def clean_text(text):
     
     text = str(text)
@@ -68,7 +68,7 @@ print(f"Rows processed: {len(df)}")
 print(f"\nSaving cleaned CSV to: {CSV_PATH}")
 df.to_csv(CSV_PATH, index=False, encoding='utf-8')
 
-print("✓ Done! CSV has been cleaned and saved.")
+print("CSV has been cleaned and saved.")
 print("\nCleaning operations performed:")
 print("  - Replaced non-breaking spaces (\\xa0) with regular spaces")
 print("  - Normalized smart quotes to regular ASCII quotes")
