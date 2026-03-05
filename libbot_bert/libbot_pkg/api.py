@@ -1,13 +1,16 @@
 import httpx
+import json
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import StreamingResponse
 from pathlib import Path
 
 from .config import settings
-from .models import QueryRequest, QueryResponse, ChatRequest, ChatResponse
+from .models import QueryRequest, QueryResponse, ChatRequest
 from .retriever import Retriever
 
 # --------------------------------------------------------------------------
@@ -47,8 +50,66 @@ STATIC_DIR = Path(__file__).parent / "static"
 
 
 # --------------------------------------------------------------------------
-# API Routes — must be defined BEFORE the static mount below,
-# otherwise StaticFiles will intercept everything first.
+# Helpers
+# --------------------------------------------------------------------------
+
+def build_context_prompt(user_message: str, rag_results: list) -> str:
+    """
+    Builds a context-aware prompt by injecting the retrieved documents
+    into the LLM's system instructions so it can ground its response.
+    """
+    context_blocks = []
+    for i, result in enumerate(rag_results, 1):
+        sources = "; ".join(
+            f"{s.libguide_title} → {s.section_title} ({s.url})"
+            for s in result.sources
+        )
+        context_blocks.append(
+            f"[Document {i}]\n{result.text}\nSources: {sources}"
+        )
+
+    context_str = "\n\n".join(context_blocks)
+
+    return (
+        "You are a knowledgeable librarian at an academic research library. "
+        "Using the library documents provided below, write one concise and informative paragraph "
+        "that directly addresses the user's query. Suggest reliable strategies or places to find "
+        "more information, such as library databases, archives, or catalogs. "
+        "Focus on peer-reviewed and library materials. Do not make up specific book titles or "
+        "sources — only refer to general or commonly known resources, or give search strategies. "
+        "Keep everything in brief paragraph style.\n\n"
+        f"=== Library Documents ===\n{context_str}\n\n"
+        f"=== User Query ===\n{user_message}"
+    )
+
+
+async def stream_ollama(prompt: str) -> AsyncGenerator[str, None]:
+    """
+    Streams the Ollama response token by token back to the browser.
+    Each chunk is a plain text string as it arrives from the LLM.
+    """
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        async with client.stream(
+            "POST",
+            settings.ollama_url,
+            json={"model": settings.ollama_model, "prompt": prompt, "stream": True},
+        ) as response:
+            response.raise_for_status()
+            async for line in response.aiter_lines():
+                if line:
+                    try:
+                        chunk = json.loads(line)
+                        token = chunk.get("response", "")
+                        if token:
+                            yield token
+                        if chunk.get("done", False):
+                            break
+                    except json.JSONDecodeError:
+                        continue
+
+
+# --------------------------------------------------------------------------
+# API Routes — defined BEFORE static mount so they aren't swallowed.
 # --------------------------------------------------------------------------
 
 @app.get("/health", tags=["Meta"])
@@ -77,50 +138,49 @@ def search(request: QueryRequest):
     )
 
 
-@app.post("/chat", response_model=ChatResponse, tags=["Chat"])
-def chat(request: ChatRequest):
+@app.post("/chat", tags=["Chat"])
+async def chat(request: ChatRequest):
     """
-    Full chat endpoint — calls the LLM for a summary and the retriever for
-    library resources, then returns both as structured JSON.
+    Full chat endpoint — retrieves relevant library documents, builds a
+    context-aware prompt, and streams the LLM response back token by token.
 
     - **message**: the user's chat message
     - **top_k**: how many RAG results to retrieve (1–20, default 3)
+
+    Returns a plain text stream. The browser receives tokens as they are
+    generated rather than waiting for the full response.
     """
     if retriever is None:
         raise HTTPException(status_code=503, detail="Retriever not initialized.")
 
-    # --- 1. Call Ollama for LLM summary ---
-    summary_prompt = (
-        "Act as the user's librarian at an academic research library. "
-        "Please summarize the user's query in one concise and informative paragraph. "
-        "Briefly explain the topic the user is asking about, and then suggest reliable "
-        "strategies or places to find more information, such as library databases, archives, "
-        "or catalogs. Focus your answer on peer-reviewed and library materials; do not make up "
-        "specific book titles or sources — only refer to general or commonly known resources, "
-        "or give search strategies. If you cannot find resources/information for a specific "
-        "prompt, it is okay to mention that. Keep everything in brief paragraph style.\n\n"
-        f"{request.message}"
-    )
-
-    try:
-        ollama_response = httpx.post(
-            settings.ollama_url,
-            json={"model": settings.ollama_model, "prompt": summary_prompt, "stream": False},
-            timeout=120.0,
-        )
-        ollama_response.raise_for_status()
-        llm_reply = ollama_response.json().get("response", "").strip()
-    except httpx.HTTPError as e:
-        raise HTTPException(status_code=502, detail=f"Ollama error: {e}")
-
-    # --- 2. Run RAG retrieval ---
+    # --- 1. Retrieve relevant documents ---
     rag_results = retriever.search(query=request.message, top_k=request.top_k)
 
-    return ChatResponse(
-        message=request.message,
-        llm_reply=llm_reply,
-        rag_results=rag_results,
-    )
+    # --- 2. Build context-aware prompt ---
+    prompt = build_context_prompt(request.message, rag_results)
+
+    # --- 3. Build the RAG sources block to send before the LLM stream ---
+    # We send sources as a special JSON line first, then stream LLM tokens.
+    # The browser uses a simple prefix convention to tell them apart:
+    #   Lines starting with "SOURCES:" carry the JSON sources payload.
+    #   All other lines are plain LLM text tokens.
+    sources_payload = [
+        {
+            "score": r.score,
+            "text": r.text,
+            "sources": [s.model_dump() for s in r.sources],
+        }
+        for r in rag_results
+    ]
+
+    async def response_stream() -> AsyncGenerator[str, None]:
+        # First yield the sources block so the frontend can render it immediately
+        yield f"SOURCES:{json.dumps(sources_payload)}\n"
+        # Then stream LLM tokens
+        async for token in stream_ollama(prompt):
+            yield token
+
+    return StreamingResponse(response_stream(), media_type="text/plain")
 
 
 # --------------------------------------------------------------------------
