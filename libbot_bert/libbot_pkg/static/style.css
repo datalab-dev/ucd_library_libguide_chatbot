@@ -1,0 +1,135 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #C5D7E4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  
+  
+  .header {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    gap: 15px;
+    padding: 15px 25px;
+    background-color: #fbf7f0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .logo {
+    height: 60px;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  .chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  
+  .chat-box {
+    flex: 1;
+    overflow-y: auto;
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .message {
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+  
+  .user {
+    text-align: right;
+    color: #5c6a77;
+    font-weight: 600;
+  }
+  
+  .bot {
+    text-align: left;
+    color: #000;
+  }
+  
+  .input-area {
+    display: flex;
+    gap: 10px;
+  }
+  
+  input[type="text"] {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  button {
+    background-color: #5c6a77;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #031C34;
+  }
+  
+  body.dark {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+  }
+  
+  body.dark .header {
+    background-color: #171110;
+    border-bottom: 1px solid #444;
+  }
+  
+  body.dark .chat-box {
+    background-color: #2b2b2b;
+    border-color: #444;
+    color: #f0f0f0;
+  }
+  
+  body.dark .user {
+    color: #80cbc4;
+  }
+  
+  body.dark .bot {
+    color: #e0e0e0;
+  }
+  
+  body.dark input[type="text"] {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+  }
+  
+  body.dark button {
+    background-color: #E87A1B;
+  }
+  
+  body.dark button:hover {
+    background-color: #81180D;
+  }
+  
