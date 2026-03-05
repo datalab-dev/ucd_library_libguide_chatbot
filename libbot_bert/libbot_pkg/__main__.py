@@ -1,6 +1,8 @@
 import uvicorn
 from .config import settings
 
+# Unvicorn is an ASGI server that can run FastAPI applications.
+# Here we specify the app location and server settings.
 uvicorn.run(
     "libbot_pkg.api:app",
     host=settings.host,
