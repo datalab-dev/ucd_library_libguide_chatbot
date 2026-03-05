@@ -7,6 +7,11 @@ class QueryRequest(BaseModel):
     query: str = Field(..., description="The user's search query.")
     top_k: int = Field(default=3, ge=1, le=20, description="Number of unique results to return.")
 
+class ChatRequest(BaseModel):
+    message: str = Field(..., description="The user's chat message.")
+    top_k: int = Field(default=3, ge=1, le=20, description="Number of RAG results to retrieve.")
+
+
 
 # ---- Response ----
 
@@ -28,3 +33,11 @@ class QueryResponse(BaseModel):
     query: str
     top_k: int
     results: list[SearchResult]
+
+    
+class ChatResponse(BaseModel):
+    """Combined LLM summary + RAG results returned to the browser."""
+    message: str = Field(..., description="The original user message.")
+    llm_reply: str = Field(..., description="The LLM-generated summary paragraph.")
+    rag_results: list[SearchResult] = Field(..., description="Top matching library resources.")
+
