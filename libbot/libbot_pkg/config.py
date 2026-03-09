@@ -3,23 +3,23 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # --- ChromaDB ---
-    chroma_db_path: str = "/dsl/libbot/data/chroma_db"
-    collection_name: str = "libguides"
+    chroma_db_path: str = CHROMA_DB_PATH
+    collection_name: str = COLLECTION_NAME
 
     # --- Embedding Model ---
-    model_name: str = "Qwen/Qwen3-Embedding-0.6B"
+    model_name: str = MODEL_NAME
     torch_num_threads: int = 16
 
     # --- Search ---
     top_k: int = 3
 
     # --- Ollama LLM --- (TEMPORARY)
-    ollama_url: str = "http://127.0.0.1:11434/api/generate"
-    ollama_model: str = "llama3:8b"
+    ollama_url: str = OLLAMA_URL
+    ollama_model: str = OLLAMA_MODEL
 
     # --- API Server ---
-    host: str = "0.0.0.0"
-    port: int = 8075
+    host: str = HOST
+    port: int = PORT
 
     # Allows overriding any setting via a .env file or environment variables.
     # e.g. export CHROMA_DB_PATH=/new/path  or  echo "TOP_K=5" >> .env
