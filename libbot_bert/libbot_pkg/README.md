@@ -86,7 +86,7 @@ pixi run python -m libbot_pkg
 
 ## Accessing LibBot
 
-Anyone on the **UC Davis Library VPN** can visit:
+Anyone on the **UC Davis Library VPN** can visit (replace temporary name with actual server name):
 ```
 http://server-hostname:8075
 ```
@@ -95,7 +95,7 @@ http://server-hostname:8075
 
 ## Testing Retrieval
 
-A standalone test script is included to verify the package works independently of the web server:
+A standalone test script is included to verify the package works independently of the web server (can replace the example query with any query):
 
 ```bash
 pixi run python test_retriever.py "how do I cite a journal article?"
@@ -107,3 +107,4 @@ This checks the config, loads the retriever, runs a real query against ChromaDB,
 
 ## Notes
 - To swap Ollama for `llama.cpp` in the future, update `ollama_url` and `ollama_model` in `config.py` and adjust the request format in `stream_ollama()` in `api.py`.
+
