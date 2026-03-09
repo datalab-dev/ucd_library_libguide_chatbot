@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     top_k: int = 3
 
     # --- Ollama LLM --- (TEMPORARY)
-    ollama_url: str = "http://127.0.0.1:8000/api/generate"
+    ollama_url: str = "http://127.0.0.1:11434/api/generate"
     ollama_model: str = "llama3:8b"
 
     # --- API Server ---
