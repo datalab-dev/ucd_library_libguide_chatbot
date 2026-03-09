@@ -1,6 +1,6 @@
-# Libbot
+# LibBot
 
-A semantic search chatbot for the UC Davis Library. LibBot lets users ask natural language questions and get back relevant resources from the library's LibGuides corpus, grounded by an LLM-generated summary. Built with FastAPI, ChromaDB, Qwen3-Embedding, and Ollama. Accessible to anyone on the UC Davis Library VPN. Newest iteration of Libbot, transitioned from the R-based prototype and Ollama structure, to Python and its transformers and transformer-adjacent libraries. 
+A semantic search chatbot for the UC Davis Library. LibBot lets users ask natural language questions and get back relevant resources from the library's LibGuides corpus, grounded by an LLM-generated summary. Built with FastAPI, ChromaDB, Qwen3-Embedding, and Ollama. Accessible to anyone on the UC Davis Library VPN. Newest iteration of LibBot, transitioned from the R-based prototype and Ollama structure, to Python and its transformers and transformer-adjacent libraries. 
 
 ---
 
