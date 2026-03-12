@@ -3,6 +3,8 @@ import json
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+import time
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -150,14 +152,22 @@ async def chat(request: ChatRequest):
     Returns a plain text stream. The browser receives tokens as they are
     generated rather than waiting for the full response.
     """
+
+    t0 = time.perf_counter()
+
     if retriever is None:
         raise HTTPException(status_code=503, detail="Retriever not initialized.")
 
     # --- 1. Retrieve relevant documents ---
     rag_results = retriever.search(query=request.message, top_k=request.top_k)
 
+    t1 = time.perf_counter()
+    print(f"[TIMING] Retrieval done: {t1 - t0:.3f}s")
+
     # --- 2. Build context-aware prompt ---
     prompt = build_context_prompt(request.message, rag_results)
+    
+    print(f"[TIMING] Prompt length (chars): {len(prompt)}, approx tokens: {len(prompt)//4}")
 
     # --- 3. Build the RAG sources block to send before the LLM stream ---
     # We send sources as a special JSON line first, then stream LLM tokens.
@@ -176,8 +186,13 @@ async def chat(request: ChatRequest):
     async def response_stream() -> AsyncGenerator[str, None]:
         # First yield the sources block so the frontend can render it immediately
         yield f"SOURCES:{json.dumps(sources_payload)}\n"
+        first_token = True
+        t_stream_start = time.perf_counter()
         # Then stream LLM tokens
         async for token in stream_ollama(prompt):
+            if first_token:
+                print(f"[TIMING] First token from LLM: {time.perf_counter() - t_stream_start:.3f}s")
+                first_token = False
             yield token
 
     return StreamingResponse(response_stream(), media_type="text/plain")

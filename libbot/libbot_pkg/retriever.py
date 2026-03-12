@@ -1,7 +1,7 @@
 import chromadb
 import torch
 from sentence_transformers import SentenceTransformer
-
+import time
 from .config import settings
 from .models import SearchResult, Source
 
@@ -37,6 +37,8 @@ class Retriever:
         Embed the query, search ChromaDB, deduplicate results, and
         aggregate sources for texts that appear across multiple guides.
         """
+
+        t0 = time.perf_counter()
         # Encode the query using the Qwen query prompt
         query_emb = self.model.encode(
             query,
@@ -44,6 +46,10 @@ class Retriever:
             normalize_embeddings=True,
             convert_to_numpy=True,
         )
+
+        t1 = time.perf_counter()
+        print(f"[TIMING] Embedding: {t1 - t0:.3f}s")
+
 
         # Fetch more candidates than needed — corpus has ~70% duplicates
         candidate_count = top_k * 5
@@ -53,6 +59,11 @@ class Retriever:
             n_results=candidate_count,
             include=["metadatas", "distances"],
         )
+
+        t2 = time.perf_counter()
+        print(f"[TIMING] ChromaDB query: {t2 - t1:.3f}s")
+
+
 
         metadatas = raw["metadatas"][0]
         distances = raw["distances"][0]
@@ -92,6 +103,8 @@ class Retriever:
             reverse=True,
         )
 
+        
+        print(f"[TIMING] search() total: {t2 - t0:.3f}s")
         # Convert to SearchResult Pydantic models for API response
         return [
             SearchResult(
