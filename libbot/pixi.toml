@@ -37,7 +37,6 @@ sentence-transformers = "*"
 pyarrow = "<14"
 einops = ">=0.8.1,<0.9"
 ollama-python = "*"
-ollama = ">=0.13.5,<0.14"
 chromadb = ">=1.2.1,<2"
 psutil = ">=7.2.1,<8"
 scikit-learn = ">=1.7.2,<2"
@@ -48,6 +47,7 @@ fastapi = ">=0.115.9,<0.116"
 pydantic-settings = ">=2.13.0,<3"
 uvicorn = ">=0.41.0,<0.42"
 httpx = ">=0.28.1,<0.29"
+ollama = ">=0.17.7,<0.18"
 
 
 
