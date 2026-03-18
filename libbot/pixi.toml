@@ -48,6 +48,10 @@ pydantic-settings = ">=2.13.0,<3"
 uvicorn = ">=0.41.0,<0.42"
 httpx = ">=0.28.1,<0.29"
 ollama = ">=0.17.7,<0.18"
+jupyter = ">=1.1.1,<2"
+ipykernel = ">=7.2.0,<8"
+
+
 
 
 
