@@ -4,35 +4,35 @@
 > - This project originated as a group collaboration back during 2025 Spring Quarter. The original team version, team member agknowledgements, resources and data store, and documentation can be found in the $\color{Purple}\large{\textsf{STS195-legacy-group-original}}$ branch.
 > - LibBot currently works with libguides based on a final scrape conducted on February 20th, 2025. The additional library data that has been updated since then will be incorporated in the next iterations of LibBot.
 
+## Current Contributors
+
+-   **Project Lead**: DataLab Director Dr. Carl Stahmer
+-   **Lead Developer & Mantainer**: Federico Aprile
+
+---
+
 ## Project Overview:
 
-This repository contains code for LibBot, a virtual librarian chatbot, that was developed to retrieve and synthesize UC Davis Library resources to connect researchers with relevant materials and librarians.
+**LibBot** is a virtual librarian chatbot designed to unify scattered academic resources into a singular research ecosystem. Developed to support the UC Davis Library, it connects researchers with relevant materials and expertise, maintaining high-quality research support even amidst institutional constraints like reduced librarian availability.
 
-The project involved systematized data scraping, preprocessing, cleaning, and organization to feed into embedding and retrieval systems using Retrieval-Augmented Generation (RAG) paired with large language model responses.
+### Technical Implementation
 
-Various Sentence-Transformer embedding models were researched and analyzed through documentation to balance efficiency, speed, and quality. A Python/PyTorch pipeline was built with optimized pooling strategies and prompt engineering.
+The system transforms the UC Davis library’s corpus of guides and resources into a conversational experience through a structured RAG (Retrieval-Augmented Generation) pipeline:
 
-LibBot currently retrieves resources based on queries and provides citations linking to library materials. Synthesis capabilities for user accessibility are being implemented alongside a transition to server-based architecture for the deployable prototype. 
+- **Data Ingestion & Cleaning**: Systematized scraping and preprocessing of heterogeneous library data to ensure a clean, searchable corpus.
+- **Semantic Representation**: Utilization of Sentence-Transformer models to generate high-quality vector embeddings for documents and queries. These models were benchmarked to balance computational efficiency on CPU-only environments with retrieval accuracy.
+- **Retrieval & Context Selection**: A Python/PyTorch-based retrieval engine that uses optimized pooling strategies to identify and rank the most relevant document chunks based on user queries, using cosine similarity.
+- **Retrieval-Augmented Generation (RAG)**: A prompt engineering layer that synthesizes the retrieved context and passes it to a Large Language Model (LLM) to generate natural, cited responses and links.
 
+### Current Capabilities & Roadmap
 
-## Why:
+LibBot currently retrieves resources based on natural language queries and provides direct citations to library materials. Development is currently focused on:
+- **Synthesis & Accessibility**: Enhancing the model's ability to summarize complex information for better user experience.
+- **Deployment**: Transitioning to a server-based architecture for a fully deployable prototype.
 
-Acknowledging the presence of artificial intelligence in research and academia, LibBot aims to provide consistent access to library expertise while unifying scattered resources into a singular academic research ecosystem, maintaining quality research support despite institutional constraints (reduced librarian availability and funding). Transforming the pre-existing corpus of UC Davis library guides and resources into a virtual librarian chatbot experience, this system will assist researchers by routing them to the most relevant library resources.
+---
 
-## Current Project Version Team Members
-
--   Lead: Carl Stahmer
--   Federico Aprile
-
-## Methodologies
-
-1.  Scrape Libguides to generate Corpus
-2.  Compute vector embeddings for each document
-3.  Compute the embedding of the user prompt, rank guides by cosine similarity, and select the top few relevant guides
-4.  Construct a combined prompt of the query and LibGuide text and call LLM
-5.  Return generated answer and links for the top LibGuides
-
-## Getting Started
+# Getting Started
 
 ### If you wish to use the LibBot** tool, you can get started with this user guide: [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
 
