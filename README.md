@@ -1,32 +1,28 @@
-# Library Lib Guide RAG Project
+# Expansion of LibBot: Library Guide RAG Project
 
-This project originated as a group collaboration. The original team version can be found in the legacy-group-project branch.
+> [!IMPORTANT]  
+> - This project originated as a group collaboration back during 2025 Spring Quarter. The original team version, team member agknowledgements, resources and data store, and documentation can be found in the $\color{Purple}\large{\textsf{STS195-legacy-group-original}}$ branch.
+> - LibBot currently works with libguides based on a final scrape conducted on February 20th, 2025. The additional library data that has been updated since then will be incorporated in the next iterations of LibBot.
 
 ## Project Overview:
 
-This repository contains code for a project to develop a RAG/LLM system using UC Davis Library Lib Guides as the retrieval set for queries based on Ollama. The goal of the project is to create an "Ask a Librarian" chatbot that receives queries (prompts) from users and returns a text response based on a model fine-tuned with the UC Davis Library LibGuides and then, after the text response, includes a links to the most relevant LibGuide webpages based on a RAG system based on cosign similarity of the vector space of the prompt with the vector space of all of the LibGuides*.
+This repository contains code for LibBot, a virtual librarian chatbot, that was developed to retrieve and synthesize UC Davis Library resources to connect researchers with relevant materials and librarians.
 
-> NOTE: Our LibBot currently works with libguides based on a final scrape conducted on February 20th, 2025; we acknowledge that the libguide data has been updated since then. The additional guides will be incorporated in the next iteration of LibBot.
+The project involved systematized data scraping, preprocessing, cleaning, and organization to feed into embedding and retrieval systems using Retrieval-Augmented Generation (RAG) paired with large language model responses.
+
+Various Sentence-Transformer embedding models were researched and analyzed through documentation to balance efficiency, speed, and quality. A Python/PyTorch pipeline was built with optimized pooling strategies and prompt engineering.
+
+LibBot currently retrieves resources based on queries and provides citations linking to library materials. Synthesis capabilities for user accessibility are being implemented alongside a transition to server-based architecture for the deployable prototype. 
+
 
 ## Why:
 
-Acknowledging the presence of artificial intelligence in research and academia, our LibBot project aims to transform the pre-existing corpus of UC Davis library guides into a virtual librarian chatbot experience. The LibBot will assist students in research by routing users to the most relevant guides from the library’s vast array of resources. 
+Acknowledging the presence of artificial intelligence in research and academia, LibBot aims to provide consistent access to library expertise while unifying scattered resources into a singular academic research ecosystem, maintaining quality research support despite institutional constraints (reduced librarian availability and funding). Transforming the pre-existing corpus of UC Davis library guides and resources into a virtual librarian chatbot experience, this system will assist researchers by routing them to the most relevant library resources.
 
-## Links:
-
-#### [[Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)]: Data Store (datasets, outputs, notes, 
-
-#### [[Lucid Chart](https://lucid.app/lucidchart/f6e956d2-5e6b-49f7-a731-82b50d297874/edit?invitationId=inv_9a6fe0aa-a178-4e50-b6e3-1171f8a51155&page=0_0#)]: Flow Organization
-
-## Project Team Members
+## Current Project Version Team Members
 
 -   Lead: Carl Stahmer
--   Lead: Pamela Reynolds
 -   Federico Aprile
--   Ayana Carpenter
--   Duong Khuu
--   Yenyun Huang (Sebrina)
--   Phuong Quynh Tran
 
 ## Methodologies
 
