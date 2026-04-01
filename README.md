@@ -1,7 +1,7 @@
 # Expansion of LibBot: Library Guide RAG Project
 
 > [!IMPORTANT]  
-> - This project originated as a group collaboration back during 2025 Spring Quarter. The original team version, team member agknowledgements, resources and data store, and documentation can be found in the $\color{Purple}\large{\textsf{STS195-legacy-group-original}}$ branch.
+> - This project originated as a group collaboration back during 2025 Spring Quarter. The original team version (mainly built in R), team member agknowledgements, resources and data store, and documentation can be found in the $\color{Purple}\large{\textsf{STS195-legacy-group-original}}$ branch.
 > - LibBot currently works with libguides based on a final scrape conducted on February 20th, 2025. The additional library data that has been updated since then will be incorporated in the next iterations of LibBot.
 
 ## Current Contributors
@@ -34,9 +34,13 @@ LibBot currently retrieves resources based on natural language queries and provi
 
 # Getting Started
 
-### If you wish to use the LibBot** tool, you can get started with this user guide: [Getting Started with LibBot](https://docs.google.com/document/d/1qWY1o00bZpfU8P-8ocLhzuiji5SjMJv3CaeOmHbE59M/edit?usp=sharing)
+### If you wish to use the LibBot tool:
+> [!NOTE]  
+> - Connect to the UC Davis Library VPN
+> - Go to http://datasci.library.ucdavis.edu:8075
 
-> Note: The LibBot is trained on UC Davis Library Guides and works with Ollama to produce an AI-Generated summary. As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
+> [!CAUTION]
+> The LibBot is trained on UC Davis Library Guides and works with Ollama to produce an AI-Generated summary. As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
 
 <br>
 
