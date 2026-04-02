@@ -34,119 +34,22 @@ LibBot currently retrieves resources based on natural language queries and provi
 
 # Getting Started
 
-### If you wish to use the LibBot tool:
-> [!NOTE]  
-> - Connect to the UC Davis Library VPN
-> - Go to http://datasci.library.ucdavis.edu:8075
 
-> [!CAUTION]
-> The LibBot is trained on UC Davis Library Guides and works with Ollama to produce an AI-Generated summary. As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
+> [!TIP]  
+> ### If you wish to use and interact with LibBot:
+> 1. Connect to the UC Davis Library VPN
+> 2. Go to http://server-hostname:8075 (replace temporary name with actual server name)
 
-<br>
-
-------------------------------------------------------------------------
-
-<br>
-
-## Necessary R Packages
-
-Finalized custom LibBot package:
-
-#### [[INSTALLATION](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/main/libbot_demo/libbotR#readme)]
-
-``` r
-library(libbotR)
-```
-
-Web scraping:
-
-``` r
-library(xml2)
-library(rvest)
-library(httr)
-```
-
-Data structure and text cleaning:
-
-``` r
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(NLP)
-library(openNLP)
-library(openNLPmodels.en)
-library(rJava)
-library(jsonlite)
-```
-
-Data visualization:
-
-``` r
-library(ggplot2)
-library(gridExtra)
-library(grid)
-```
-
-Working with Ollamar:
-
-``` r
-library(ollamar)
-```
-
-Setting up web interface:
-
-``` r
-library(servr)
-library(httpuv)
-```
+> [!NOTE]
+> As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
 
 <br>
 
 ------------------------------------------------------------------------
 
-<br>
-
-## Working with Ollama LLM:
-
-**Ollama App**
-* Download [Ollama](https://ollama.com/) and run it.
-
-**Ollama in R**
-* _ollamar_ is automatically installed when the _libbotR_ package is installed.
-  - If you wish to install the _ollamar_ package on its own run the following in RStudio:
-     ``` r
-     install.packages("ollamar")
-     ```
-
-
-Example of Ollama Usage in R:
-
-```         
-library(ollamar)
-
-test_connection()  # test connection to Ollama server
-# if you see "Ollama local server not running or wrong server," Ollama app/server isn't running
-
-# download a model
-pull("llama3:8b")  # download a model (equivalent bash code: ollama run llama3:8b)
-
-# generate a response/text based on a prompt; returns an httr2 response by default
-resp <- generate("llama3:8b", "tell me a 5-word story")
-resp
-
-# list available models (models you've pulled/downloaded)
-list_models()
-
-   NAME                        ID              SIZE      MODIFIED    
-1. llama3:8b         365c1bd3c000            4.7 GB   2 weeks ago
-...
-```
-
-<br>
+## Project Dependencies:
 
 ------------------------------------------------------------------------
-
-<br>
 
 ## GitHub File and Directory Structure
 
@@ -223,26 +126,3 @@ The basic directory structure for the project is:
                                           LibBot R package
 ```
 
-<br>
-
----
-
-<br>
-
-## Google Drive Data Output Structure:
-
->All of the datasets and outputs from this project, and their corresponding metadata, have been recorded in this Data Dictionary:
-#### [[Data Dictionary](https://docs.google.com/spreadsheets/d/1exjwKkVhQZlc18X9N3xGJDGEbcCvTbJCSRaJqXYWKn0/edit?usp=sharing)] 
-#### [[Google Drive](https://drive.google.com/drive/folders/1-L87Z91PGjJwp5ZJ2cSX8toZeqUGCiiQ)]
-
-<br>
-
----
-
-<br>
-
-## STS 195: Research in Data Studies, Spring 2025 Outputs and Workflow by Week
-
-![LibBot (2)](https://github.com/user-attachments/assets/17a63997-5e89-43f8-91d6-3f11add5983e)
-
-~*A Quarter For Data Science*~
