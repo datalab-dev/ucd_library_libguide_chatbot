@@ -103,9 +103,4 @@ pixi run python test_retriever.py "how do I cite a journal article?"
 
 This checks the config, loads the retriever, runs a real query against ChromaDB, and prints the full structured response.
 
----
-
-## Notes
-- To swap Ollama for `llama.cpp` in the future, update `ollama_url` and `ollama_model` in `config.py` and adjust the request format in `stream_ollama()` in `api.py`.
-
 
