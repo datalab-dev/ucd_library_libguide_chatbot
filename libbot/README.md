@@ -8,7 +8,7 @@ A semantic search chatbot for the UC Davis Library. LibBot lets users ask natura
 ```
 libbot_bert/
 ├── libbot_pkg/        # Libbot package, with search/retrieval functionality, connection to vector database, and FastAPI for web server and interface
-├── scripts/           # Testing out different embedding models, search scripts, visualizations, and database structures.
+├── research/           # Benchmarking various embedding models, retrieval methods, visualizations, and database structures.
 ├── pixi.toml          # Environment and dependency definitions
 ├── pixi.lock          # Freezes exact versions of all project dependencies—including transitive ones—that are installed (for reproducibility/safety)
 ├── .gitignore/.gitattributes          # What files Git should not track, and how Git should handle the files it does track
