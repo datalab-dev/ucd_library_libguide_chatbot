@@ -1,8 +1,7 @@
 # Expansion of LibBot: Library Guide RAG Project
 
 > [!IMPORTANT]  
-> - This project originated as a group collaboration back during 2025 Spring Quarter. The original team version (mainly built in R), team member agknowledgements, resources and data store, and documentation can be found in the [[**STS195-legacy-group-original**]](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/STS195-legacy-group-original) branch.
-> - LibBot currently works with libguides based on a final scrape conducted on February 20th, 2025. The additional library data that has been updated since then will be incorporated in the next iterations of LibBot.
+> This project originated as a group collaboration back during 2025 Spring Quarter. The original team prototype was primarly built in R, along with Ollama; the legagy implementation, team member agknowledgements, resources and data store, and documentation can be found in the [[**STS195-legacy-group-original**]](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/STS195-legacy-group-original) branch of the LibBot repo.
 
 ## Current Contributors
 
@@ -37,8 +36,8 @@ LibBot currently retrieves resources based on natural language queries and provi
 
 > [!TIP]
 > **Accessing and Interacting with LibBot:**
-> 1. Connect to the UC Davis Library VPN
-> 2. Go to http://server-hostname:8075 (replace temporary name with actual server name)
+> 1. Connect to the **UC Davis Library VPN**
+> 2. Go to http://datasci.library.ucdavis.edu:8075
 
 
 > [!NOTE]
@@ -132,6 +131,7 @@ libbot Branch in 2025_startup_libguide_chatbot/
 > UNDER CONSTRUCTION
 ### Methodology:
 - how the corpus was built, how embeddings were generated, why you chose cosine similarity + deduplication.
+- LibBot currently works with libguides based on a final scrape conducted on February 20th, 2025. The additional library data that has been updated since then will be incorporated in the next iterations of LibBot.
 ---
 > [!WARNING]
 > UNDER CONSTRUCTION
@@ -142,5 +142,3 @@ libbot Branch in 2025_startup_libguide_chatbot/
 ### LibBot
 
 A semantic search chatbot for the UC Davis Library. LibBot lets users ask natural language questions and get back relevant resources from the library's LibGuides corpus, grounded by an LLM-generated summary. Built with FastAPI, ChromaDB, Qwen3-Embedding, and Ollama. Accessible to anyone on the UC Davis Library VPN. Newest iteration of LibBot, transitioned from the R-based prototype and Ollama structure, to Python and its transformers and transformer-adjacent libraries. 
-
-
