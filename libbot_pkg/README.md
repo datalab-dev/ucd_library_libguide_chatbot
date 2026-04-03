@@ -1,22 +1,13 @@
 # LibBot Package
 
-A package for the semantic search chatbot for the UC Davis Library. LibBot lets users ask natural language questions and get back relevant resources from the library's LibGuides corpus, grounded by an LLM-generated summary.
-Built with FastAPI, ChromaDB, Qwen3-Embedding, and Ollama. Accessible to anyone on the UC Davis Library VPN.
+A package for the semantic search chatbot for the UC Davis Library. LibBot lets users ask natural language questions and get back relevant resources from the library's LibGuides corpus, grounded by an LLM-generated summary. Built with FastAPI, ChromaDB, Qwen3-Embedding, and Ollama.
 
 ---
 
-## Architecture
-
-```
-Browser (VPN required)
-   ↕ 
-FastAPI (libbot_pkg)           
-   ├── serves frontend          (static/index.html)
-   ├── POST /chat               → ChromaDB + Qwen embedding → retrieved docs
-   │                            → Ollama LLM
-   │                            → streamed response back to browser
-   └── POST /search             → ChromaDB + Qwen embedding only (no LLM)
-```
+> [!TIP]
+> **Accessing and Interacting with LibBot:**
+> 1. Connect to the **UC Davis Library VPN**
+> 2. Go to http://datasci.library.ucdavis.edu:8075
 
 ---
 
@@ -41,55 +32,30 @@ libbot_pkg/
 
 ---
 
-## How It Works
+## Architecture
 
-1. User types a query in the browser and hits Send
-2. `script.js` POSTs `{ message, top_k }` to `/chat`
-3. FastAPI embeds the query using Qwen3-Embedding and searches ChromaDB
-4. The top matching LibGuide documents are retrieved and deduplicated
-5. A context-aware prompt (query + retrieved docs) is sent to Ollama
-6. Ollama streams its response back through FastAPI to the browser
-7. The browser renders the LLM summary, then displays the library sources below it
-
-
----
-
-## Running the Server
-
-### Prerequisites
-
-Install pixi environment:
-```bash
-pixi install
 ```
-
-Make sure Ollama is installed and the right model is pulled:
-```bash
-ollama pull <model>
-```
-
-### Start
-
-Open two terminals on the server:
-
-**Terminal 1 — start Ollama:**
-```bash
-pixi run ollama serve
-```
-
-**Terminal 2 — start LibBot:**
-```bash
-pixi run python -m libbot_pkg
+Browser (VPN required)
+   ↕ 
+FastAPI (libbot_pkg)           
+   ├── serves frontend          (static/index.html)
+   ├── POST /chat               → ChromaDB + Qwen embedding → retrieved docs
+   │                            → Ollama LLM
+   │                            → streamed response back to browser
+   └── POST /search             → ChromaDB + Qwen embedding only (no LLM)
 ```
 
 ---
 
-## Accessing LibBot
-
-Anyone on the **UC Davis Library VPN** can visit (replace temporary name with actual server name):
-```
-http://server-hostname:8075
-```
+> [!NOTE]
+> ## How It Works
+> 1. User types a query in the browser and hits Send
+> 2. `script.js` POSTs `{ message, top_k }` to `/chat`
+> 3. FastAPI embeds the query using Qwen3-Embedding and searches ChromaDB
+> 4. The top matching LibGuide documents are retrieved and deduplicated
+> 5. A context-aware prompt (query + retrieved docs) is sent to Ollama
+> 6. Ollama streams its response back through FastAPI to the browser
+> 7. The browser renders the LLM summary, then displays the library sources below it
 
 ---
 
