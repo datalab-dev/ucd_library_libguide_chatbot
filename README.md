@@ -45,35 +45,17 @@ LibBot currently retrieves resources based on natural language queries and provi
 
 <br>
 
-------------------------------------------------------------------------
-
+---
 ## Project Dependencies:
-
-------------------------------------------------------------------------
+---
 
 ## GitHub File and Directory Structure
 
-The basic directory structure for the project is:
-
-``` zsh
+``` bash
 libbot Branch in 2025_startup_libguide_chatbot/
   ├── README.md                          # This README
   ├── libbot_pkg                         # Libbot package, with search/retrieval functionality, connection to vector database, and FastAPI for web server and interface
-  │   ├── api.py
-  │   ├── config.py
-  │   ├── __init__.py
-  │   ├── __main__.py
-  │   ├── models.py
-  │   ├── README.md
-  │   ├── retriever.py
-  │   └── static
-  │       ├── assets
-  │       │   ├── logo-dark.png
-  │       │   └── logo-light.png
-  │       ├── favicon.io
-  │       ├── index.html
-  │       ├── script.js
-  │       └── style.css
+  │   ├── ...
   ├── test_retriever.py                  # Testing whether libbot_pkg module imports work on a simple script
   ├── .gitignore/.gitattributes          # What files Git should not track, and how Git should handle the files it does track
   ├── pixi.toml                          # Environment and dependency definitions
@@ -81,11 +63,31 @@ libbot Branch in 2025_startup_libguide_chatbot/
       ├── ...
 ```
 
-### research/ Contents
+### libbot_pkg/ Contents and [[Dedicated README](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/libbot_pkg)]
 
-```         
+``` bash
+└── libbot_pkg/
+    ├── __init__.py          # public package API
+    ├── __main__.py          # entry point: python -m libbot_pkg
+    ├── config.py            # all settings, overridable via .env or env vars
+    ├── models.py            # Pydantic request/response schemas
+    ├── retriever.py         # ChromaDB connection + Qwen embedding + search logic
+    ├── api.py               # FastAPI app: routes, Ollama streaming, static serving
+    └── static/
+        ├── index.html       # chat UI
+        ├── script.js        # handles streaming response, renders results
+        ├── style.css        # light/dark mode styles
+        └── assets/
+            ├── logo-light.png
+            └── logo-dark.png
+```
 
-└── research/           
+
+### research/ Contents and [[Dedicated README](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/research)]
+
+``` bash         
+
+└── research/                            # Experimental workspace for NLP model comparisons, vector space analysis, and RAG pipeline prototyping.
     ├── bert_4layer_embedding_space.py
     ├── bert_4layer_search.py
     ├── bert_compared_search.py
@@ -124,6 +126,16 @@ libbot Branch in 2025_startup_libguide_chatbot/
     └── threshold_vis.py
 
 ```
+---
+> [!WARNING]
+> UNDER CONSTRUCTION
+### Methodology:
+- how the corpus was built, how embeddings were generated, why you chose cosine similarity + deduplication.
+---
+> [!WARNING]
+> UNDER CONSTRUCTION
+### Examples of Work:
+- example queries/responses with images
 ---
 
 ### LibBot
