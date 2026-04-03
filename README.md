@@ -63,7 +63,7 @@ libbot Branch in 2025_startup_libguide_chatbot/
       ├── ...
 ```
 
-### libbot_pkg/ Contents and [[Dedicated README](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/libbot_pkg)]
+### _libbot_pkg_/ Contents and [[Dedicated README](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/libbot_pkg)]
 
 ``` bash
 └── libbot_pkg/
@@ -83,7 +83,7 @@ libbot Branch in 2025_startup_libguide_chatbot/
 ```
 
 
-### research/ Contents and [[Dedicated README](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/research)]
+### _research_/ Contents and [[Dedicated README](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/research)]
 
 ``` bash         
 
