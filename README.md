@@ -35,10 +35,11 @@ LibBot currently retrieves resources based on natural language queries and provi
 ## Getting Started with LibBot!
 
 
-> [!TIP]  
-> **If you wish to use and interact with LibBot:**
+> [!TIP]
+> **Accessing and Interacting with LibBot:**
 > 1. Connect to the UC Davis Library VPN
 > 2. Go to http://server-hostname:8075 (replace temporary name with actual server name)
+
 
 > [!NOTE]
 > As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
