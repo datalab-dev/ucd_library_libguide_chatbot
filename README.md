@@ -1,7 +1,7 @@
 # Expansion of LibBot: Library Guide RAG Project
 
 > [!IMPORTANT]  
-> - This project originated as a group collaboration back during 2025 Spring Quarter. The original team version (mainly built in R), team member agknowledgements, resources and data store, and documentation can be found in the $\color{Purple}\large{\textsf{STS195-legacy-group-original}}$ branch.
+> - This project originated as a group collaboration back during 2025 Spring Quarter. The original team version (mainly built in R), team member agknowledgements, resources and data store, and documentation can be found in the [[**STS195-legacy-group-original**]](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/STS195-legacy-group-original) branch.
 > - LibBot currently works with libguides based on a final scrape conducted on February 20th, 2025. The additional library data that has been updated since then will be incorporated in the next iterations of LibBot.
 
 ## Current Contributors
