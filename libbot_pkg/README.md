@@ -1,13 +1,12 @@
 # LibBot Package
 
-A package for the semantic search chatbot for the UC Davis Library. LibBot lets users ask natural language questions and get back relevant resources from the library's LibGuides corpus, grounded by an LLM-generated summary. Built with FastAPI, ChromaDB, Qwen3-Embedding, and Ollama.
+LibBot is a semantic search chatbot for the UC Davis Library. Users ask natural language questions and get back relevant resources from the LibGuides corpus, grounded by an LLM-generated summary. This README covers the package internals and how the system works.
 
----
+> [!NOTE]
+> For end-user access instructions, see the [main README](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot).
+> For configuration, API reference, and server operation, see the [Maintenance Guide](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/maintenance.md).
 
-> [!TIP]
-> **Accessing and Interacting with LibBot:**
-> 1. Connect to the **UC Davis Library VPN**
-> 2. Go to http://datasci.library.ucdavis.edu:8075
+<br>
 
 ---
 
@@ -30,13 +29,15 @@ libbot_pkg/
         └── logo-dark.png
 ```
 
+<br>
+
 ---
 
 ## Architecture
 
 ```
 Browser (VPN required)
-   ↕ 
+   ↕  (port 8075)
 FastAPI (libbot_pkg)           
    ├── serves frontend          (static/index.html)
    ├── POST /chat               → ChromaDB + Qwen embedding → retrieved docs
@@ -45,28 +46,33 @@ FastAPI (libbot_pkg)
    └── POST /search             → ChromaDB + Qwen embedding only (no LLM)
 ```
 
+<br>
+
 ---
 
-> [!NOTE]
-> ## How It Works
-> 1. User types a query in the browser and hits Send
-> 2. `script.js` POSTs `{ message, top_k }` to `/chat`
-> 3. FastAPI embeds the query using Qwen3-Embedding and searches ChromaDB
-> 4. The top matching LibGuide documents are retrieved and deduplicated
-> 5. A context-aware prompt (query + retrieved docs) is sent to Ollama
-> 6. Ollama streams its response back through FastAPI to the browser
-> 7. The browser renders the LLM summary, then displays the library sources below it
+## How It Works
+1. User types a query in the browser and hits Send
+2. `script.js` POSTs `{ message, top_k }` to `/chat`
+3. FastAPI embeds the query using Qwen3-Embedding and searches ChromaDB
+4. The top matching LibGuide documents are retrieved and deduplicated
+5. A context-aware prompt (query + retrieved docs) is sent to Ollama
+6. Ollama streams its response back through FastAPI to the browser
+7. The browser renders the LLM summary, then displays the library sources below it
+
+<br>
 
 ---
 
 ## Testing Retrieval
 
-A standalone test script is included to verify the package works independently of the web server (can replace the example query with any query):
+A standalone test script verifies the package works independently of the web server:
 
 ```bash
 pixi run python test_retriever.py "how do I cite a journal article?"
 ```
 
-This checks the config, loads the retriever, runs a real query against ChromaDB, and prints the full structured response.
+This checks the config, loads the retriever, runs a real query against ChromaDB, and prints the full structured response. Replace the example query with anything you want to test.
 
+---
 
+For server startup, configuration, and API reference, see the [Maintenance Guide](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/maintenance.md).
