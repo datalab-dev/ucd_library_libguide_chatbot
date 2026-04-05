@@ -12,6 +12,8 @@
 -   **Project Lead**: Dr. Carl Stahmer
 -   **Lead Developer & Maintainer**: Federico Aprile
 
+<br>
+
 ---
 
 ## Project Overview
@@ -27,6 +29,7 @@ The system transforms the UC Davis library’s corpus of guides and resources in
 - **Retrieval & Context Selection**: A Python/PyTorch-based retrieval engine that uses optimized pooling strategies to identify and rank the most relevant document chunks based on user queries, using cosine similarity.
 - **Retrieval-Augmented Generation (RAG)**: A prompt engineering layer that synthesizes the retrieved context and passes it to a Large Language Model (LLM) to generate natural, cited responses and links.
 
+<br>
 
 ---
 
@@ -54,8 +57,21 @@ The system transforms the UC Davis library’s corpus of guides and resources in
 
 ---
 ## Project Dependencies
-- python version, pixi, FastAPI, ChromaDB, Sentence Transformers, Ollama.
-- one line per dependency with its purpose.
+This project uses Pixi for environment and dependency management on a Linux x86-64 server running Python 3.10. Pixi handles Python versioning, package installation, and task running — no manual pip install or conda environment setup needed. The full dependency list is defined in pixi.toml.
+
+| Package | Purpose |
+|--------|-------------|
+| fastapi / uvicorn | REST API server and ASGI runtime |
+| chromadb | Vector database for storing and querying embeddings |
+| sentence-transformers / pytorch | Qwen3-Embedding model for query and document encoding |
+| pydantic-settings | Request/response validation and .env-based configuration |
+| httpx | Async HTTP client for communicating with Ollama |
+| ollama | LLM inference (runs as a separate process — see Maintenance Guide) |
+
+### For full environment setup and server operation, see the Maintenance Guide.
+
+<br>
+
 ---
 
 ## GitHub File and Directory Structure
@@ -75,6 +91,7 @@ The system transforms the UC Davis library’s corpus of guides and resources in
 
 [**Dedicated research/ README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/research)
 
+<br>
 
 ---
 > [!WARNING]
