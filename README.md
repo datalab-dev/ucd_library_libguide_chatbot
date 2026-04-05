@@ -47,7 +47,7 @@ The system transforms the UC Davis library’s corpus of guides and resources in
 > As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
 
 > [!NOTE]
-> - For maintainers needing to start or restart the server, see the [libbot_pkg README](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/libbot_pkg).
+> - For maintainers needing to start or restart the server, see the [Maintenance Guide](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/docs).
 > - To verify the package is working independently of the web server, run:
 > ``` bash
 > pixi run python test_retriever.py "your query here"
@@ -68,7 +68,8 @@ This project uses Pixi for environment and dependency management on a Linux x86-
 | httpx | Async HTTP client for communicating with Ollama |
 | ollama | LLM inference (runs as a separate process — see Maintenance Guide) |
 
-### For full environment setup and server operation, see the Maintenance Guide.
+> [!NOTE]
+> For full environment setup and server operation, see the [Maintenance Guide](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/maintenance.md).
 
 <br>
 
