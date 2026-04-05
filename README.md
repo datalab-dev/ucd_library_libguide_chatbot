@@ -9,7 +9,7 @@
 
 ## Current Contributors
 
--   **Project Lead**: DataLab Director Dr. Carl Stahmer
+-   **Project Lead**: Dr. Carl Stahmer
 -   **Lead Developer & Maintainer**: Federico Aprile
 
 ---
