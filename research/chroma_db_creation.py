@@ -23,8 +23,8 @@ def migrate_to_chromadb(embeddings_path, metadata_path, db_path):
     assert len(embeddings) == len(metadata_df), \
         f"Mismatch: {len(embeddings)} embeddings but {len(metadata_df)} metadata rows"
     
-    print(f"✓ Loaded {len(embeddings)} documents")
-    print(f"✓ Embedding dimension: {embeddings.shape[1]}")
+    print(f"Loaded {len(embeddings)} documents")
+    print(f"Embedding dimension: {embeddings.shape[1]}")
     
     # Initialize ChromaDB
     client = chromadb.PersistentClient(path=db_path)
@@ -89,14 +89,14 @@ def migrate_to_chromadb(embeddings_path, metadata_path, db_path):
         if (i + BATCH_SIZE) % 5000 == 0 or (i + BATCH_SIZE) >= len(ids):
             print(f"  Inserted {min(i + BATCH_SIZE, len(ids))}/{len(ids)} documents")
     
-    print(f"\n✓ Migration complete!")
-    print(f"✓ Database saved to: {db_path}")
-    print(f"✓ Collection name: libguides")
-    print(f"✓ Total documents: {len(ids)}")
+    print(f"\nMigration complete!")
+    print(f"Database saved to: {db_path}")
+    print(f"Collection name: libguides")
+    print(f"Total documents: {len(ids)}")
     
     # Verify
     count = collection.count()
-    print(f"✓ Verification - Collection contains: {count} documents")
+    print(f"Verification - Collection contains: {count} documents")
 
 if __name__ == "__main__":
     migrate_to_chromadb(
