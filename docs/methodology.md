@@ -21,7 +21,7 @@ The following models were tested during development. Models are listed in the or
 
 ## Research and Technical Notes on Key Models
 
-### BERT
+> $\color{Dark}\Huge{\textbf{BERT}}$
 
 BERT (`bert-large-cased`) was the first model evaluated, tested in two configurations: extracting the last hidden layer only, and averaging across the last four hidden layers. Both configurations performed poorly for this task, and BERT is not recommended for semantic retrieval.
 
@@ -31,7 +31,7 @@ Mean pooling over the last hidden layer washes out salient information across lo
 
 ---
 
-### Sentence Transformers (SBERT / MPNet)
+> $\color{Darkorange}\Huge{\textbf{Sentence Transformers (SBERT / MPNet)}}$
 
 After BERT, development moved to the Sentence Transformers library, which provides models explicitly trained for semantic similarity and retrieval tasks. Two SBERT models were evaluated: `all-MiniLM-L6-v2` and `multi-qa-mpnet-base-cos-v1`.
 
@@ -50,7 +50,7 @@ Other strong SBERT candidates identified during research but not evaluated in fu
 
 ---
 
-### Jina
+> $\color{Yellowgreen}\Huge{\textbf{JINA}}$
 
 `jina-embeddings-v3` is a flexible embedding model that supports **task-specific encoding** through a `task` argument at inference time. This allows the same model to produce qualitatively different embeddings depending on the intended use:
 
@@ -68,7 +68,7 @@ Jina was not selected as the final model primarily because Qwen3 outperformed it
 
 ---
 
-### Qwen3-Embedding-0.6B
+> $\color{Lime}\Huge{\textbf{Qwen3-Embedding-0.6B}}$
 
 Qwen3-Embedding-0.6B was selected as the embedding model for the current LibBot implementation. It offered the best retrieval performance across all models evaluated, with the best trade-off between quality and computational feasibility on a CPU-only server.
 
@@ -123,6 +123,8 @@ To investigate further, Ollama and the mxbai model were installed directly on th
 
 The actual source of the discrepancy was found eventually and had nothing to do with the frameworks themselves. In the original group prototype, document text chunks had their **LibGuide titles prepended** before generating embeddings with Ollama. These title prefixes acted as semantic labels — they pulled vague or ambiguous text chunks from the same LibGuide closer together in the embedding space, giving the embeddings more context about what each chunk was about. When the model was brought over to Sentence Transformers without replicating this preprocessing step, the embeddings were generated from raw text chunks only, producing a subtly but meaningfully different embedding space. Matching the preprocessing resolved the discrepancy.
 
+<br>
+
 ---
 
 ## Similarity Measures and Normalization
@@ -131,7 +133,11 @@ All models in this project use **cosine similarity** as the retrieval metric. Co
 
 Regardless of whether a model already normalizes its output internally (as `multi-qa-mpnet-base-cos-v1` and Qwen3 do), `normalize_embeddings=True` is explicitly passed during all encoding calls. Normalization ensures that cosine similarity scores are always in the range [-1, 1] and that results are comparable across queries and documents, even if a model's internal normalization behavior changes across versions.
 
-All similarity computation uses the `cos_sim` function from the Sentence Transformers `util` module rather than `model.similarity()`. The distinction matters: `cos_sim` operates on already-generated embedding vectors, while `model.similarity()` takes raw text as input and encodes it internally. Using `cos_sim` gives explicit control over the encoding step, which is important for applying prompt names, normalization flags, and other encoding parameters consistently across queries and documents.
+In the research phase, the `cos_sim` function from the Sentence Transformers `util` module and the `model.similarity()` functions, were both tested out. The distinction matters is that `cos_sim` operates on already-generated embedding vectors, while `model.similarity()` takes raw text as input and encodes it internally. Using `cos_sim` gives explicit control over the encoding step, which is important for applying prompt names, normalization flags, and other encoding parameters consistently across queries and documents; therefore it ended up being the one that was used most.
+
+Once the corpus was moved over to the ChromaDB vector databse, the similarity search was performed the same way, explicitly configuring the ChromaDB collection with `{"hnsw:space": "cosine"}` and ensuring query embeddings are unit-normalized during ncoding. To provide standard similarity scores for ranking and deduplication, the system transforms ChromaDB’s output using the formula $1 - \text{distance}$.
+
+<br>
 
 ---
 
@@ -147,8 +153,7 @@ The final deduplication strategy went through several iterations before settling
 
 **Second approach — full deduplication:** Duplicates were removed entirely, keeping only the highest-scoring instance of each unique text. This resolved the redundancy problem but created a new one: when the same text chunk appeared across multiple guides, discarding the duplicates meant losing the additional source URLs associated with them. A user who would have benefited from being pointed to multiple relevant guides only received one.
 
-**Third approach (current) — deduplication with source aggregation:** The current implementation retrieves `top_k * 5` candidates to ensure enough unique texts are available after deduplication. It then iterates through the candidates, checking for duplicate texts. When a duplicate is found, the text itself is discarded but its source URL and guide metadata are retained and appended to the first occurrence of that text. This continues until `top_k` unique texts have been collected. The final results are the top-k unique texts, each carrying all source URLs from every guide where that text appeared. This means
-a single result can surface multiple relevant guides simultaneously, which is directly useful for connecting researchers to all relevant library resources rather than just one.
+**Third approach (current) — deduplication with source aggregation:** The current implementation retrieves `top_k * 5` candidates from ChromaDB to ensure enough unique texts are available after deduplication. It then iterates through those candidates in order of ChromaDB's ranking — best score first. For each candidate, if the text has not been seen before, a new result entry is created with that text and score. If the text has been seen before, the new source URL and guide metadata are appended to the existing entry rather than discarding them. Iteration stops as soon as `top_k` unique texts have been accumulated — it does not process all candidates unnecessarily. The collected unique results are then sorted by score descending and the top-k are returned, each carrying the full list of source URLs from every guide where that text appeared.
 
 This approach also handles the LLM synthesis step cleanly because the model receives `top_k` unique, non-redundant text chunks as context, with source attribution preserved for citation in the response.
 
@@ -178,24 +183,18 @@ The double query technique was to append the user's query to itself before encod
 
 ### Why Might a Smaller Model Outperform a Larger One Here?
 
-Corpus embeddings are generated from title-labeled combined text chunks, which encode contextual information about which guide a chunk belongs to. The eduplication function, however, compares raw text — it is not
-aware of the title labels. This means two chunks with identical text but different section
-labels are treated as the same document and collapsed into one result.
+This remains an open question. The 4B model is more sensitive to subtle semantic differences between documents, which might be expected to help but in practice this sensitivity may work against it on a corpus where many chunks are structurally similar library guide passages. The 0.6B model's slightly coarser representations may produce a more stable ranking across similar documents, whereas the 4B model's finer-grained distinctions introduce more variability in edge cases.
 
-The 4B model, being more sensitive to subtle semantic differences, may be more affected by
-this mismatch between how embeddings were generated and how deduplication operates. The
-0.6B model's slightly coarser representations may actually be better calibrated to the
-deduplication logic as implemented. This remains a hypothesis rather than a confirmed
-finding — fully resolving it would require ablation testing with and without title labels
-across both parameter sizes — but it is the most plausible explanation given the observed
-behavior.
+It is also worth noting that all comparisons were conducted on a CPU-only server, where the 4B model operates under significantly more computational pressure than the 0.6B model. Whether the performance gap would persist on a GPU-accelerated setup is unknown at the moment.
+
+The practical outcome is clear regardless: 0.6B matches or beats 4B on this corpus, runs faster, and was selected as the final model on that basis.
 
 ### Final Configuration
 
 The final LibBot implementation uses:
 - `Qwen3-Embedding-0.6B` via Sentence Transformers
-- Title-labeled text chunks for corpus embeddings
-- Deduplication with source aggregation (`top_k * 5` candidates, returning `top_k` unique texts)
+- Title-labeled text chunks at **corpus embedding time** (preprocessing, not at query time)
+- Deduplication with source aggregation — `top_k * 5` candidates, early exit at `top_k` unique texts, sources aggregated across duplicates
 - No double query
 
 
