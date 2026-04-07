@@ -21,7 +21,7 @@ The following models were tested during development. Models are listed in the or
 
 ## Research and Technical Notes on Key Models
 
-> $\color{Dark}\Huge{\textbf{BERT}}$
+> $\color{Red}\large{\textbf{BERT}}$
 
 BERT (`bert-large-cased`) was the first model evaluated, tested in two configurations: extracting the last hidden layer only, and averaging across the last four hidden layers. Both configurations performed poorly for this task, and BERT is not recommended for semantic retrieval.
 
@@ -31,7 +31,7 @@ Mean pooling over the last hidden layer washes out salient information across lo
 
 ---
 
-> $\color{Darkorange}\Huge{\textbf{Sentence Transformers (SBERT / MPNet)}}$
+> $\color{Darkorange}\large{\textbf{Sentence Transformers (SBERT / MPNet)}}$
 
 After BERT, development moved to the Sentence Transformers library, which provides models explicitly trained for semantic similarity and retrieval tasks. Two SBERT models were evaluated: `all-MiniLM-L6-v2` and `multi-qa-mpnet-base-cos-v1`.
 
@@ -50,7 +50,7 @@ Other strong SBERT candidates identified during research but not evaluated in fu
 
 ---
 
-> $\color{Yellowgreen}\Huge{\textbf{JINA}}$
+> $\color{Yellowgreen}\large{\textbf{JINA}}$
 
 `jina-embeddings-v3` is a flexible embedding model that supports **task-specific encoding** through a `task` argument at inference time. This allows the same model to produce qualitatively different embeddings depending on the intended use:
 
@@ -68,7 +68,7 @@ Jina was not selected as the final model primarily because Qwen3 outperformed it
 
 ---
 
-> $\color{Lime}\Huge{\textbf{Qwen3-Embedding-0.6B}}$
+> $\color{Lime}\large{\textbf{Qwen3-Embedding-0.6B}}$
 
 Qwen3-Embedding-0.6B was selected as the embedding model for the current LibBot implementation. It offered the best retrieval performance across all models evaluated, with the best trade-off between quality and computational feasibility on a CPU-only server.
 
@@ -157,6 +157,8 @@ The final deduplication strategy went through several iterations before settling
 
 This approach also handles the LLM synthesis step cleanly because the model receives `top_k` unique, non-redundant text chunks as context, with source attribution preserved for citation in the response.
 
+<br>
+
 ---
 
 ## Final Model Parameter Size: Qwen3 0.6B vs. 4B
@@ -196,6 +198,8 @@ The final LibBot implementation uses:
 - Title-labeled text chunks at **corpus embedding time** (preprocessing, not at query time)
 - Deduplication with source aggregation — `top_k * 5` candidates, early exit at `top_k` unique texts, sources aggregated across duplicates
 - No double query
+
+<br>
 
 ---
 
