@@ -1,4 +1,4 @@
-# LibBot Methodology
+# LibBot Methodology Notes
 
 ## Embedding Models Evaluated
 
@@ -123,14 +123,82 @@ To investigate further, Ollama and the mxbai model were installed directly on th
 
 The actual source of the discrepancy was found eventually and had nothing to do with the frameworks themselves. In the original group prototype, document text chunks had their **LibGuide titles prepended** before generating embeddings with Ollama. These title prefixes acted as semantic labels — they pulled vague or ambiguous text chunks from the same LibGuide closer together in the embedding space, giving the embeddings more context about what each chunk was about. When the model was brought over to Sentence Transformers without replicating this preprocessing step, the embeddings were generated from raw text chunks only, producing a subtly but meaningfully different embedding space. Matching the preprocessing resolved the discrepancy.
 
+---
+
+## Similarity Measures and Normalization
+
+All models in this project use **cosine similarity** as the retrieval metric. Cosine similarity measures the angle between two vectors rather than their magnitude, making it well-suited for semantic retrieval where the direction of a vector encodes meaning and the scale does not.
+
+Regardless of whether a model already normalizes its output internally (as `multi-qa-mpnet-base-cos-v1` and Qwen3 do), `normalize_embeddings=True` is explicitly passed during all encoding calls. Normalization ensures that cosine similarity scores are always in the range [-1, 1] and that results are comparable across queries and documents, even if a model's internal normalization behavior changes across versions.
+
+All similarity computation uses the `cos_sim` function from the Sentence Transformers `util` module rather than `model.similarity()`. The distinction matters: `cos_sim` operates on already-generated embedding vectors, while `model.similarity()` takes raw text as input and encodes it internally. Using `cos_sim` gives explicit control over the encoding step, which is important for applying prompt names, normalization flags, and other encoding parameters consistently across queries and documents.
+
+---
+
+## Handling Duplicate Text in the Corpus
+
+The LibGuides corpus contains approximately 70% duplicate text chunks (the same passage appearing across multiple guides or sections). This creates a retrieval problem: a traditional top-k search will often return the same text multiple times under different source URLs, wasting retrieval slots and giving the LLM redundant context.
+
+### Evolution of the Deduplication Approach
+
+The final deduplication strategy went through several iterations before settling on its current form.
+
+**First approach — no deduplication:** The initial implementation retrieved top-k results directly without any deduplication. This frequently returned the same text chunk multiple times, which was unhelpful for downstream LLM synthesis.
+
+**Second approach — full deduplication:** Duplicates were removed entirely, keeping only the highest-scoring instance of each unique text. This resolved the redundancy problem but created a new one: when the same text chunk appeared across multiple guides, discarding the duplicates meant losing the additional source URLs associated with them. A user who would have benefited from being pointed to multiple relevant guides only received one.
+
+**Third approach (current) — deduplication with source aggregation:** The current implementation retrieves `top_k * 5` candidates to ensure enough unique texts are available after deduplication. It then iterates through the candidates, checking for duplicate texts. When a duplicate is found, the text itself is discarded but its source URL and guide metadata are retained and appended to the first occurrence of that text. This continues until `top_k` unique texts have been collected. The final results are the top-k unique texts, each carrying all source URLs from every guide where that text appeared. This means
+a single result can surface multiple relevant guides simultaneously, which is directly useful for connecting researchers to all relevant library resources rather than just one.
+
+This approach also handles the LLM synthesis step cleanly because the model receives `top_k` unique, non-redundant text chunks as context, with source attribution preserved for citation in the response.
+
+---
+
+## Final Model Parameter Size: Qwen3 0.6B vs. 4B
+
+A counterintuitive finding emerged during model selection: `Qwen3-Embedding-0.6B` outperformed `Qwen3-Embedding-4B` in retrieval quality on this corpus, or at minimum matched itl, while being substantially faster.
+
+### What Was Tested
+
+Six configurations were evaluated systematically across both parameter sizes:
+
+| Configuration | 0.6B | 4B |
+|---|---|---|
+| Standard retrieval, no preprocessing | + | — |
+| Title-labeled text chunks + deduplication | + | + |
+| Title-labeled chunks + deduplication + double query | + | + |
+
+Title labeling refers to prepending each text chunk with its LibGuide section title before generating embeddings; this technique was identified during the Ollama vs. Sentence Transformers investigation that brings contextually related chunks closer together in the embedding space.
+
+### Findings
+
+Across these configurations, 0.6B and 4B typically retrieved the same documents. In cases where they differed, 0.6B occasionally retrieved slightly more relevant results. Given that 0.6B is also significantly faster on a CPU-only server, it was selected as the final model.
+
+The double query technique was to append the user's query to itself before encoding, with the intention of amplifying the query signal in the attention window; it produced NO meaningful improvement for 0.6B. For 4B it made results the same or slightly worse. This suggests that Qwen3's architecture does not benefit from this kind of input repetition in the way some other models do. The technique was dropped.
+
+### Why Might a Smaller Model Outperform a Larger One Here?
+
+Corpus embeddings are generated from title-labeled combined text chunks, which encode contextual information about which guide a chunk belongs to. The eduplication function, however, compares raw text — it is not
+aware of the title labels. This means two chunks with identical text but different section
+labels are treated as the same document and collapsed into one result.
+
+The 4B model, being more sensitive to subtle semantic differences, may be more affected by
+this mismatch between how embeddings were generated and how deduplication operates. The
+0.6B model's slightly coarser representations may actually be better calibrated to the
+deduplication logic as implemented. This remains a hypothesis rather than a confirmed
+finding — fully resolving it would require ablation testing with and without title labels
+across both parameter sizes — but it is the most plausible explanation given the observed
+behavior.
+
+### Final Configuration
+
+The final LibBot implementation uses:
+- `Qwen3-Embedding-0.6B` via Sentence Transformers
+- Title-labeled text chunks for corpus embeddings
+- Deduplication with source aggregation (`top_k * 5` candidates, returning `top_k` unique texts)
+- No double query
 
 
-
-**Normalization, similarity measures** — This is well-reasoned technical methodology that contextualizes your model choices.
-
-**Duplicate text handling** —  This is a real methodological decision specific to your corpus (the ~70% duplication problem) and how you solved it is worth documenting. It directly affects retrieval quality.
-
-**Performance differences between same model, different parameter sizes** — Directly informs the model choice and is useful context for anyone inheriting the project.
 
 **Threshold investigation and visualizations** — The plots of docs vs. similarity scores are exactly the kind of thing that belongs in a public methodology doc. Shows your reasoning for top_k and retrieval depth decisions.
 
