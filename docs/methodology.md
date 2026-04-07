@@ -197,7 +197,10 @@ The final LibBot implementation uses:
 - Deduplication with source aggregation — `top_k * 5` candidates, early exit at `top_k` unique texts, sources aggregated across duplicates
 - No double query
 
+---
 
+> [!WARNING]
+> UNDER CONSTRUCTION
 
 **Threshold investigation and visualizations** — The plots of docs vs. similarity scores are exactly the kind of thing that belongs in a public methodology doc. Shows your reasoning for top_k and retrieval depth decisions.
 
