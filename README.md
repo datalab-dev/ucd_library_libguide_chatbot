@@ -95,11 +95,10 @@ This project uses Pixi for environment and dependency management on a Linux x86-
 <br>
 
 ---
-> [!WARNING]
-> UNDER CONSTRUCTION
+
 ### Methodology
-- A link to the docs/methodology.md once written
-- how the corpus was built, how embeddings were generated, why you chose cosine similarity + deduplication.
+I created a [markdown doc](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/methodology.md) that covers the highlights of my research, considerations, and the decisions I made when working on every step of this project. All the way from work on the corpus, to embedding-model experimentation, and more.
+
 ---
 > [!WARNING]
 > UNDER CONSTRUCTION
