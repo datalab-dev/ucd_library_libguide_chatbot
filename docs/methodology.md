@@ -181,7 +181,7 @@ Title labeling refers to prepending each text chunk with its LibGuide section ti
 
 Across these configurations, 0.6B and 4B typically retrieved the same documents. In cases where they differed, 0.6B occasionally retrieved slightly more relevant results. Given that 0.6B is also significantly faster on a CPU-only server, it was selected as the final model.
 
-The double query technique was to append the user's query to itself before encoding, with the intention of amplifying the query signal in the attention window; it produced NO meaningful improvement for 0.6B. For 4B it made results the same or slightly worse. This suggests that Qwen3's architecture does not benefit from this kind of input repetition in the way some other models do. The technique was dropped.
+The double query technique was to append the user's query to itself before encoding, with the intention of amplifying the query signal in the attention window (technique specifically targets Decoder-only architectures like Qwen's); it produced very slight improvements for 0.6B. For 4B it made results the same or slightly worse.
 
 ### Why Might a Smaller Model Outperform a Larger One Here?
 
@@ -197,7 +197,7 @@ The final LibBot implementation uses:
 - `Qwen3-Embedding-0.6B` via Sentence Transformers
 - Title-labeled text chunks at **corpus embedding time** (preprocessing, not at query time)
 - Deduplication with source aggregation — `top_k * 5` candidates, early exit at `top_k` unique texts, sources aggregated across duplicates
-- No double query
+- Double query
 
 <br>
 
