@@ -4,6 +4,9 @@
 
 The following models were tested during development. Models are listed in the order they were evaluated. All retrieval examples below use the same query across models for direct comparison.
 
+> [!WARNING]
+> SECTION IS UNDER CONSTRUCTION; Image examples between models are missing. 2 Example Queries will be shown for each, to display the difference between weaker and stronger models.
+
 | Model | Dimensions | Output Type | Pooling | Status | Example |
 |---|---|---|---|---|---|
 | `bert-large-cased` (last hidden layer) | 1024 | Last hidden state of final transformer layer | Mean pooling of last hidden layer | **Not recommended** — not a sentence model; trained for MLM, not embedding-space alignment | ![bert-last-hidden example](assets/bert_last_hidden_example.png) |
@@ -247,7 +250,3 @@ The analysis confirmed that meaningful similarity signal is concentrated in a sm
 number of top-ranked documents. A value of `top_k = 3` was selected as the default for LibBot, retrieving enough context for the LLM to synthesize a grounded response without overwhelming it with low-signal documents. The `top_k * 5` candidate fetch used in the deduplication step (described above) is applied on top of this, ensuring that 3 unique, high-quality texts are returned even in a corpus with ~70% duplication.
 
 <br>
-
----
-
-**Image examples comparing models** — yes, a curated selection. Not all of them — pick the 3-5 that most clearly show the difference between a weaker and stronger model on the same query. Quality over quantity.
