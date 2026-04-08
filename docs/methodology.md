@@ -203,9 +203,51 @@ The final LibBot implementation uses:
 
 ---
 
-> [!WARNING]
-> UNDER CONSTRUCTION
+## Retrieval Threshold Investigation
 
-**Threshold investigation and visualizations** — The plots of docs vs. similarity scores are exactly the kind of thing that belongs in a public methodology doc. Shows your reasoning for top_k and retrieval depth decisions.
+To inform the choice of `top_k` (documents to retrieve) a threshold analysis was conducted by plotting cosine similarity scores against document rank across a set of test queries.
+
+### Method
+
+The analysis used `threshold_vis.py` (in `research/`), which takes a set of query 
+embeddings and the full corpus embeddings, computes cosine similarity between each 
+query and every document in the corpus, sorts the results by descending similarity, 
+and plots the decay curves. Two visualizations are produced for each run:
+
+- **Left plot** — individual decay curves, one per query, overlaid on the same axes
+- **Right plot** — the mean similarity curve averaged across all queries
+
+Two runs were conducted:
+
+- **Simulated queries** — corpus documents randomly sampled and used as proxy queries, plotted across the full corpus size (k = 7,442) to understand the global shape of similarity decay
+- **Real queries** — a set of manually written test prompts, embedded and used as actual queries, plotted at k = 100 to zoom into the operationally relevant range
+
+### Results
+
+**Simulated queries (Full corpus view):**
+
+![Threshold analysis — full corpus](assets/rag_threshold_analysis_extended.png)
+
+The left plot shows all individual query curves decaying rapidly in the first few 
+hundred documents and then flattening into a long tail above k = 1,000. The right 
+plot confirms this pattern; in the mean curve — similarity drops steeply from ~0.65 
+at k = 1 to around 0.30 by k = 1,000, then continues declining slowly.
+
+**Top-100 view (real queries):**
+
+![Threshold analysis — top 100](assets/rag_threshold_analysis.png)
+
+For this one we have real queries zoomed into the top 100 documents. The individual curves show more spread than the simulated run. The mean curve shows a  steep initial drop from ~0.67 at k = 1 to ~0.56 at k = 10, and then a continued decline to ~0.50 at k = 100. The absence of a sharp drop reflects the natural 
+variability of real user queries and the uneven coverage of topics across the LibGuides 
+corpus.
+
+### Conclusion
+
+The analysis confirmed that meaningful similarity signal is concentrated in a small 
+number of top-ranked documents. A value of `top_k = 3` was selected as the default for LibBot, retrieving enough context for the LLM to synthesize a grounded response without overwhelming it with low-signal documents. The `top_k * 5` candidate fetch used in the deduplication step (described above) is applied on top of this, ensuring that 3 unique, high-quality texts are returned even in a corpus with ~70% duplication.
+
+<br>
+
+---
 
 **Image examples comparing models** — yes, a curated selection. Not all of them — pick the 3-5 that most clearly show the difference between a weaker and stronger model on the same query. Quality over quantity.
