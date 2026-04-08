@@ -40,8 +40,11 @@ class Retriever:
 
         t0 = time.perf_counter()
         # Encode the query using the Qwen query prompt
+        
+        # repeated_query = f"{query} {query}"
+
         query_emb = self.model.encode(
-            query,
+            query, # repeated_query,
             prompt_name="query",
             normalize_embeddings=True,
             convert_to_numpy=True,
