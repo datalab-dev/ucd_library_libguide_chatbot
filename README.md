@@ -1,7 +1,7 @@
 # LibBot: UC Davis LibGuide RAG Chatbot
 
 > [!IMPORTANT]  
-> This project originated as a group collaboration back during 2025 Spring Quarter. The original team prototype was primarily built in R, along with Ollama; team member acknowledgements, resources and data store, and documentation can be found in the [[**STS195-legacy-group-original**]](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/STS195-legacy-group-original) branch of the LibBot repo.
+> This project originated as a group collaboration back during 2025 Spring Quarter. The original team prototype was primarily built in R, along with Ollama; team member acknowledgements, resources and data store, and documentation can be found in the [[**STS195-legacy-group-original**]](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/main) branch of the LibBot repo.
 
 > [!NOTE]
 > LibBot's corpus is based on UC Davis LibGuides scraped February 20th, 2025.
@@ -24,7 +24,7 @@
 
 The system transforms the UC Davis library’s corpus of guides and resources into a conversational experience through a structured RAG (Retrieval-Augmented Generation) pipeline:
 
-- **Data Ingestion & Cleaning**: Systematized scraping and preprocessing of heterogeneous library data to ensure a clean, searchable corpus.
+- **Data Collection & Cleaning**: Systematized scraping and preprocessing of heterogeneous library data to ensure a clean, searchable corpus.
 - **Semantic Representation**: Uses Sentence-Transformer models to generate high-quality vector embeddings for documents and queries. These models were benchmarked to balance computational efficiency on CPU-only environments with retrieval accuracy.
 - **Retrieval & Context Selection**: A Python/PyTorch-based retrieval engine that uses optimized pooling strategies to identify and rank the most relevant document chunks based on user queries, using cosine similarity.
 - **Retrieval-Augmented Generation (RAG)**: A prompt engineering layer that synthesizes the retrieved context and passes it to a Large Language Model (LLM) to generate natural, cited responses and links.
@@ -43,11 +43,11 @@ The system transforms the UC Davis library’s corpus of guides and resources in
 > [!NOTE]
 > If the page doesn't load, verify you are connected to the UC Davis Library VPN.
 
-> [!NOTE]
+> [!CAUTION]
 > As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
 
 > [!NOTE]
-> - For maintainers needing to start or restart the server, see the [Maintenance Guide](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/docs).
+> - For maintainers needing to start or restart the server, see the [`Maintenance Guide`](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/maintenance.md).
 > - To verify the package is working independently of the web server, run:
 > ``` bash
 > pixi run python test_retriever.py "your query here"
@@ -57,7 +57,7 @@ The system transforms the UC Davis library’s corpus of guides and resources in
 
 ---
 ## Project Dependencies
-This project uses Pixi for environment and dependency management on a Linux x86-64 server running Python 3.10. Pixi handles Python versioning, package installation, and task running — no manual pip install or conda environment setup needed. The full dependency list is defined in pixi.toml.
+This project uses `Pixi` for environment and dependency management on a Linux x86-64 server running Python 3.10. `Pixi` handles Python versioning, package installation, and task running — no manual pip install or conda environment setup needed. The full dependency list is defined in `pixi.toml`.
 
 | Package | Purpose |
 |--------|-------------|
@@ -88,16 +88,16 @@ This project uses Pixi for environment and dependency management on a Linux x86-
   └── research/                          # Model benchmarking — see dedicated README
       ├── ...
 ```
-[**Dedicated libbot_pkg/ README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/libbot_pkg)
+### [**Dedicated `libbot_pkg/` README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/libbot_pkg)
 
-[**Dedicated research/ README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/research)
+### [**Dedicated `research/` README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/research)
 
 <br>
 
 ---
 
 ### Methodology
-I created a [markdown doc](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/methodology.md) that covers the highlights of my research, considerations, and the decisions I made when working on every step of this project. All the way from work on the corpus, to embedding-model experimentation, and more.
+There's a [`Methodology Notes`](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/methodology.md) doc that covers the highlights of the research, considerations, and the decisions made at every step of this project--from working on the corpus, to experiomenting with embedding models, and more.
 
 ---
 > [!WARNING]
