@@ -102,5 +102,5 @@ I created a [markdown doc](https://github.com/datalab-dev/2025_startup_libguide_
 ---
 > [!WARNING]
 > UNDER CONSTRUCTION
-### Examples of Work:
-- 3-5 examples with a screenshot each, not exhaustive test logs, just the best ones.
+### Examples LibBot Interactions:
+- 3-5 examples with a screenshot each
