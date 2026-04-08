@@ -11,7 +11,6 @@ Before starting LibBot, make sure the following are in place:
 
 - You are connected to the **UC Davis Library Staff VPN** and have SSH access to the datasci server
 - The pixi environment is installed — if not, run `pixi install` from the project root
-- A `.env` file exists in the project root
 
 <br>
 
@@ -19,7 +18,7 @@ Before starting LibBot, make sure the following are in place:
 
 ## Configuration
 
-All settings are defined in `config.py` and can be overridden via `.env`. The following variables are available:
+All settings are defined in `config.py` and can be overridden via `.env`. The following variables are available and alterable:
 
 | Setting | Default | Description |
 |---|---|---|
@@ -137,13 +136,12 @@ Liveness check — confirms the server is running.
 
 ---
 
-## Verifying the Package
+## Verifying Functionality
 
-To verify the retrieval pipeline works independently of the web server:
+To verify the retrieval pipeline works independently of the web server, go to the project root and run the test script with a query, as follows:
 ```bash
 pixi run python test_retriever.py "how do I cite a journal article?"
 ```
 
-This checks the config, loads the retriever, runs a real query against ChromaDB, and prints
-the full structured response. Run this after any changes to `retriever.py`, `config.py`,
+> This checks the config, loads the retriever, runs a real query against ChromaDB, and prints the full structured response. Run this after any changes to `retriever.py`, `config.py`,
 or the ChromaDB data to confirm everything is working before restarting the server.
