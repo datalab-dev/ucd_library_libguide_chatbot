@@ -41,10 +41,11 @@ class Retriever:
         t0 = time.perf_counter()
         # Encode the query using the Qwen query prompt
         
-        # repeated_query = f"{query} {query}"
+        # Implemented a simple heuristic to improve recall for short queries by repeating them.
+        repeated_query = f"{query} {query}"
 
         query_emb = self.model.encode(
-            query, # repeated_query,
+            repeated_query,
             prompt_name="query",
             normalize_embeddings=True,
             convert_to_numpy=True,
