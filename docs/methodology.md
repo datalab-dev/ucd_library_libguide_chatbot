@@ -1,4 +1,7 @@
 # LibBot Methodology Notes
+> by Federico G. Aprile
+
+<br>
 
 ## Embedding Models Evaluated
 
