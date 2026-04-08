@@ -138,9 +138,9 @@ Liveness check — confirms the server is running.
 
 ## Verifying Functionality
 
-To verify the retrieval pipeline works independently of the web server, go to the project root and run the test script with a query, as follows:
+As shown in the main project README, to verify the retrieval pipeline works independently of the web server, go to the project root and run the test script with a query, as follows:
 ```bash
-pixi run python test_retriever.py "how do I cite a journal article?"
+pixi run python test_retriever.py "your query here"
 ```
 
 > This checks the config, loads the retriever, runs a real query against ChromaDB, and prints the full structured response. Run this after any changes to `retriever.py`, `config.py`,
