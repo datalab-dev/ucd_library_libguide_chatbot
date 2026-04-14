@@ -80,17 +80,28 @@ This project uses `Pixi` for environment and dependency management on a Linux x8
 ``` bash
 2025_startup_libguide_chatbot/
   ├── README.md                          # This README
+  ├── docs
+  │   ├── methodology.md                 # Doc - Methodology and Research Notes
+  │   ├── maintenance.md                 # Doc - LibBot server maintenance/configuration
+  │   ├── ollama.md                      # Doc - LLM configuration and Modelfiles
+  │   └── assets                         # Images
+  │       └── ...
   ├── libbot_pkg/                        # Main package - see dedicated README
-  │   ├── ...
+  │   └── ...
+  ├── research/                          # Model benchmarking — see dedicated README
+  │   └── ...
+  ├── models/                            # Ollama models — see dedicated README
+  │   └── ...
+  │
   ├── test_retriever.py                  # Testing whether libbot_pkg module imports work on a simple script
   ├── .gitignore/.gitattributes          # What files Git should not track, and how Git should handle the files it does track
-  ├── pixi.toml                          # Environment and dependency definitions
-  └── research/                          # Model benchmarking — see dedicated README
-      ├── ...
+  └── pixi.toml                          # Environment and dependency definitions
 ```
 ### [**Dedicated `libbot_pkg/` README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/libbot_pkg)
 
 ### [**Dedicated `research/` README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/research)
+
+### [**Dedicated `models/` README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot)
 
 <br>
 
