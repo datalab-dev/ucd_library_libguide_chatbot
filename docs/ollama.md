@@ -24,6 +24,23 @@ libbot/
 
 ---
 
+## Registering a Model
+
+To register or update a model after modifying a Modelfile:
+
+```bash
+ollama create <model-name> -f models/<Modelfile>
+```
+
+For example:
+```bash
+ollama create libbot-scholar -f models/Modelfile.gemma12b
+```
+
+Once created, update `OLLAMA_MODEL` in the project's `.env` file to the chosen model name so LibBot uses it at runtime.
+
+---
+
 **Gemma 3 12B QAT** (`Modelfile.gemma12b`)
 The higher-accuracy option. Uses the QAT (Quantization-Aware Training) variant of Gemma 3 12B, sourced from `hf.co/unsloth/gemma-3-12b-it-qat-GGUF:Q4_0`. Unlike standard GGUF quantization, QAT was trained specifically to maintain near 16-bit accuracy while running at 4-bit speeds — making it well suited for a RAG context where faithfulness to retrieved documents matters.
 
