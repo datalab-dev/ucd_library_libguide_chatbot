@@ -101,7 +101,7 @@ This project uses `Pixi` for environment and dependency management on a Linux x8
 
 ### [**Dedicated `research/` README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot/research)
 
-### [**Dedicated `models/` README**](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot)
+### [**Dedicated `models/` README**](https://github.com/datalab-dev/ucd_library_libguide_chatbot/blob/main/docs/ollama.md)
 
 <br>
 
