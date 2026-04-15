@@ -2,6 +2,8 @@
 
 LibBot uses Ollama to serve the LLM responsible for synthesizing retrieved library documents into a natural language response. This document covers the Modelfile system used to configure and register models on the datasci server, the parameter choices made for this deployment, and the two models currently evaluated for LibBot.
 
+<br>
+
 ---
 
 ## Modelfiles
@@ -24,7 +26,7 @@ libbot/
 
 ---
 
-## Registering a Model
+### Registering a Model
 
 To register or update a model after modifying a Modelfile:
 
@@ -39,17 +41,12 @@ ollama create libbot-scholar -f models/Modelfile.gemma12b
 
 Once created, update `OLLAMA_MODEL` in the project's `.env` file to the chosen model name so LibBot uses it at runtime.
 
----
 
-**Gemma 3 12B QAT** (`Modelfile.gemma12b`)
-The higher-accuracy option. Uses the QAT (Quantization-Aware Training) variant of Gemma 3 12B, sourced from `hf.co/unsloth/gemma-3-12b-it-qat-GGUF:Q4_0`. Unlike standard GGUF quantization, QAT was trained specifically to maintain near 16-bit accuracy while running at 4-bit speeds — making it well suited for a RAG context where faithfulness to retrieved documents matters.
-
-**Gemma 3n E4B** (`Modelfile.gemma3n`)
-The higher-speed option. Uses Gemma 3n's MatFormer architecture, which allows high-speed CPU inference by effectively operating as a 4B model while retaining the organizational structure of a larger system. 
+<br>
 
 ---
 
-## Parameter Rationale
+## Model Blueprint and Customization
 
 **`num_ctx` (4096):** Provides enough context window for the user query, 3–4 retrieved document chunks, and conversation history, without incurring the exponential CPU prefill cost of larger windows.
 
@@ -60,3 +57,17 @@ The higher-speed option. Uses Gemma 3n's MatFormer architecture, which allows hi
 **`top_p` (1.0):** Explicitly disabled by setting to 1.0, allowing `min_p` to handle nucleus sampling alone.
 
 **`top_k` (40):** Limits the initial token vocabulary pool at each step, preventing the model from considering low-probability tokens that are unlikely to be relevant in a technical library context.
+
+**`system prompt`:** Ollama allows a system-prompt definition in the Modelfile (or via API), which is a foundational hidden **instruction set** that dictates an LLM's persona, behavior, constraints, and output format before it processes any user input. It prepends context, ensuring the model acts as a specific persona (e.g., "you are a helpful coder") rather than a generic chatbot.
+
+
+<br>
+
+---
+### Tested Models
+
+**Gemma 3 12B QAT** (`Modelfile.gemma12b`)
+The higher-accuracy option. Uses the QAT (Quantization-Aware Training) variant of Gemma 3 12B, sourced from `hf.co/unsloth/gemma-3-12b-it-qat-GGUF:Q4_0`. Unlike standard GGUF quantization, QAT was trained specifically to maintain near 16-bit accuracy while running at 4-bit speeds — making it well suited for a RAG context where faithfulness to retrieved documents matters.
+
+**Gemma 3n E4B** (`Modelfile.gemma3n`)
+The higher-speed option. Uses Gemma 3n's MatFormer architecture, which allows high-speed CPU inference by effectively operating as a 4B model while retaining the organizational structure of a larger system. 
