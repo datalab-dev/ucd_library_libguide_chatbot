@@ -4,7 +4,7 @@ LibBot is a semantic search chatbot for the UC Davis Library. Users ask natural 
 
 > [!NOTE]
 > For end-user access instructions, see the [main README](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/libbot).
-> For configuration, API reference, and server operation, see the [Maintenance Guide](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/maintenance.md).
+> For configuration, API reference, and server operation, see the [Maintenance Guide](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/maintenance.md), and for information regarding the LLMs used in the document synthesis portion of the RAG system, see the [Ollama notes](https://github.com/datalab-dev/ucd_library_libguide_chatbot/blob/main/docs/ollama.md) doc.
 
 <br>
 
