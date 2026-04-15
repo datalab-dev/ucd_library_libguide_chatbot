@@ -3,6 +3,12 @@
 
 <br>
 
+> [!NOTE]
+> ### LLM Evaluated
+> Information regarding the LLMs used in the document synthesis portion of the RAG system can be found in the [ollama notes](https://github.com/datalab-dev/ucd_library_libguide_chatbot/blob/main/docs/ollama.md) doc.
+
+<br>
+
 ## Embedding Models Evaluated
 
 The following models were tested during development. Models are listed in the order they were evaluated. All retrieval examples below use the same query across models for direct comparison.
