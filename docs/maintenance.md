@@ -7,7 +7,7 @@ It is intended for maintainers with access to the UC Davis DataLab datasci serve
 
 > [!NOTE]
 > ### LLM Evaluated
-> Information regarding the LLMs used in the document synthesis portion of the RAG system can be found in the [ollama notes](https://github.com/datalab-dev/ucd_library_libguide_chatbot/blob/main/docs/ollama.md) doc.
+> Information regarding the LLMs used in the document synthesis portion of the RAG system can be found in the [Ollama notes](https://github.com/datalab-dev/ucd_library_libguide_chatbot/blob/main/docs/ollama.md) doc.
 
 
 ---
