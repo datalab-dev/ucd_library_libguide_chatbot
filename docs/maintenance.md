@@ -3,6 +3,13 @@
 This guide covers everything needed to configure, run, and verify the LibBot server.
 It is intended for maintainers with access to the UC Davis DataLab datasci server.
 
+<br>
+
+> [!NOTE]
+> ### LLM Evaluated
+> Information regarding the LLMs used in the document synthesis portion of the RAG system can be found in the [ollama notes](https://github.com/datalab-dev/ucd_library_libguide_chatbot/blob/main/docs/ollama.md) doc.
+
+
 ---
 
 ## Prerequisites
