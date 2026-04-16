@@ -1,6 +1,6 @@
-qFROM gemma3n:e4b
+FROM gemma3n:e4b
 
-PARAMETER num_thread 64
+PARAMETER num_thread 18
 PARAMETER num_ctx 4096
 
 # Sampling for Speed & Directness

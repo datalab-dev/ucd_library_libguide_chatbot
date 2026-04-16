@@ -1,7 +1,7 @@
 FROM hf.co/unsloth/gemma-3-12b-it-GGUF:Q4_K_M
 
 # Optimization for 72-thread server
-PARAMETER num_thread 64
+PARAMETER num_thread 18
 PARAMETER num_ctx 4096
 
 # Sampling for Accuracy
