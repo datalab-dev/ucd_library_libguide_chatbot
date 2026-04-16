@@ -7,11 +7,14 @@ class QueryRequest(BaseModel):
     query: str = Field(..., description="The user's search query.")
     top_k: int = Field(default=3, ge=1, le=20, description="Number of unique results to return.")
 
+class TurnMemory(BaseModel):
+    prompt: str
+    response: str
+
 class ChatRequest(BaseModel):
     message: str = Field(..., description="The user's chat message.")
     top_k: int = Field(default=3, ge=1, le=20, description="Number of RAG results to retrieve.")
-
-
+    history: list[TurnMemory] = []
 
 # ---- Response ----
 

@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import time
+import logging
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,6 +15,14 @@ from pathlib import Path
 from .config import settings
 from .models import QueryRequest, QueryResponse, ChatRequest
 from .retriever import Retriever
+
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+logger = logging.getLogger("libbot")
 
 # --------------------------------------------------------------------------
 # Lifespan: load the retriever once at startup, clean up on shutdown.
@@ -71,33 +80,41 @@ STATIC_DIR = Path(__file__).parent / "static"
 # Helpers
 # --------------------------------------------------------------------------
 
-def build_context_prompt(user_message: str, rag_results: list) -> str:
+def build_context_prompt(user_message: str, rag_results: list, history: list) -> str:
     """
-    Builds a context-aware prompt by injecting the retrieved documents
-    into the LLM's system instructions so it can ground its response.
+    Builds a context-rich prompt for the LLM by combining:
+    - The current user message
+    - The retrieved RAG results (merged into a single text blob)
+    - A memory block of previous conversation turns (if any)
     """
-    context_blocks = []
-    for i, result in enumerate(rag_results, 1):
-        sources = "; ".join(
-            f"{s.libguide_title} → {s.section_title} ({s.url})"
-            for s in result.sources
-        )
-        context_blocks.append(
-            f"[Document {i}]\n{result.text}\nSources: {sources}"
+
+    # Merge retrieved doc texts into a single blob
+    doc_blob = "\n\n".join(r.text for r in rag_results)
+
+    # Build memory block: always turn 1, plus up to 2 most recent turns
+    # (excluding turn 1 to avoid duplication)
+    memory_turns = []
+    if history:
+        memory_turns.append(history[0])           # always anchor turn 1
+        recent = history[1:][-2:]                 # last 2 of the rest
+        memory_turns.extend(recent)
+
+    memory_block = ""
+    if memory_turns:
+        pairs = []
+        for turn in memory_turns:
+            pairs.append(f"User: {turn.prompt}\nAssistant: {turn.response}")
+        memory_block = (
+            "=== Previous Conversation ===\n"
+            + "\n\n".join(pairs)
+            + "\n\n"
         )
 
-    context_str = "\n\n".join(context_blocks)
 
     return (
-        "You are a knowledgeable librarian at an academic research library. "
-        "Using the library documents provided below, write one concise and informative paragraph "
-        "that directly addresses the user's query. Suggest reliable strategies or places to find "
-        "more information, such as library databases, archives, or catalogs. "
-        "Focus on peer-reviewed and library materials. Do not make up specific book titles or "
-        "sources — only refer to general or commonly known resources, or give search strategies. "
-        "Keep everything in brief paragraph style.\n\n"
-        f"=== Library Documents ===\n{context_str}\n\n"
-        f"=== User Query ===\n{user_message}"
+        f"{memory_block}"
+        f"=== Library Documents ===\n{doc_blob}\n\n"
+        f"=== Current User Query ===\n{user_message}"
     )
 
 
@@ -106,7 +123,8 @@ async def stream_ollama(prompt: str) -> AsyncGenerator[str, None]:
     Streams the Ollama response token by token back to the browser.
     Each chunk is a plain text string as it arrives from the LLM.
     """
-    async with httpx.AsyncClient(timeout=120.0) as client:
+    timeout = httpx.Timeout(connect=10.0, read=300.0, write=10.0, pool=10.0)
+    async with httpx.AsyncClient(timeout=timeout) as client:
         async with client.stream(
             "POST",
             settings.ollama_url,
@@ -176,43 +194,37 @@ async def chat(request: ChatRequest):
 
     # --- 1. Retrieve relevant documents ---
     rag_results = retriever.search(query=request.message, top_k=request.top_k)
-
     t1 = time.perf_counter()
-    print(f"[TIMING] Retrieval done: {t1 - t0:.3f}s")
+
+    # --- Server-side logging (scores/text never sent to frontend) ---
+    logger.info(f"Query: {request.message!r}")
+    logger.info(f"Retrieval time: {t1 - t0:.3f}s | Results: {len(rag_results)}")
+    for i, r in enumerate(rag_results, 1):
+        logger.info(f"  [{i}] score={r.score:.4f} | preview={r.text[:80]!r}")
+        for s in r.sources:
+            logger.info(f"       {s.libguide_title} → {s.section_title} | {s.url}")
 
     # --- 2. Build context-aware prompt ---
-    prompt = build_context_prompt(request.message, rag_results)
+    prompt = build_context_prompt(request.message, rag_results, request.history)
+    logger.info(f"Prompt length (chars): {len(prompt)} | approx tokens: {len(prompt)//4}")
     
-    print(f"[TIMING] Prompt length (chars): {len(prompt)}, approx tokens: {len(prompt)//4}")
-
-    # --- 3. Build the RAG sources block to send before the LLM stream ---
-    # We send sources as a special JSON line first, then stream LLM tokens.
-    # The browser uses a simple prefix convention to tell them apart:
-    #   Lines starting with "SOURCES:" carry the JSON sources payload.
-    #   All other lines are plain LLM text tokens.
+    # --- 3. Sources payload — titles and URLs only, scores/text stripped ---
     sources_payload = [
-        {
-            "score": r.score,
-            "text": r.text,
-            "sources": [s.model_dump() for s in r.sources],
-        }
+        {"sources": [s.model_dump() for s in r.sources]}
         for r in rag_results
     ]
 
     async def response_stream() -> AsyncGenerator[str, None]:
-        # First yield the sources block so the frontend can render it immediately
         yield f"SOURCES:{json.dumps(sources_payload)}\n"
         first_token = True
         t_stream_start = time.perf_counter()
-        # Then stream LLM tokens
         async for token in stream_ollama(prompt):
             if first_token:
-                print(f"[TIMING] First token from LLM: {time.perf_counter() - t_stream_start:.3f}s")
+                logger.info(f"First token from LLM: {time.perf_counter() - t_stream_start:.3f}s")
                 first_token = False
             yield token
 
     return StreamingResponse(response_stream(), media_type="text/plain")
-
 
 # --------------------------------------------------------------------------
 # Static files — mounted LAST so it doesn't swallow API routes.
