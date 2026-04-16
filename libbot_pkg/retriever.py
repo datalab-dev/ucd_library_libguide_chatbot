@@ -1,3 +1,5 @@
+from difflib import SequenceMatcher
+
 import chromadb
 import torch
 from sentence_transformers import SentenceTransformer
@@ -15,11 +17,11 @@ class Retriever:
     def __init__(self):
         torch.set_num_threads(settings.torch_num_threads)
 
-        print(f"Connecting to ChromaDB at: {settings.chroma_db_path}")
+        print(f"\033[1;30m\nConnecting to ChromaDB at:\033[0m [\033[36m{settings.chroma_db_path}]\033[0m]")
         self.client = chromadb.PersistentClient(path=settings.chroma_db_path)
         self.collection = self.client.get_collection(name=settings.collection_name)
 
-        print(f"Loading embedding model: {settings.model_name}")
+        print(f"\033[1;30mLoading embedding model:\033[0m [\033[36m{settings.model_name}\033[0m]")
         self.model = SentenceTransformer(
             settings.model_name,
             device="cpu",
@@ -27,7 +29,11 @@ class Retriever:
             tokenizer_kwargs={"padding_side": "left"},
             trust_remote_code=True,
         )
-        print("Retriever ready.")
+        
+        print(f"\033[1;30mUsing LLM model:\033[0m [\033[36m{settings.ollama_model}\033[0m]\n")
+
+
+        print(f"\033[1;30mRetriever ready.\033[0m\n")
 
 
 
@@ -67,8 +73,6 @@ class Retriever:
         t2 = time.perf_counter()
         print(f"[TIMING] ChromaDB query: {t2 - t1:.3f}s")
 
-
-
         metadatas = raw["metadatas"][0]
         distances = raw["distances"][0]
 
@@ -80,15 +84,34 @@ class Retriever:
             text = metadata["text"]
             score = 1 - distance  # cosine distance → similarity
 
-            if text not in text_to_result:
+            # Implemented New "Fuzzy" Deduplication Logic ---
+            matched_key = None
+            for existing_text in text_to_result.keys():
+                # Check for exact substring overlap OR ~90% fuzzy similarity
+                if (text in existing_text) or (existing_text in text) or (SequenceMatcher(None, text, existing_text).ratio() > 0.90):
+                    matched_key = existing_text
+                    break
+
+            if matched_key:
+                # If the new text is longer than the stored one, swap it out to keep the most complete version
+                if len(text) > len(matched_key):
+                    data = text_to_result.pop(matched_key)
+                    data["text"] = text  # Upgrade to the longer text
+                    text_to_result[text] = data
+                    active_text = text
+                else:
+                    active_text = matched_key
+            else:
+                # Brand new, unique text
                 text_to_result[text] = {
                     "score": score,
                     "text": text,
                     "sources": [],
                 }
+                active_text = text
 
-            # Append source info regardless, since we want to aggregate all sources for the same text
-            text_to_result[text]["sources"].append(
+            # Append source info to whichever version we are keeping
+            text_to_result[active_text]["sources"].append(
                 Source(
                     libguide_title=metadata["libguide_title"],
                     section_title=metadata["chunk_title"],
