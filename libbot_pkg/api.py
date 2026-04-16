@@ -25,7 +25,23 @@ retriever: Retriever | None = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global retriever
+    
+    # initialize RAG retriever
     retriever = Retriever()
+
+    # Preload/Warm-up the LLM
+    print(f"Preloading model: {settings.ollama_model}...")
+    try:
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            # Sending an empty prompt to Ollama triggers the load into RAM
+            await client.post(
+                settings.ollama_url,
+                json={"model": settings.ollama_model, "prompt": "", "keep_alive": -1}
+            )
+        print("Model preloaded successfully.")
+    except Exception as e:
+        print(f"Warning: Model preloading failed: {e}")
+        
     yield
     retriever = None
 
