@@ -210,7 +210,10 @@ async def chat(request: ChatRequest):
     
     # --- 3. Sources payload — titles and URLs only, scores/text stripped ---
     sources_payload = [
-        {"sources": [s.model_dump() for s in r.sources]}
+        {
+            "text": r.text,
+            "sources": [s.model_dump() for s in r.sources]
+        }
         for r in rag_results
     ]
 

@@ -47,28 +47,25 @@ function typeHTML(element, html, speed = 10) {
   typeToken();
 }
 
+
 // -------------------------------------------------------
 // Build the sources section HTML from the RAG payload
 // -------------------------------------------------------
 function buildSourcesHTML(ragResults) {
   let html =
-    `<br><strong>Reliable resources from the UC Davis Library:</strong><br>` +
+    `<br><br><br><strong>Reliable resources from the UC Davis Library:</strong><br>` +
     `<i>(Some resource links may require you to be signed into Kerberos or on ` +
     `the UC Davis Library VPN)</i><br><br>`;
 
   ragResults.forEach((result, index) => {
-    html += `<strong>Result ${index + 1}</strong> `;
-    html += `<span style="color: gray;">(score: ${result.score.toFixed(4)})</span><br>`;
-    html += `${result.text}<br><br>`;
-    html += `<em>Found in ${result.sources.length} guide(s):</em><br>`;
     result.sources.forEach(src => {
-      html += `&nbsp;&nbsp;• <strong>${src.libguide_title}</strong> → ${src.section_title}<br>`;
-      html += `&nbsp;&nbsp;&nbsp;&nbsp;<a href="${src.url}" target="_blank">${src.url}</a><br>`;
+      html += `• <strong>${src.libguide_title}</strong> → ${src.section_title}<br>`;
+      html += `<a href="${src.url}" target="_blank">${src.url}</a><br>`;
     });
     html += `<br>`;
   });
 
-  html += `=============================================================================`;
+  // html += `=============================================================================`;
   return html;
 }
 
@@ -154,9 +151,14 @@ async function sendMessage() {
     }
 
     // Once stream is done, render the sources section below the LLM reply
-    if (sourcesDiv._ragResults) {
-      sourcesDiv.innerHTML = ""; // clear placeholder
-      typeHTML(sourcesDiv, buildSourcesHTML(sourcesDiv._ragResults), 5);
+    try {
+      if (sourcesDiv._ragResults) {
+        console.log("RAG results:", JSON.stringify(sourcesDiv._ragResults, null, 2));
+        sourcesDiv.innerHTML = buildSourcesHTML(sourcesDiv._ragResults);
+      }
+    } catch (e) {
+      console.error("Failed to render sources:", e);
+      sourcesDiv.textContent = "(Could not render sources)";
     }
 
   } catch (error) {
