@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -38,31 +41,31 @@ h1 {
   padding-bottom: 40px;
 }
 
+.welcome-title {
+  font-size: 3.6rem;
+  margin: 0 0 -20px 0;
+  color: #012c49;
+}
+
 .welcome-logo {
   height: 300px;
   margin-bottom: 8px;
 }
 
-.welcome-title {
-  font-size: 2.1rem;
-  margin: 0;
-  color: #012c49;
-}
-
 .welcome-subtitle {
   font-size: 1rem;
   color: #5c6a77;
-  margin: 0;
+  margin: -30px 0;
 }
 
 /* Input bar shown on welcome screen */
 .welcome-input-area {
   display: flex;
   gap: 10px;
-  max-width: 900px;
+  max-width: 1000px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 20px 60px;
+  padding: 0 20px 50px;
   box-sizing: border-box;
 }
 
@@ -96,8 +99,22 @@ h1 {
 
 /* ── Messages ── */
 .message {
-  margin-bottom: 15px;
+  margin-bottom: 40px;
   line-height: 1.5;
+}
+
+a {
+  color: #8abce0;
+  /* A nice blue */
+  text-decoration: none;
+  /* Removes the default underline if you want */
+}
+
+/* 2. When the user hovers over it */
+a:hover {
+  color: #8abce0;
+  /* A slightly darker blue */
+  text-decoration: underline;
 }
 
 .user {
@@ -106,11 +123,11 @@ h1 {
 
 .user-bubble {
   display: inline-block;
-  background-color: #5c6a77;
-  color: #fff;
-  font-weight: 600;
+  background-color: #b4c5d4;
+  color: #012c49;
+  font-weight: 450;
   padding: 10px 16px;
-  border-radius: 18px 18px 4px 18px;
+  border-radius: 10px 10px 3px 10px;
   max-width: 75%;
   word-wrap: break-word;
   text-align: left;
@@ -119,6 +136,10 @@ h1 {
 .bot {
   text-align: left;
   color: #012c49;
+  /* Decrease width */
+  max-width: 88%;
+  /* Displace to the right */
+  margin-left: 26px;
 }
 
 /* ── Input area (inside chat) ── */
@@ -168,7 +189,8 @@ button:hover {
   background-color: #000000;
   padding: 10px 16px;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 0.95rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -180,32 +202,38 @@ button:hover {
    Dark mode
 ══════════════════════════════ */
 body.dark {
-  background-color: #1e1e1e;
+  background-color: #161110;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   color: #e0e0e0;
 }
 
 body.dark .header {
-  background-color: #171110;
+  background-color: #1e1e1e;
   border-bottom: 1px solid #444;
 }
 
 body.dark .welcome-title {
-  color: #e0e0e0;
+  color: #ce350f;
+  font-family: 'Cinzel', serif;
 }
 
 body.dark .welcome-subtitle {
-  color: #aaa;
+  color: #d1a909;
+  font-family: 'Cinzel', serif;
 }
 
 body.dark .chat-box {
   background-color: #2b2b2b;
   border-color: #444;
-  color: #f0f0f0;
+  color: #fdf9f3;
 }
 
 body.dark .user-bubble {
-  background-color: #80cbc4;
-  color: #1e1e1e;
+  background-color: #161110;
+  color: #fdf9f3;
 }
 
 body.dark .bot {
@@ -222,18 +250,32 @@ body.dark input[type="text"] {
   border: 1px solid #555;
 }
 
+body.dark a {
+  color: #8abce0;
+  /* A nice blue */
+  text-decoration: none;
+  /* Removes the default underline if you want */
+}
+
+/* 2. When the user hovers over it */
+body.dark a:hover {
+  color: #8abce0;
+  /* A slightly darker blue */
+  text-decoration: underline;
+}
+
 body.dark button {
-  background-color: #E87A1B;
+  background-color: #d1a909;
 }
 
 body.dark button:hover {
-  background-color: #81180D;
+  background-color: #ce350f;
 }
 
 body.dark .mode-toggle-fixed {
-  background-color: #E87A1B;
+  background-color: #d1a909;
 }
 
 body.dark .mode-toggle-fixed:hover {
-  background-color: #81180D;
+  background-color: #ce350f;
 }
