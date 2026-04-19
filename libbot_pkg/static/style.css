@@ -2,26 +2,19 @@ body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
   background-color: #C5D7E4;
-  color: #333;
+  color: #012c49;
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
-.disclaimer {
-  font-size: 0.75rem;
-  color: gray;
-  text-align: center;
-  margin-top: 6px;
-}
-
+/* ── Header ── */
 .header {
   display: flex;
-  /* justify-content: space-between; */
   align-items: center;
   gap: 15px;
   padding: 15px 25px;
-  background-color: #fbf7f0;
+  background-color: #fdf9f3;
   border-bottom: 1px solid #ddd;
 }
 
@@ -34,11 +27,51 @@ h1 {
   margin: 0;
 }
 
+/* ── Welcome screen ── */
+.welcome-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 12px;
+  padding-bottom: 40px;
+}
+
+.welcome-logo {
+  height: 300px;
+  margin-bottom: 8px;
+}
+
+.welcome-title {
+  font-size: 2.1rem;
+  margin: 0;
+  color: #012c49;
+}
+
+.welcome-subtitle {
+  font-size: 1rem;
+  color: #5c6a77;
+  margin: 0;
+}
+
+/* Input bar shown on welcome screen */
+.welcome-input-area {
+  display: flex;
+  gap: 10px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+  box-sizing: border-box;
+}
+
+/* ── Chat interface ── */
 .chat-wrapper {
   display: flex;
   flex-direction: column;
   flex: 1;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   width: 100%;
   padding: 20px;
@@ -46,10 +79,14 @@ h1 {
   overflow: hidden;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .chat-box {
   flex: 1;
   overflow-y: auto;
-  background-color: white;
+  background-color: #fdf9f3;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -57,6 +94,7 @@ h1 {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
+/* ── Messages ── */
 .message {
   margin-bottom: 15px;
   line-height: 1.5;
@@ -64,15 +102,26 @@ h1 {
 
 .user {
   text-align: right;
-  color: #5c6a77;
+}
+
+.user-bubble {
+  display: inline-block;
+  background-color: #5c6a77;
+  color: #fff;
   font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 18px 18px 4px 18px;
+  max-width: 75%;
+  word-wrap: break-word;
+  text-align: left;
 }
 
 .bot {
   text-align: left;
-  color: #000;
+  color: #012c49;
 }
 
+/* ── Input area (inside chat) ── */
 .input-area {
   display: flex;
   gap: 10px;
@@ -97,9 +146,39 @@ button {
 }
 
 button:hover {
-  background-color: #031C34;
+  background-color: #012c49;
 }
 
+/* ── Disclaimer ── */
+.disclaimer {
+  font-size: 0.75rem;
+  color: gray;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 0;
+  padding-bottom: 8px;
+}
+
+/* ── Dark mode toggle (fixed bottom right) ── */
+.mode-toggle-fixed {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #5c6a77;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mode-toggle-fixed:hover {
+  background-color: #012c49;
+}
+
+/* ══════════════════════════════
+   Dark mode
+══════════════════════════════ */
 body.dark {
   background-color: #1e1e1e;
   color: #e0e0e0;
@@ -110,22 +189,31 @@ body.dark .header {
   border-bottom: 1px solid #444;
 }
 
+body.dark .welcome-title {
+  color: #e0e0e0;
+}
+
+body.dark .welcome-subtitle {
+  color: #aaa;
+}
+
 body.dark .chat-box {
   background-color: #2b2b2b;
   border-color: #444;
   color: #f0f0f0;
 }
 
-body.dark .user {
-  color: #80cbc4;
-}
-
-body.dark .disclaimer {
-  color: #888;
+body.dark .user-bubble {
+  background-color: #80cbc4;
+  color: #1e1e1e;
 }
 
 body.dark .bot {
   color: #e0e0e0;
+}
+
+body.dark .disclaimer {
+  color: #888;
 }
 
 body.dark input[type="text"] {
@@ -139,5 +227,13 @@ body.dark button {
 }
 
 body.dark button:hover {
+  background-color: #81180D;
+}
+
+body.dark .mode-toggle-fixed {
+  background-color: #E87A1B;
+}
+
+body.dark .mode-toggle-fixed:hover {
   background-color: #81180D;
 }

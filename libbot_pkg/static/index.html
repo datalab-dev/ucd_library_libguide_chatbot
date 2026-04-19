@@ -12,6 +12,55 @@
     <header class="header">
         <img id="logo" src="assets/logo-light.png" alt="LibBot Logo" class="logo">
         <h1>LibBot</h1>
+    </header>
+
+    <!-- Welcome screen (shown on first load) -->
+    <div id="welcome-screen" class="welcome-screen">
+        <img id="welcome-logo" src="assets/logo-light.png" alt="LibBot Logo" class="welcome-logo">
+        <h1 class="welcome-title">Welcome to LibBot!</h1>
+        <p class="welcome-subtitle">Type your first question to begin.</p>
+    </div>
+
+    <!-- Chat interface (hidden until first message) -->
+    <main id="chat-main" class="chat-wrapper hidden">
+        <div id="chat-box" class="chat-box"></div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        <p class="disclaimer">LibBot is AI-powered and can make mistakes. Use your own judgment when evaluating
+            responses.</p>
+    </main>
+
+    <!-- Input area shown on welcome screen too -->
+    <div id="welcome-input" class="welcome-input-area">
+        <input type="text" id="welcome-user-input" placeholder="Type your message..." autocomplete="off" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <!-- Dark mode toggle fixed to bottom right -->
+    <button id="mode-toggle" class="mode-toggle-fixed">🌙 Dark Mode</button>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LibBot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="light">
+
+    <header class="header">
+        <img id="logo" src="assets/logo-light.png" alt="LibBot Logo" class="logo">
+        <h1>LibBot</h1>
         <button id="mode-toggle">🌙 Dark Mode</button>
     </header>
 
@@ -29,4 +78,4 @@
     <script src="script.js"></script>
 </body>
 
-</html>
+</html> -->
