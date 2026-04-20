@@ -112,7 +112,7 @@ a {
 
 /* 2. When the user hovers over it */
 a:hover {
-  color: #8abce0;
+  color: #7faccc;
   /* A slightly darker blue */
   text-decoration: underline;
 }

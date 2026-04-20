@@ -52,7 +52,7 @@ function typeHTML(element, html, speed = 10) {
 // -------------------------------------------------------
 function buildSourcesHTML(ragResults) {
   let html =
-    `<br><br><br><br><strong>Reliable resources from the UC Davis Library:</strong><br>` +
+    `<br><br><br><br><strong>Reliable LibGuide resources from the UC Davis Library:</strong><br>` +
     `<i>(Some resource links may require you to be signed into Kerberos or on ` +
     `the UC Davis Library VPN)</i><br><br>`;
 
@@ -60,10 +60,25 @@ function buildSourcesHTML(ragResults) {
     result.sources.forEach(src => {
       // Each source may have multiple URLs (libguide, section, external), so we list them all under the same titl
       // This can be edited to only include one type of URL for each source if desired
-      html += `• <strong>${src.libguide_title}</strong> → ${src.section_title}<br>`;
-      html += `<a href="${src.libguide_url}" target="_blank">LibGuide</a><br>`;
-      html += `<a href="${src.section_url}" target="_blank">Section</a><br>`;
-      html += `<a href="${src.external_url}" target="_blank">External resource</a><br>`;
+
+      // Version 1
+      // This version shows URLs directly
+      // html += `• <strong>${src.libguide_title}</strong> ➡ ${src.section_title}<br>`;
+      // html += `<a href="${src.libguide_url}" target="_blank">${src.libguide_url}</a><br>`;
+      // html += `<a href="${src.section_url}" target="_blank">${src.section_url}</a><br>`;
+      // html += `<a href="${src.external_url}" target="_blank">${src.section_title}</a><br>`;
+
+      // Version 2
+      // This version embeds the URLs into the text
+      // html += `• <a href="${src.libguide_url}" target="_blank"><strong>${src.libguide_title}</strong></a><br>
+      // &nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${src.section_url}" target="_blank">Libguide Section</a><br>
+      // &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${src.external_url}" target="_blank">External resource</a><br>`;
+
+      // Version 3
+      // This version embeds the URLs into the text, only returning the Libguide Subpage
+      html += `• <a href="${src.section_url}" target="_blank"><strong>${src.libguide_title}</strong></a><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${src.external_url}" target="_blank">${src.section_title}</a><br>`;
+
     });
     html += `<br>`;
   });
