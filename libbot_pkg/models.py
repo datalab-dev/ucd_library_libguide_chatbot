@@ -22,7 +22,9 @@ class Source(BaseModel):
     """A single guide/section where a result text was found."""
     libguide_title: str
     section_title: str
-    url: str
+    libguide_url: str
+    section_url: str
+    external_url: str
 
 
 class SearchResult(BaseModel):

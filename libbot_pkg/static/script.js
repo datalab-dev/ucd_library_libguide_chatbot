@@ -58,8 +58,12 @@ function buildSourcesHTML(ragResults) {
 
   ragResults.forEach((result, index) => {
     result.sources.forEach(src => {
+      // Each source may have multiple URLs (libguide, section, external), so we list them all under the same titl
+      // This can be edited to only include one type of URL for each source if desired
       html += `• <strong>${src.libguide_title}</strong> → ${src.section_title}<br>`;
-      html += `<a href="${src.url}" target="_blank">${src.url}</a><br>`;
+      html += `<a href="${src.libguide_url}" target="_blank">LibGuide</a><br>`;
+      html += `<a href="${src.section_url}" target="_blank">Section</a><br>`;
+      html += `<a href="${src.external_url}" target="_blank">External resource</a><br>`;
     });
     html += `<br>`;
   });

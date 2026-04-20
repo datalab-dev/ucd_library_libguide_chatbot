@@ -202,7 +202,10 @@ async def chat(request: ChatRequest):
     for i, r in enumerate(rag_results, 1):
         logger.info(f"  [{i}] score={r.score:.4f} | preview={r.text[:80]!r}")
         for s in r.sources:
-            logger.info(f"       {s.libguide_title} → {s.section_title} | {s.url}")
+            logger.info(f"       {s.libguide_title} → {s.section_title} | {s.libguide_url}")
+            logger.info(f"       {s.libguide_title} → {s.section_title} | {s.section_url}")
+            logger.info(f"       {s.libguide_title} → {s.section_title} | {s.external_url}")
+
 
     # --- 2. Build context-aware prompt ---
     prompt = build_context_prompt(request.message, rag_results, request.history)

@@ -115,7 +115,9 @@ class Retriever:
                 Source(
                     libguide_title=metadata["libguide_title"],
                     section_title=metadata["chunk_title"],
-                    url=metadata["libguide_url"],
+                    libguide_url=metadata["libguide_url"],
+                    section_url=metadata["chunk_url"],
+                    external_url=metadata["external_url"]
                 )
             )
             
