@@ -175,6 +175,19 @@ This approach also handles the LLM synthesis step cleanly because the model rece
 
 ---
 
+## Source Retrieval Reranking Pipeline
+
+After ChromaDB returns candidates and fuzzy text deduplication runs, three sequential steps now refine the final ordering before results are returned:
+
+- **Score-based sort** — results are sorted by cosine similarity score descending, as before.
+- **Query-title boost** — each result's guide titles are compared against the query using simple word overlap. Results whose guide title shares words with the query receive a small score nudge (+0.05 per overlapping word). This corrects for cases where a topically-named guide (e.g. "Art, Architecture, Art History and Design") has highly relevant sources but whose text chunks happened to score lower than more generic guides (e.g. "Film & Media Studies") that also link to the same external resource. Results are re-sorted after the boost.
+- **Source-level MMR** — walks the re-sorted list and tracks seen external_urls and libguide_titles. Any result that introduces at least one new guide or external resource is promoted; results that are entirely redundant are demoted to the back. This ensures that a guide introducing unique resources (e.g. Guggenheim, Kress Foundation) surfaces above a fourth or fifth guide that only repeats an already-seen resource (e.g. ARTstor).
+
+> **Conclusion**: pure embedding score alone is insufficient for source ordering in a multi-guide corpus where generic guides broadly index the same popular databases. The boost + MMR combination gives topically specific guides the ranking they deserve.
+
+<br>
+---
+
 ## Final Model Parameter Size: Qwen3 0.6B vs. 4B
 
 A counterintuitive finding emerged during model selection: `Qwen3-Embedding-0.6B` outperformed `Qwen3-Embedding-4B` in retrieval quality on this corpus, or at minimum matched itl, while being substantially faster.
