@@ -48,7 +48,7 @@ Once created, update `OLLAMA_MODEL` in the project's `.env` file to the chosen m
 
 ## Model Blueprint and Customization
 
-**`num_ctx` (4096):** Provides enough context window for the user query, 3–4 retrieved document chunks, and conversation history, without incurring the exponential CPU prefill cost of larger windows.
+**`num_ctx` (2048):** Provides enough context window for the user query, 3–4 retrieved document chunks, and conversation history, without incurring the exponential CPU prefill cost of larger windows.
 
 **`temperature` (0.3):** A low temperature keeps the model focused on the retrieved library content and reduces the tendency to drift toward plausible-sounding but unsupported claims — important for a tool whose purpose is to surface accurate library resources.
 
@@ -66,8 +66,13 @@ Once created, update `OLLAMA_MODEL` in the project's `.env` file to the chosen m
 ---
 ### Tested Models
 
-**Gemma 3 12B QAT** (`Modelfile.gemma12b`) &rarr; saved as `libbot_gemma3-12b`
+**Gemma 3n E4B** (`Modelfile.gemma3n-4b`) &rarr; saved as `libbot_gemma3n-4b`
+> The higher-speed option. Uses Gemma 3n's MatFormer architecture, which allows high-speed CPU inference by effectively operating as a 4B model while retaining the organizational structure of a larger system.
+
+**Gemma 3n E4B - 32** (`Modelfile.gemma3n-4b-32`) &rarr; saved as `libbot_gemma3n-4b-32`
+> Same as Gemma 3n E4B, except the num_threads PARAMETER in the Modelfile is set to 32, rather than 18. This was done for testing of model speed. They are practically identical, but at times the 32-thread one performs slightly better, so it is currently the model being used in .env .
+
+**Gemma 3 12B QAT** (`Modelfile.gemma3-12b`) &rarr; saved as `libbot_gemma3-12b`
 > The higher-accuracy option. Uses the QAT (Quantization-Aware Training) variant of Gemma 3 12B, sourced from `hf.co/unsloth/gemma-3-12b-it-qat-GGUF:Q4_0`. Unlike standard GGUF quantization, QAT was trained specifically to maintain near 16-bit accuracy while running at 4-bit speeds — making it well suited for a RAG context where faithfulness to retrieved documents matters.
 
-**Gemma 3n E4B** (`Modelfile.gemma3n`) &rarr; saved as `libbot_gemma3n-4b`
-> The higher-speed option. Uses Gemma 3n's MatFormer architecture, which allows high-speed CPU inference by effectively operating as a 4B model while retaining the organizational structure of a larger system. 
+
