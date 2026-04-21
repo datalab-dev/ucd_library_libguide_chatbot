@@ -89,7 +89,17 @@ def build_context_prompt(user_message: str, rag_results: list, history: list) ->
     """
 
     # Merge retrieved doc texts into a single blob
-    doc_blob = "\n\n".join(r.text for r in rag_results)
+    # Giving it combined_text to have the LLM see the text with appended titles as labels, was a little bit worse than just creating the combined text manually
+    # doc_blob = "\n\n".join(r.combined_text for r in rag_results)
+
+    # Giving LLM titles + text
+    doc_blob = "\n\n".join(
+        f"LibGuide Title: {r.sources[0].libguide_title}\n"
+        f"Section Title: {r.sources[0].section_title}\n"
+        f"{r.text}"
+        for r in rag_results
+        )
+
 
     # Build memory block: always turn 1, plus up to 2 most recent turns
     # (excluding turn 1 to avoid duplication)
@@ -223,13 +233,15 @@ async def chat(request: ChatRequest):
     async def response_stream() -> AsyncGenerator[str, None]:
         yield f"SOURCES:{json.dumps(sources_payload)}\n"
         first_token = True
+        total_tokens = 0  # add this
         t_stream_start = time.perf_counter()
         async for token in stream_ollama(prompt):
             if first_token:
                 logger.info(f"First token from LLM: {time.perf_counter() - t_stream_start:.3f}s")
                 first_token = False
+            total_tokens += 1  # add this
             yield token
-
+        logger.info(f"Total tokens generated: {total_tokens} | Total LLM time: {time.perf_counter() - t_stream_start:.3f}s")  # add this
     return StreamingResponse(response_stream(), media_type="text/plain")
 
 # --------------------------------------------------------------------------
