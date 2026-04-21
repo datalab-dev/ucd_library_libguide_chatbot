@@ -56,6 +56,9 @@ function buildSourcesHTML(ragResults) {
     `<i>(Some resource links may require you to be signed into Kerberos or on ` +
     `the UC Davis Library VPN)</i><br><br>`;
 
+  // Group by external_url → { section_title, section_url, libguide_titles: [{title, url}] }
+  const grouped = new Map();
+
   ragResults.forEach((result, index) => {
     result.sources.forEach(src => {
       // Each source may have multiple URLs (libguide, section, external), so we list them all under the same titl
@@ -76,12 +79,58 @@ function buildSourcesHTML(ragResults) {
 
       // Version 3
       // This version embeds the URLs into the text, only returning the Libguide Subpage
-      html += `• <a href="${src.section_url}" target="_blank"><strong>${src.libguide_title}</strong></a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${src.external_url}" target="_blank">${src.section_title}</a><br>`;
+      // html += `• <a href="${src.section_url}" target="_blank"><strong>${src.libguide_title}</strong></a><br>
+      // &nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${src.external_url}" target="_blank">${src.section_title}</a><br>`;
 
+      // Version 4 - Group by external URL, then list all guides that link to that URL
+      //     const key = src.external_url || src.section_url;
+
+      //     if (!grouped.has(key)) {
+      //       grouped.set(key, {
+      //         section_title: src.section_title,
+      //         section_url: src.section_url,
+      //         external_url: src.external_url,
+      //         guides: new Map(), // libguide_title → section_url (for linking the guide)
+      //       });
+      //     }
+
+      //     // Use a Map so the same guide title only appears once per resource
+      //     grouped.get(key).guides.set(src.libguide_title, src.section_url);
+      //   });
+      // });
+
+      // grouped.forEach(resource => {
+      //   const guideLinks = [...resource.guides.entries()]
+      //     .map(([title, url]) => `<a href="${url}" target="_blank">${title}</a>`)
+      //     .join(" | ");
+
+      //   html += `• ${guideLinks}<br>`;
+      //   html += `&nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${resource.external_url}" target="_blank">${resource.section_title}</a><br><br>`;
+      // });
+
+      // Version 5 - Group by LibGuide, then list all resources under each guide
+      if (!grouped.has(src.libguide_title)) {
+        grouped.set(src.libguide_title, {
+          section_url: src.section_url,
+          resources: new Map(),
+        });
+      }
+      // Map keyed by section_title so same resource doesn't appear twice under same guide
+      grouped.get(src.libguide_title).resources.set(src.section_title, {
+        external_url: src.external_url,
+        section_url: src.section_url,
+      });
+    });
+  });
+
+  grouped.forEach((guide, title) => {
+    html += `• <a href="${guide.section_url}" target="_blank"><strong>${title}</strong></a><br>`;
+    guide.resources.forEach((urls, section_title) => {
+      html += `&nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${urls.external_url}" target="_blank">${section_title}</a><br>`;
     });
     html += `<br>`;
   });
+
 
   return html;
 }
@@ -181,8 +230,7 @@ async function sendMessage() {
       }
 
       if (sourcesRendered && buffer.length > 0) {
-        llmSpan.textContent += buffer;
-        buffer = "";
+        llmSpan.innerHTML += buffer.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n\n/g, "<br>").replace(/\n/g, "<br>"); buffer = "";
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     }
