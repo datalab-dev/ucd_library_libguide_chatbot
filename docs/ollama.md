@@ -66,8 +66,8 @@ Once created, update `OLLAMA_MODEL` in the project's `.env` file to the chosen m
 ---
 ### Tested Models
 
-**Gemma 3 12B QAT** (`Modelfile.gemma12b`)
-The higher-accuracy option. Uses the QAT (Quantization-Aware Training) variant of Gemma 3 12B, sourced from `hf.co/unsloth/gemma-3-12b-it-qat-GGUF:Q4_0`. Unlike standard GGUF quantization, QAT was trained specifically to maintain near 16-bit accuracy while running at 4-bit speeds — making it well suited for a RAG context where faithfulness to retrieved documents matters.
+**Gemma 3 12B QAT** (`Modelfile.gemma12b`) &rarr; saved as `libbot_gemma3-12b`
+> The higher-accuracy option. Uses the QAT (Quantization-Aware Training) variant of Gemma 3 12B, sourced from `hf.co/unsloth/gemma-3-12b-it-qat-GGUF:Q4_0`. Unlike standard GGUF quantization, QAT was trained specifically to maintain near 16-bit accuracy while running at 4-bit speeds — making it well suited for a RAG context where faithfulness to retrieved documents matters.
 
-**Gemma 3n E4B** (`Modelfile.gemma3n`)
-The higher-speed option. Uses Gemma 3n's MatFormer architecture, which allows high-speed CPU inference by effectively operating as a 4B model while retaining the organizational structure of a larger system. 
+**Gemma 3n E4B** (`Modelfile.gemma3n`) &rarr; saved as `libbot_gemma3n-4b`
+> The higher-speed option. Uses Gemma 3n's MatFormer architecture, which allows high-speed CPU inference by effectively operating as a 4B model while retaining the organizational structure of a larger system. 
