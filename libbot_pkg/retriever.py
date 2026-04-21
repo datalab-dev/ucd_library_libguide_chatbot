@@ -97,6 +97,7 @@ class Retriever:
                 if len(text) > len(matched_key):
                     data = text_to_result.pop(matched_key)
                     data["text"] = text  # Upgrade to the longer text
+                    # data["combined_text"] = metadata["combined_text"]
                     text_to_result[text] = data
                     active_text = text
                 else:
@@ -106,6 +107,7 @@ class Retriever:
                 text_to_result[text] = {
                     "score": score,
                     "text": text,
+                    # "combined_text": metadata["combined_text"],
                     "sources": [],
                 }
                 active_text = text
@@ -132,13 +134,68 @@ class Retriever:
             reverse=True,
         )
 
-        
+        # Query-title relevance boost
+        # If a result's guide title shares words with the query, nudge its score up
+        # This helps surface topically-named guides that may have scored lower on text alone
+        query_words = set(query.lower().split())
+        for r in ranked:
+            for s in r["sources"]:
+                title_words = set(s.libguide_title.lower().split())
+                overlap = query_words & title_words
+                if overlap:
+                    r["score"] += 0.05 * len(overlap)
+                    break
+
+        # Re-sort after boost
+        ranked = sorted(
+            ranked,
+            key=lambda x: x["score"],
+            reverse=True,
+        )
+
+        # Source-level MMR: promote results that introduce new libguides or external URLs
+        seen_external_urls = set()
+        seen_libguide_titles = set()
+        promoted = []
+        demoted = []
+
+        for r in ranked:
+            result_urls = {s.external_url for s in r["sources"] if s.external_url}
+            result_guides = {s.libguide_title for s in r["sources"] if s.libguide_title}
+
+            new_urls = result_urls - seen_external_urls
+            new_guides = result_guides - seen_libguide_titles
+
+            if new_urls or new_guides:
+                promoted.append(r)
+                seen_external_urls.update(result_urls)
+                seen_libguide_titles.update(result_guides)
+            else:
+                demoted.append(r)
+
+        ranked = promoted + demoted
+
         print(f"[TIMING] search() total: {t2 - t0:.3f}s")
+        
+        # Deduplicate sources within each result by (libguide_title, section_title)
+        # This prevents the same resource appearing multiple times in the sources list
+        for r in ranked:
+            seen_sources = set()
+            deduped = []
+            for src in r["sources"]:
+                key = (src.libguide_title, src.section_title)
+                if key not in seen_sources:
+                    seen_sources.add(key)
+                    deduped.append(src)
+            r["sources"] = deduped
+        
+        
         # Convert to SearchResult Pydantic models for API response
         return [
             SearchResult(
                 score=r["score"],
                 text=r["text"],
+                # combined_text=r["combined_text"],
                 sources=r["sources"],
             )
             for r in ranked[:top_k]
