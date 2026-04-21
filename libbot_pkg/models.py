@@ -31,6 +31,7 @@ class SearchResult(BaseModel):
     """One deduplicated result, potentially found across multiple guides."""
     score: float = Field(..., description="Cosine similarity score (higher is better).")
     text: str = Field(..., description="The retrieved text chunk.")
+    # combined_text: str = Field(..., description="Text chunk with titles appended to it.")
     sources: list[Source] = Field(..., description="All guides this text appeared in.")
 
 
