@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   background-color: #C5D7E4;
   color: #012c49;
   display: flex;
@@ -44,7 +44,8 @@ h1 {
 .welcome-title {
   font-size: 3.6rem;
   margin: 0 0 -20px 0;
-  color: #012c49;
+  /* color: #012c49; */
+  color: #051e36;
 }
 
 .welcome-logo {
@@ -53,7 +54,9 @@ h1 {
 }
 
 .welcome-subtitle {
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: none;
   color: #5c6a77;
   margin: -30px 0;
 }
@@ -104,7 +107,7 @@ h1 {
 }
 
 a {
-  color: #8abce0;
+  color: #60a7da;
   /* A nice blue */
   text-decoration: none;
   /* Removes the default underline if you want */
@@ -112,7 +115,7 @@ a {
 
 /* 2. When the user hovers over it */
 a:hover {
-  color: #7faccc;
+  color: #589ac8;
   /* A slightly darker blue */
   text-decoration: underline;
 }
@@ -124,8 +127,7 @@ a:hover {
 .user-bubble {
   display: inline-block;
   background-color: #b4c5d4;
-  color: #012c49;
-  font-weight: 500;
+  color: #011d30;
   padding: 10px 16px;
   border-radius: 10px 10px 3px 10px;
   max-width: 75%;
@@ -136,9 +138,7 @@ a:hover {
 .bot {
   text-align: left;
   color: #012c49;
-  /* Decrease width */
   max-width: 88%;
-  /* Displace to the right */
   margin-left: 26px;
 }
 
@@ -149,14 +149,18 @@ a:hover {
 }
 
 input[type="text"] {
+  font-family: 'Montserrat', sans-serif;
   flex: 1;
   padding: 12px;
   font-size: 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 }
 
 button {
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.4px;
   background-color: #5c6a77;
   color: white;
   font-weight: bold;
@@ -164,6 +168,7 @@ button {
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 button:hover {
@@ -172,7 +177,7 @@ button:hover {
 
 /* ── Disclaimer ── */
 .disclaimer {
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   color: gray;
   text-align: center;
   margin-top: 10px;
@@ -189,7 +194,7 @@ button:hover {
   background-color: #000000;
   padding: 10px 16px;
   border-radius: 20px;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.95rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
@@ -203,7 +208,7 @@ button:hover {
 ══════════════════════════════ */
 body.dark {
   background-color: #161110;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -216,13 +221,18 @@ body.dark .header {
 }
 
 body.dark .welcome-title {
+  font-size: 4rem;
   color: #ce350f;
+  letter-spacing: 4.9px;
   font-family: 'Cinzel', serif;
+  display: flex;
+  flex-direction: column;
 }
 
 body.dark .welcome-subtitle {
   color: #d1a909;
   font-family: 'Cinzel', serif;
+  letter-spacing: 1.6px;
 }
 
 body.dark .chat-box {
