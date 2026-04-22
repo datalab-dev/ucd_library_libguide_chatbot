@@ -186,6 +186,7 @@ After ChromaDB returns candidates and fuzzy text deduplication runs, three seque
 > **Conclusion**: pure embedding score alone is insufficient for source ordering in a multi-guide corpus where generic guides broadly index the same popular databases. The boost + MMR combination gives topically specific guides the ranking they deserve. The final sources displayed by LibBot are the LibGuide section associated with the query, as well as any external resources it may point to.
 
 <br>
+
 ---
 
 ## Final Model Parameter Size: Qwen3 0.6B vs. 4B
