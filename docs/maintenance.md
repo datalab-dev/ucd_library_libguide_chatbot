@@ -16,8 +16,9 @@ It is intended for maintainers with access to the UC Davis DataLab datasci serve
 
 Before starting LibBot, make sure the following are in place:
 
-- You are connected to the **UC Davis Library Staff VPN** and have SSH access to the datasci server
-- The pixi environment is installed — if not, run `pixi install` from the project root
+1. You are connected to the **UC Davis Library Staff VPN**
+2. Have SSH access to the datasci server
+3. Have the pixi environment installed — if not, run `pixi install` from the project root
 
 <br>
 
