@@ -1,7 +1,7 @@
-# LibBot: UC Davis LibGuide RAG Chatbot
+# LibBot: UC Davis Library LibGuide Chatbot
 
 > [!IMPORTANT]  
-> This project originated as a group collaboration back during 2025 Spring Quarter. The original team prototype was primarily built in R, along with Ollama; team member acknowledgements, resources and data store, and documentation can be found in the [[**STS195-legacy-group-original**]](https://github.com/datalab-dev/2025_startup_libguide_chatbot/tree/main) branch of the LibBot repo.
+> This project originated as a group collaboration back during 2025 Spring Quarter. The original team prototype was primarily built in R, along with Ollama; team member acknowledgements, resources and data store, and documentation can be found in the [[**v1.0b-STS195**]](https://github.com/datalab-dev/ucd_library_libguide_chatbot/tree/v1.0b-STS195) branch of this repository.
 
 > [!NOTE]
 > LibBot's corpus is based on UC Davis LibGuides scraped February 20th, 2025.
@@ -10,7 +10,7 @@
 ## Current Contributors
 
 -   **Project Lead**: Dr. Carl Stahmer
--   **Lead Developer & Maintainer**: Federico Aprile
+-   **Lead Developer & Maintainer**: Federico G. Aprile
 
 <br>
 
@@ -45,6 +45,8 @@ The system transforms the UC Davis library’s corpus of guides and resources in
 
 > [!CAUTION]
 > As with all large language model output, use your own critical reading and thinking skills to assess the validity and reliability of this response for your specific query.
+
+<br>
 
 > [!NOTE]
 > - For maintainers needing to start or restart the server, see the [`Maintenance Guide`](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/maintenance.md).
