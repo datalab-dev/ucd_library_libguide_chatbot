@@ -110,7 +110,9 @@ This project uses `Pixi` for environment and dependency management on a Linux x8
 ---
 
 ## Methodology
-There's a [`Methodology Notes`](https://github.com/datalab-dev/2025_startup_libguide_chatbot/blob/libbot/docs/methodology.md) doc that covers the highlights of the research, considerations, and the decisions made at every step of this project--from working on the corpus, to experiomenting with embedding models, and more.
+[**Dedicated `Methodology` Notes**](https://github.com/datalab-dev/ucd_library_libguide_chatbot/blob/main/docs/methodology.md) doc that covers the highlights of the research, considerations, and the decisions made at every step of this project--from working on the corpus, to experimenting with embedding models, facilitating retrieval, and more.
+
+<br>
 
 ---
 > [!WARNING]
