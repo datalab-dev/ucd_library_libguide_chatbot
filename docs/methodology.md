@@ -33,7 +33,7 @@ The following models were tested during development. Models are listed in the or
 
 ## Research and Technical Notes on Key Models
 
-> $\color{Red}\large{\textbf{BERT}}$
+> $\color{Red}\large{\textsf{BERT}}$
 
 BERT (`bert-large-cased`) was the first model evaluated, tested in two configurations: extracting the last hidden layer only, and averaging across the last four hidden layers. Both configurations performed poorly for this task, and BERT is not recommended for semantic retrieval.
 
@@ -43,7 +43,7 @@ Mean pooling over the last hidden layer washes out salient information across lo
 
 ---
 
-> $\color{Darkorange}\large{\textbf{Sentence Transformers (SBERT / MPNet)}}$
+> $\color{Darkorange}\large{\textsf{Sentence Transformers (SBERT / MPNet)}}$
 
 After BERT, development moved to the Sentence Transformers library, which provides models explicitly trained for semantic similarity and retrieval tasks. Two SBERT models were evaluated: `all-MiniLM-L6-v2` and `multi-qa-mpnet-base-cos-v1`.
 
@@ -62,7 +62,7 @@ Other strong SBERT candidates identified during research but not evaluated in fu
 
 ---
 
-> $\color{Yellowgreen}\large{\textbf{JINA}}$
+> $\color{Yellowgreen}\large{\textsf{JINA}}$
 
 `jina-embeddings-v3` is a flexible embedding model that supports **task-specific encoding** through a `task` argument at inference time. This allows the same model to produce qualitatively different embeddings depending on the intended use:
 
@@ -80,7 +80,7 @@ Jina was not selected as the final model primarily because Qwen3 outperformed it
 
 ---
 
-> $\color{Lime}\large{\textbf{Qwen3-Embedding-0.6B}}$
+> $\color{Green}\large{\textsf{Qwen3-Embedding-0.6B}}$
 
 Qwen3-Embedding-0.6B was selected as the embedding model for the current LibBot implementation. It offered the best retrieval performance across all models evaluated, with the best trade-off between quality and computational feasibility on a CPU-only server.
 
