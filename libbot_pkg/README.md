@@ -39,8 +39,8 @@ libbot_pkg/
 Browser (VPN required)
    ↕  (port 8075)
 FastAPI (libbot_pkg)           
-   ├── serves frontend          (static/index.html)
-   ├── POST /chat               → ChromaDB + Qwen embedding → retrieved docs
+   ├── serves frontend          (static/...)
+   ├── POST /chat               → ChromaDB + Qwen embedding → retrieved docs + sources
    │                            → Ollama LLM
    │                            → streamed response back to browser
    └── POST /search             → ChromaDB + Qwen embedding only (no LLM)
@@ -54,7 +54,7 @@ FastAPI (libbot_pkg)
 1. User types a query in the browser and hits Send
 2. `script.js` POSTs `{ message, top_k }` to `/chat`
 3. FastAPI embeds the query using Qwen3-Embedding and searches ChromaDB
-4. The top matching LibGuide documents are retrieved and deduplicated
+4. The top matching LibGuide documents, and sources, are retrieved and deduplicated
 5. A context-aware prompt (query + retrieved docs) is sent to Ollama
 6. Ollama streams its response back through FastAPI to the browser
 7. The browser renders the LLM summary, then displays the library sources below it
@@ -68,7 +68,7 @@ FastAPI (libbot_pkg)
 A standalone test script verifies the package works independently of the web server:
 
 ```bash
-pixi run python test_retriever.py "how do I cite a journal article?"
+pixi run python test_retriever.py "your query here"
 ```
 
 This checks the config, loads the retriever, runs a real query against ChromaDB, and prints the full structured response. Replace the example query with anything you want to test.
