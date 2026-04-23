@@ -15,6 +15,7 @@ body {
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 15px;
   padding: 15px 25px;
   background-color: #fdf9f3;
@@ -22,7 +23,7 @@ body {
 }
 
 .logo {
-  height: 60px;
+  height: 70px;
 }
 
 h1 {
@@ -187,16 +188,16 @@ button:hover {
 
 /* ── Dark mode toggle (fixed bottom right) ── */
 .mode-toggle-fixed {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
+  /* REMOVE: position: fixed, top, right, and z-index */
   background-color: #000000;
   padding: 10px 16px;
   border-radius: 20px;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.95rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  /* Ensure the button doesn't shrink */
+  white-space: nowrap;
 }
 
 .mode-toggle-fixed:hover {
