@@ -3,8 +3,10 @@ __pycache__/
 .env
 *.env
 *.pyc
-.DS_Store
+*.DS_Store
+._.DS_Store
 pixi.lock
 .pixi/*
 !.pixi/config.toml
 .env
+
