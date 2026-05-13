@@ -167,6 +167,7 @@ async function sendMessage() {
 
   const chatBox = document.getElementById("chat-box");
 
+
   // Display user message as a styled bubble
   const userDiv = document.createElement("div");
   userDiv.className = "message user";
@@ -179,7 +180,22 @@ async function sendMessage() {
   // Bot message container
   const botDiv = document.createElement("div");
   botDiv.className = "message bot";
+  // botDiv.style.display = "none"; // Hide until we have real content
   chatBox.appendChild(botDiv);
+
+  // Status/Loading Indicator
+  const statusDiv = document.createElement("div");
+  statusDiv.className = "loading-status";
+  statusDiv.innerHTML = `<div class="status-dot"></div><span class="status-text">Scanning sources...</span>`;
+  chatBox.appendChild(statusDiv);
+
+  // Phrases to rotate through
+  const phrases = ["Finding relevant info...", "Sifting through pages...", "Connecting the dots...", "Formulating answer..."];
+  let phraseIdx = 0;
+  const phraseInterval = setInterval(() => {
+    const textSpan = statusDiv.querySelector(".status-text");
+    if (textSpan) textSpan.textContent = phrases[phraseIdx++ % phrases.length];
+  }, 3000);
 
   // LLM text streams into this span
   const llmSpan = document.createElement("span");
@@ -230,7 +246,16 @@ async function sendMessage() {
       }
 
       if (sourcesRendered && buffer.length > 0) {
-        llmSpan.innerHTML += buffer.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n\n/g, "<br>").replace(/\n/g, "<br>"); buffer = "";
+
+        // As soon as the first chunk arrives, kill the loading state
+        if (statusDiv && statusDiv.parentNode) {
+          clearInterval(phraseInterval);
+          statusDiv.remove(); // Remove the "Scanning sources" text
+          // botDiv.style.display = "block"; // Show the bot bubble
+        }
+
+        llmSpan.innerHTML += buffer.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n\n/g, "<br>").replace(/\n/g, "<br>");
+        buffer = "";
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     }

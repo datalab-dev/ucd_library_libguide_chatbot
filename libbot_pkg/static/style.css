@@ -204,6 +204,62 @@ button:hover {
   background-color: #012c49;
 }
 
+/* Container for the status */
+.loading-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-style: italic;
+  color: #666;
+  margin: 12px 0;
+  font-size: 0.9rem;
+  transition: opacity 0.3s ease;
+}
+
+/* The pulsing dot */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #60a7da;
+  /* NotebookLM Blue */
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+/* Smooth fade for text changes */
+.status-text {
+  animation: fadeInOut 3s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+}
+
+@keyframes fadeInOut {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
 /* ══════════════════════════════
    Dark mode
 ══════════════════════════════ */
