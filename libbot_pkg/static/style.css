@@ -211,7 +211,7 @@ button:hover {
   gap: 8px;
   font-style: italic;
   color: #666;
-  margin: 10px 0;
+  margin: 12px 0;
   font-size: 0.9rem;
   transition: opacity 0.3s ease;
 }
@@ -220,7 +220,7 @@ button:hover {
 .status-dot {
   width: 8px;
   height: 8px;
-  background-color: #4285f4;
+  background-color: #60a7da;
   /* NotebookLM Blue */
   border-radius: 50%;
   animation: pulse 1.5s infinite;
