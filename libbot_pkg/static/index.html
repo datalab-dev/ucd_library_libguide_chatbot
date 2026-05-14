@@ -3,55 +3,77 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LibBot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cinzel:wght@400;700&display=swap">
     <link rel="stylesheet" href="style.css">
-    <<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
-        </script>
-        <!-- Optional: To prevent XSS if you don't trust the LLM output entirely -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 </head>
 
-<body class="light">
-
+<body>
     <header class="header">
-        <a href="https://datalab.ucdavis.edu/" target="_blank">
-            <img id="logo" src="assets/datalab-logo-black.svg" alt="LibBot Logo" class="logo">
+        <a href="https://datalab.ucdavis.edu/" target="_blank" class="header-logo-link">
+            <img id="logo" src="assets/datalab-logo-black.svg" alt="DataLab Logo" class="logo">
         </a>
-        <button id="mode-toggle" class="mode-toggle-fixed">🌙 Dark Mode</button>
+        <button id="mode-toggle" class="mode-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+            <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" style="display:none">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+        </button>
     </header>
 
-    <!-- Welcome screen (shown on first load) -->
+    <!-- Welcome screen -->
     <div id="welcome-screen" class="welcome-screen">
-        <h1 class="welcome-title">Welcome to</h1>
-        <img id="welcome-logo" src="assets/logo-light-transparent.svg" alt="LibBot Logo" class="welcome-logo">
-        <p class="welcome-subtitle">Type your first question to begin.</p>
+        <div class="welcome-content">
+            <img id="welcome-logo" src="assets/logo-light-transparent.svg" alt="LibBot Logo" class="welcome-logo">
+            <h1 class="welcome-title">Welcome to LibBot</h1>
+            <p class="welcome-subtitle">Your UC Davis Library research assistant</p>
+        </div>
+        <div class="welcome-input-wrapper">
+            <div class="input-row">
+                <textarea id="welcome-user-input" placeholder="Ask me anything about UC Davis library resources..." autocomplete="off" rows="1"></textarea>
+                <button onclick="sendMessage()" class="send-btn" aria-label="Send">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- Chat interface (hidden until first message) -->
+    <!-- Chat interface -->
     <main id="chat-main" class="chat-wrapper hidden">
         <div id="chat-box" class="chat-box"></div>
         <div class="input-area">
-            <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" />
-            <button onclick="sendMessage()">Send</button>
+            <div class="input-row">
+                <textarea id="user-input" placeholder="Ask a follow-up question..." autocomplete="off" rows="1"></textarea>
+                <button onclick="sendMessage()" class="send-btn" aria-label="Send">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+            <p class="disclaimer">LibBot is AI-powered and can make mistakes. Use your own judgment when evaluating responses.</p>
         </div>
-        <p class="disclaimer">LibBot is AI-powered and can make mistakes. Use your own judgment when evaluating
-            responses.</p>
     </main>
 
-    <!-- Input area shown on welcome screen too -->
-    <div id="welcome-input" class="welcome-input-area">
-        <input type="text" id="welcome-user-input" placeholder="Type your message..." autocomplete="off" />
-        <button onclick="sendMessage()">Send</button>
-    </div>
-
     <script>
-        // Set options for Marked to be more "Gfm" (GitHub Flavored Markdown) friendly
-        marked.setOptions({
-            breaks: true, // Adds <br> on single line breaks (very important for chat)
-            gfm: true
-        });
+        marked.setOptions({ breaks: true, gfm: true });
     </script>
-    <script src="script.js"></script>
     <script src="script.js"></script>
 </body>
 
