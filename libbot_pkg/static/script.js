@@ -223,12 +223,15 @@ async function sendMessage() {
     let buffer = "";
     let sourcesRendered = false;
 
+    let fullLLMResponse = ""; // Accumulate the raw markdown here
+
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
 
       buffer += decoder.decode(value, { stream: true });
 
+      // 1. Handle the metadata line
       if (!sourcesRendered && buffer.includes("\n")) {
         const newlineIndex = buffer.indexOf("\n");
         const firstLine = buffer.slice(0, newlineIndex);
@@ -236,28 +239,28 @@ async function sendMessage() {
 
         if (firstLine.startsWith("SOURCES:")) {
           try {
-            const ragResults = JSON.parse(firstLine.slice("SOURCES:".length));
+            sourcesDiv._ragResults = JSON.parse(firstLine.slice("SOURCES:".length));
             sourcesRendered = true;
-            sourcesDiv._ragResults = ragResults;
-          } catch (e) {
-            console.error("Failed to parse sources:", e);
-          }
+          } catch (e) { console.error("Source parse error", e); }
         }
       }
 
+      // 2. Handle the streaming Markdown
       if (sourcesRendered && buffer.length > 0) {
-
-        // As soon as the first chunk arrives, kill the loading state
         if (statusDiv && statusDiv.parentNode) {
           clearInterval(phraseInterval);
-          statusDiv.remove(); // Remove the "Scanning sources" text
-          // botDiv.style.display = "block"; // Show the bot bubble
-
+          statusDiv.remove();
           llmSpan.classList.add("fade-in-text");
         }
 
-        llmSpan.innerHTML += buffer.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n\n/g, "<br>").replace(/\n/g, "<br>");
+        // Append new chunk to our raw string
+        fullLLMResponse += buffer;
         buffer = "";
+
+        // Convert the entire raw markdown string to sanitized HTML
+        const rawHtml = marked.parse(fullLLMResponse);
+        llmSpan.innerHTML = DOMPurify.sanitize(rawHtml);
+
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     }

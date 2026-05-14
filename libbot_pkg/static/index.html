@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <title>LibBot</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+        </script>
+        <!-- Optional: To prevent XSS if you don't trust the LLM output entirely -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 </head>
 
 <body class="light">
@@ -41,6 +44,14 @@
         <button onclick="sendMessage()">Send</button>
     </div>
 
+    <script>
+        // Set options for Marked to be more "Gfm" (GitHub Flavored Markdown) friendly
+        marked.setOptions({
+            breaks: true, // Adds <br> on single line breaks (very important for chat)
+            gfm: true
+        });
+    </script>
+    <script src="script.js"></script>
     <script src="script.js"></script>
 </body>
 

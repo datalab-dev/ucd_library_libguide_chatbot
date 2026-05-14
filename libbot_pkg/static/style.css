@@ -186,6 +186,55 @@ button:hover {
   padding-bottom: 8px;
 }
 
+/* Ensure the bot bubble handles markdown elements nicely */
+.message.bot span {
+  display: block;
+  line-height: 1.6;
+}
+
+.message.bot p {
+  margin-bottom: 12px;
+  /* Space between paragraphs */
+}
+
+.message.bot ul,
+.message.bot ol {
+  margin-left: 20px;
+  margin-bottom: 12px;
+}
+
+.message.bot strong {
+  color: #002855;
+  /* Use a UC Davis Aggie Blue or similar for emphasis */
+  font-weight: 600;
+}
+
+/* Style for Section Titles formatted as inline code */
+.message.bot code {
+  font-family: 'Montserrat', sans-serif;
+  /* Keep the same font, don't use monospace */
+  background-color: #e8eff5;
+  /* Light blue tint */
+  color: #002855;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.95em;
+}
+
+/* Style the fallback/cloud quota notice */
+.message.bot em {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.message.bot pre {
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
 /* ── Dark mode toggle (fixed bottom right) ── */
 .mode-toggle-fixed {
   /* REMOVE: position: fixed, top, right, and z-index */
@@ -314,6 +363,19 @@ body.dark .chat-box {
   background-color: #2b2b2b;
   border-color: #444;
   color: #fdf9f3;
+}
+
+body.dark .message.bot strong {
+  color: #d1a909;
+}
+
+body.dark .message.bot code {
+  background-color: #383838;
+  color: #d1a909;
+}
+
+body.dark .message.bot pre {
+  background: #1e1e1e;
 }
 
 body.dark .user-bubble {
