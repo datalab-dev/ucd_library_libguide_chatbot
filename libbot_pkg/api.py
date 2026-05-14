@@ -38,18 +38,21 @@ async def lifespan(app: FastAPI):
     # initialize RAG retriever
     retriever = Retriever()
 
-    # Preload/Warm-up the LLM
-    print(f"Preloading model: {settings.ollama_model}...")
-    try:
-        async with httpx.AsyncClient(timeout=120.0) as client:
-            # Sending an empty prompt to Ollama triggers the load into RAM
+
+    async with httpx.AsyncClient(timeout=300.0) as client:
+        # ONLY preload the local model (the one that actually needs RAM/CPU)
+        print(f"Preloading local model into RAM: {settings.ollama_local_model}...")
+        try:
             await client.post(
-                settings.ollama_url,
-                json={"model": settings.ollama_model, "prompt": "", "keep_alive": -1}
+                # Ensure this is your LOCAL endpoint specifically
+                f"{settings.ollama_url}", 
+                json={"model": settings.ollama_local_model, "prompt": "", "keep_alive": -1}
             )
-        print("Model preloaded successfully.")
-    except Exception as e:
-        print(f"Warning: Model preloading failed: {e}")
+        except Exception as e:
+            print(f"Warning: Local model preload failed: {e}")
+
+        # For the cloud model, just do a simple reachability test or skip entirely
+        print(f"Cloud mode active: {settings.ollama_cloud_model}")
         
     yield
     retriever = None
@@ -128,7 +131,7 @@ def build_context_prompt(user_message: str, rag_results: list, history: list) ->
     )
 
 
-async def stream_ollama(prompt: str) -> AsyncGenerator[str, None]:
+async def stream_ollama(prompt: str, model_name: str) -> AsyncGenerator[str, None]:
     """
     Streams the Ollama response token by token back to the browser.
     Each chunk is a plain text string as it arrives from the LLM.
@@ -138,9 +141,10 @@ async def stream_ollama(prompt: str) -> AsyncGenerator[str, None]:
         async with client.stream(
             "POST",
             settings.ollama_url,
-            json={"model": settings.ollama_model, "prompt": prompt, "stream": True},
+            json={"model": model_name, "prompt": prompt, "stream": True},
         ) as response:
-            response.raise_for_status()
+            # Important: raise_for_status() triggers the fallback block in the chat route
+            response.raise_for_status() 
             async for line in response.aiter_lines():
                 if line:
                     try:
@@ -231,17 +235,37 @@ async def chat(request: ChatRequest):
     ]
 
     async def response_stream() -> AsyncGenerator[str, None]:
+        # Always yield sources first so the UI can render them immediately
         yield f"SOURCES:{json.dumps(sources_payload)}\n"
-        first_token = True
-        total_tokens = 0  # add this
-        t_stream_start = time.perf_counter()
-        async for token in stream_ollama(prompt):
-            if first_token:
-                logger.info(f"First token from LLM: {time.perf_counter() - t_stream_start:.3f}s")
-                first_token = False
-            total_tokens += 1  # add this
-            yield token
-        logger.info(f"Total tokens generated: {total_tokens} | Total LLM time: {time.perf_counter() - t_stream_start:.3f}s")  # add this
+        
+        target_model = settings.ollama_model # Cloud if set in .env
+        fallback_happened = False
+        
+        try:
+            # --- Attempt 1: Primary Model (Cloud) ---
+            t_start = time.perf_counter()
+            async for token in stream_ollama(prompt, target_model):
+                yield token
+            logger.info(f"Stream finished using {target_model} in {time.perf_counter() - t_start:.3f}s")
+
+        except Exception as e:
+            # --- Attempt 2: Fallback to Local ---
+            if settings.active_llm_mode == "cloud":
+                logger.error(f"Cloud model ({target_model}) failed: {e}")
+                logger.info(f"Falling back to local model: {settings.ollama_local_model}")
+                
+                # Visual cue for the user (Optional)
+                yield "\n\n*(Cloud quota reached. Switching to local CPU synthesis...)*\n\n"
+                
+                t_fallback = time.perf_counter()
+                async for token in stream_ollama(prompt, settings.ollama_local_model):
+                    yield token
+                logger.info(f"Fallback stream finished in {time.perf_counter() - t_fallback:.3f}s")
+            else:
+                # If we were already in local mode, there is nothing to fall back to
+                logger.error(f"Local model failed: {e}")
+                yield f"\n\n[Error: The LLM server is currently unavailable.]"
+
     return StreamingResponse(response_stream(), media_type="text/plain")
 
 # --------------------------------------------------------------------------

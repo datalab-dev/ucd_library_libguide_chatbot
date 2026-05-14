@@ -252,6 +252,8 @@ async function sendMessage() {
           clearInterval(phraseInterval);
           statusDiv.remove(); // Remove the "Scanning sources" text
           // botDiv.style.display = "block"; // Show the bot bubble
+
+          llmSpan.classList.add("fade-in-text");
         }
 
         llmSpan.innerHTML += buffer.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n\n/g, "<br>").replace(/\n/g, "<br>");

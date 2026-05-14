@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
+from typing import Literal
 
 # Pydantic automatically matches field names case-insensitively
 
@@ -13,9 +14,13 @@ class Settings(BaseSettings):
     torch_num_threads: int = 16
     top_k: int = 3
 
-    # --- Ollama LLM --- (TEMPORARY)
+    # --- Ollama LLM --- 
     ollama_url: str
-    ollama_model: str
+
+    # Accept only "local" or "cloud" to prevent typos
+    active_llm_mode: Literal["local", "cloud"] = "local"
+    ollama_local_model: str
+    ollama_cloud_model: str
 
     # --- API Server ---
     host: str
@@ -29,5 +34,11 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8"
     ) # __file__ is this current file, .parent is the package, and second .parent is where the .env lives
 
+    # Dynamic property to get the currently desired model
+    @property
+    def ollama_model(self) -> str:
+        if self.active_llm_mode == "cloud":
+            return self.ollama_cloud_model
+        return self.ollama_local_model
 
 settings = Settings()
