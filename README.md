@@ -120,5 +120,4 @@ This project uses `Pixi` for environment and dependency management on a Linux x8
 ## Examples LibBot Interactions:
 
 ![LiBot Landing Page](docs/assets/libbot_landing_page.png)
-
-- 3-5 examples with a screenshot each
+![LiBot Interaction Example 1](docs/assets/libbot_interaction_example_1.png)
