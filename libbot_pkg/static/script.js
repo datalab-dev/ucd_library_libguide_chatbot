@@ -56,58 +56,10 @@ function buildSourcesHTML(ragResults) {
     `<i>(Some resource links may require you to be signed into Kerberos or on ` +
     `the UC Davis Library VPN)</i><br><br>`;
 
-  // Group by external_url → { section_title, section_url, libguide_titles: [{title, url}] }
   const grouped = new Map();
 
   ragResults.forEach((result, index) => {
     result.sources.forEach(src => {
-      // Each source may have multiple URLs (libguide, section, external), so we list them all under the same titl
-      // This can be edited to only include one type of URL for each source if desired
-
-      // Version 1
-      // This version shows URLs directly
-      // html += `• <strong>${src.libguide_title}</strong> ➡ ${src.section_title}<br>`;
-      // html += `<a href="${src.libguide_url}" target="_blank">${src.libguide_url}</a><br>`;
-      // html += `<a href="${src.section_url}" target="_blank">${src.section_url}</a><br>`;
-      // html += `<a href="${src.external_url}" target="_blank">${src.section_title}</a><br>`;
-
-      // Version 2
-      // This version embeds the URLs into the text
-      // html += `• <a href="${src.libguide_url}" target="_blank"><strong>${src.libguide_title}</strong></a><br>
-      // &nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${src.section_url}" target="_blank">Libguide Section</a><br>
-      // &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${src.external_url}" target="_blank">External resource</a><br>`;
-
-      // Version 3
-      // This version embeds the URLs into the text, only returning the Libguide Subpage
-      // html += `• <a href="${src.section_url}" target="_blank"><strong>${src.libguide_title}</strong></a><br>
-      // &nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${src.external_url}" target="_blank">${src.section_title}</a><br>`;
-
-      // Version 4 - Group by external URL, then list all guides that link to that URL
-      //     const key = src.external_url || src.section_url;
-
-      //     if (!grouped.has(key)) {
-      //       grouped.set(key, {
-      //         section_title: src.section_title,
-      //         section_url: src.section_url,
-      //         external_url: src.external_url,
-      //         guides: new Map(), // libguide_title → section_url (for linking the guide)
-      //       });
-      //     }
-
-      //     // Use a Map so the same guide title only appears once per resource
-      //     grouped.get(key).guides.set(src.libguide_title, src.section_url);
-      //   });
-      // });
-
-      // grouped.forEach(resource => {
-      //   const guideLinks = [...resource.guides.entries()]
-      //     .map(([title, url]) => `<a href="${url}" target="_blank">${title}</a>`)
-      //     .join(" | ");
-
-      //   html += `• ${guideLinks}<br>`;
-      //   html += `&nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${resource.external_url}" target="_blank">${resource.section_title}</a><br><br>`;
-      // });
-
       // Version 5 - Group by LibGuide, then list all resources under each guide
       if (!grouped.has(src.libguide_title)) {
         grouped.set(src.libguide_title, {
@@ -115,7 +67,6 @@ function buildSourcesHTML(ragResults) {
           resources: new Map(),
         });
       }
-      // Map keyed by section_title so same resource doesn't appear twice under same guide
       grouped.get(src.libguide_title).resources.set(src.section_title, {
         external_url: src.external_url,
         section_url: src.section_url,
@@ -131,7 +82,6 @@ function buildSourcesHTML(ragResults) {
     html += `<br>`;
   });
 
-
   return html;
 }
 
@@ -144,31 +94,37 @@ function activateChat() {
   if (chatStarted) return;
   chatStarted = true;
   document.getElementById("welcome-screen").classList.add("hidden");
-  document.getElementById("welcome-input").classList.add("hidden");
   document.getElementById("chat-main").classList.remove("hidden");
+  document.getElementById("new-chat-btn").classList.remove("hidden");
+}
+
+function newChat() {
+  chatStarted = false;
+  document.getElementById("chat-box").innerHTML = "";
+  document.getElementById("chat-main").classList.add("hidden");
+  document.getElementById("welcome-screen").classList.remove("hidden");
+  document.getElementById("new-chat-btn").classList.add("hidden");
+  document.getElementById("welcome-user-input").focus();
 }
 
 // -------------------------------------------------------
 // Send message — handles streaming response
 // -------------------------------------------------------
 async function sendMessage() {
-  // Support both the welcome input and the chat input
   const welcomeInput = document.getElementById("welcome-user-input");
   const chatInput = document.getElementById("user-input");
 
-  // Grab text from whichever input is active
   const activeInput = chatStarted ? chatInput : welcomeInput;
   const userMessage = activeInput.value.trim();
   if (!userMessage) return;
   activeInput.value = "";
+  activeInput.style.height = "auto";
+  activeInput.style.overflowY = "hidden";
 
-  // Switch from welcome screen to chat on first send
   activateChat();
 
   const chatBox = document.getElementById("chat-box");
 
-
-  // Display user message as a styled bubble
   const userDiv = document.createElement("div");
   userDiv.className = "message user";
   const userBubble = document.createElement("span");
@@ -177,31 +133,80 @@ async function sendMessage() {
   userDiv.appendChild(userBubble);
   chatBox.appendChild(userDiv);
 
-  // Bot message container
   const botDiv = document.createElement("div");
   botDiv.className = "message bot";
-  // botDiv.style.display = "none"; // Hide until we have real content
   chatBox.appendChild(botDiv);
 
-  // Status/Loading Indicator
   const statusDiv = document.createElement("div");
   statusDiv.className = "loading-status";
-  statusDiv.innerHTML = `<div class="status-dot"></div><span class="status-text">Scanning sources...</span>`;
+  statusDiv.innerHTML = `<div class="loading-spinner"></div><span class="status-text"></span>`;
   chatBox.appendChild(statusDiv);
 
-  // Phrases to rotate through
-  const phrases = ["Finding relevant info...", "Sifting through pages...", "Connecting the dots...", "Formulating answer..."];
-  let phraseIdx = 0;
+  const normalPhrases = [
+    "Thinking...",
+    "Pondering...",
+    "Scanning sources...",
+    "Reading through the docs...",
+    "Connecting the dots...",
+    "Searching the library...",
+    "Sifting through pages...",
+    "Finding relevant info...",
+    "Formulating a response...",
+    "Almost there...",
+    "Cross-referencing sources...",
+    "Reviewing the material...",
+    "Warming up the neurons...",
+    "Consulting the oracle...",
+    "Doing the math...",
+    "Summoning knowledge...",
+    "Thinking really hard...",
+    "Reading between the lines...",
+    "Interrogating the data...",
+    "Teaching myself things...",
+    "Negotiating with my training data...",
+    "Having a quick existential moment...",
+    "Converting electricity to wisdom...",
+    "Asking my inner monologue...",
+    "Pretending I knew this already...",
+    "Definitely not making this up...",
+    "Checking my notes...",
+    "One moment of genius incoming...",
+    "Staring into the void productively...",
+    "Running it by the committee...",
+  ];
+  const davisPhrases = [
+    "Tipping cows...",
+    "Waiting in line at Lawntopia...",
+    "Touching the Egghead...",
+    "Sleeping through my 8am...",
+    "Finding parking on campus...",
+    "Waiting for the Unitrans bus...",
+    "Petting the horses at the barn...",
+    "Counting bikes on the path...",
+    "Feeding the ducks at Putah Creek...",
+    "Dodging cyclists on the quad...",
+    "Checking the Silo menu...",
+    "Getting lost in the Death Star...",
+    "Trying to escape the Wellman Hall basement...",
+    "Waiting in line for lat pulldowns in the ARC...",
+    "Watching the cows chew...",
+    "Untangling the bike lock...",
+    "Chasing the geese off the quad...",
+  ];
+  const pickPhrase = () => Math.random() < 0.33
+    ? davisPhrases[Math.floor(Math.random() * davisPhrases.length)]
+    : normalPhrases[Math.floor(Math.random() * normalPhrases.length)];
+
+  // set a phrase immediately, then rotate every 2s
+  statusDiv.querySelector(".status-text").textContent = pickPhrase();
   const phraseInterval = setInterval(() => {
     const textSpan = statusDiv.querySelector(".status-text");
-    if (textSpan) textSpan.textContent = phrases[phraseIdx++ % phrases.length];
-  }, 3000);
+    if (textSpan) textSpan.textContent = pickPhrase();
+  }, 3500);
 
-  // LLM text streams into this span
   const llmSpan = document.createElement("span");
   botDiv.appendChild(llmSpan);
 
-  // Sources rendered after LLM is done
   const sourcesDiv = document.createElement("div");
   botDiv.appendChild(sourcesDiv);
 
@@ -222,8 +227,7 @@ async function sendMessage() {
     const decoder = new TextDecoder();
     let buffer = "";
     let sourcesRendered = false;
-
-    let fullLLMResponse = ""; // Accumulate the raw markdown here
+    let fullLLMResponse = "";
 
     while (true) {
       const { done, value } = await reader.read();
@@ -231,7 +235,6 @@ async function sendMessage() {
 
       buffer += decoder.decode(value, { stream: true });
 
-      // 1. Handle the metadata line
       if (!sourcesRendered && buffer.includes("\n")) {
         const newlineIndex = buffer.indexOf("\n");
         const firstLine = buffer.slice(0, newlineIndex);
@@ -245,7 +248,6 @@ async function sendMessage() {
         }
       }
 
-      // 2. Handle the streaming Markdown
       if (sourcesRendered && buffer.length > 0) {
         if (statusDiv && statusDiv.parentNode) {
           clearInterval(phraseInterval);
@@ -253,11 +255,9 @@ async function sendMessage() {
           llmSpan.classList.add("fade-in-text");
         }
 
-        // Append new chunk to our raw string
         fullLLMResponse += buffer;
         buffer = "";
 
-        // Convert the entire raw markdown string to sanitized HTML
         const rawHtml = marked.parse(fullLLMResponse);
         llmSpan.innerHTML = DOMPurify.sanitize(rawHtml);
 
@@ -265,7 +265,6 @@ async function sendMessage() {
       }
     }
 
-    // Render sources as plain HTML so links are clickable
     try {
       if (sourcesDiv._ragResults) {
         console.log("RAG results:", JSON.stringify(sourcesDiv._ragResults, null, 2));
@@ -277,42 +276,94 @@ async function sendMessage() {
     }
 
   } catch (error) {
+    clearInterval(phraseInterval);
+    const statusText = statusDiv.querySelector(".status-text");
+    if (statusText) statusText.textContent = "Failed to reach the server. Please try again.";
     console.error("Fetch error:", error);
-    botDiv.textContent = "⚠️ Failed to reach server.";
   }
 
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 // -------------------------------------------------------
-// Dark mode toggle
+// Evil mode easter egg — type console.log(67) in DevTools
 // -------------------------------------------------------
-const modeToggle = document.getElementById("mode-toggle");
+let evilMode = false;
 const logo = document.getElementById("logo");
 const welcomeLogo = document.getElementById("welcome-logo");
 
-modeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  const isDark = document.body.classList.contains("dark");
-  modeToggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+function toggleEvilMode() {
+  evilMode = !evilMode;
+  document.body.classList.toggle("evil", evilMode);
+
+  if (evilMode) {
+    welcomeLogo.src = "assets/logo-dark.svg";
+  } else {
+    const isDark = document.body.classList.contains("dark");
+    welcomeLogo.src = isDark ? "assets/logo-dark.svg" : "assets/logo-light-transparent.svg";
+  }
+}
+
+const _origConsoleLog = console.log;
+console.log = function (...args) {
+  if (args.length === 1 && (args[0] === 67 || args[0] === "67")) {
+    toggleEvilMode();
+    _origConsoleLog.call(console, `[evil mode ${evilMode ? "ON" : "OFF"}]`);
+    return;
+  }
+  _origConsoleLog.apply(console, args);
+};
+
+// -------------------------------------------------------
+// Dark mode toggle + persistence
+// -------------------------------------------------------
+const modeToggle = document.getElementById("mode-toggle");
+const iconMoon = document.getElementById("icon-moon");
+const iconSun = document.getElementById("icon-sun");
+
+function applyTheme(isDark) {
+  document.body.classList.toggle("dark", isDark);
+  iconMoon.style.display = isDark ? "none" : "block";
+  iconSun.style.display  = isDark ? "block" : "none";
   logo.src = isDark ? "assets/datalab-logo-gold.svg" : "assets/datalab-logo-black.svg";
-  welcomeLogo.src = isDark ? "assets/logo-dark.svg" : "assets/logo-light-transparent.svg";
+  if (!evilMode) {
+    welcomeLogo.src = isDark ? "assets/logo-dark.svg" : "assets/logo-light-transparent.svg";
+  }
+}
+
+// Restore saved preference on load
+applyTheme(localStorage.getItem("theme") === "dark");
+
+modeToggle.addEventListener("click", () => {
+  const isDark = !document.body.classList.contains("dark");
+  applyTheme(isDark);
+  localStorage.setItem("theme", isDark ? "dark" : "light");
 });
 
 // -------------------------------------------------------
 // Enter key to send
 // -------------------------------------------------------
+function autoResizeTextarea(el) {
+  el.style.height = "auto";
+  const capped = Math.min(el.scrollHeight, 140);
+  el.style.height = capped + "px";
+  el.style.overflowY = el.scrollHeight > 140 ? "auto" : "hidden";
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-  // Wire Enter key for both inputs
   ["user-input", "welcome-user-input"].forEach(id => {
-    const input = document.getElementById(id);
-    if (input) {
-      input.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          sendMessage();
-        }
-      });
-    }
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+
+    el.addEventListener("input", function () {
+      autoResizeTextarea(el);
+    });
   });
 });

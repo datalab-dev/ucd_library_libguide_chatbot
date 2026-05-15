@@ -9,4 +9,4 @@ pixi.lock
 .pixi/*
 !.pixi/config.toml
 .env
-
+.claude/
