@@ -103,7 +103,7 @@ body {
   padding: 0 32px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 6px 24px rgba(12, 27, 42, 0.18);
+  box-shadow: 0 4px 16px rgba(26, 58, 92, 0.18);
   flex-shrink: 0;
   height: 78px;
   position: relative;
@@ -188,7 +188,6 @@ body.dark .new-chat-btn:hover {
   overflow: hidden;
   min-height: 0;
   padding-bottom: 200px;
-  /* dot pattern continues from body background */
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
   background-size: var(--dot-size) var(--dot-size);
@@ -202,6 +201,27 @@ body.dark .new-chat-btn:hover {
   background: linear-gradient(160deg, var(--surface) 0%, var(--surface-0) 60%);
   pointer-events: none;
   z-index: 0;
+}
+
+/* logo watermark behind welcome content */
+.welcome-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('assets/datalab-logo-background-black.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 80% auto;
+  filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(185deg) brightness(36%);
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body.dark .welcome-screen::after {
+  background-image: url('assets/datalab-logo-background-gold.svg');
+  filter: none;
+  opacity: 0.04;
 }
 
 .welcome-content {
@@ -504,7 +524,7 @@ body::after {
   width: max(0px, calc((100vw - 780px) / 2));
   background-image: url('assets/datalab-logo-background-black.svg');
   background-repeat: no-repeat;
-  background-size: 280% auto;
+  background-size: 240% auto;
   filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(185deg) brightness(36%);
   opacity: 0.055;
   pointer-events: none;
