@@ -2,7 +2,7 @@
 authors = ["Federico Aprile <fgaprile@ucdavis.edu>"]
 channels = ["conda-forge"]
 name = "libbot_bert"
-platforms = ["linux-64", "win-64"]
+platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
@@ -34,7 +34,7 @@ pandas = "*"
 pytorch = "*"
 transformers = "*"
 sentence-transformers = "*"
-pyarrow = "*"
+pyarrow = "<14"
 einops = ">=0.8.1,<0.9"
 ollama-python = "*"
 chromadb = ">=1.2.1,<2"
@@ -51,8 +51,6 @@ ollama = ">=0.20.4,<0.21"
 jupyter = ">=1.1.1,<2"
 ipykernel = ">=7.2.0,<8"
 nltk = ">=3.9.3,<4"
-
-[target.linux-64.dependencies]
 numactl = ">=2.0.18,<3"
 
 
