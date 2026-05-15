@@ -187,7 +187,7 @@ body.dark .new-chat-btn:hover {
   flex: 1;
   overflow: hidden;
   min-height: 0;
-  padding-bottom: 140px;
+  padding-bottom: 200px;
   /* dot pattern continues from body background */
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
@@ -218,7 +218,7 @@ body.dark .new-chat-btn:hover {
 }
 
 .welcome-logo {
-  height: 250px;
+  height: 300px;
   margin-bottom: 10px;
   filter: drop-shadow(0 6px 28px rgba(26, 58, 92, 0.12));
 }
@@ -255,9 +255,22 @@ body.dark .new-chat-btn:hover {
   position: relative;
   z-index: 1;
   padding: 0 24px 28px;
-  max-width: 680px;
+  max-width: 720px;
   width: 100%;
   margin: 0 auto;
+}
+
+.welcome-input-wrapper .input-row {
+  padding: 12px 12px 12px 18px;
+}
+
+.welcome-input-wrapper .input-row textarea {
+  font-size: 15px;
+}
+
+.welcome-input-wrapper .send-btn {
+  width: 40px;
+  height: 40px;
 }
 
 /* ─── Input Row ─── */
