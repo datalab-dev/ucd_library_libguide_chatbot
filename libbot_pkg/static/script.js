@@ -95,6 +95,16 @@ function activateChat() {
   chatStarted = true;
   document.getElementById("welcome-screen").classList.add("hidden");
   document.getElementById("chat-main").classList.remove("hidden");
+  document.getElementById("new-chat-btn").classList.remove("hidden");
+}
+
+function newChat() {
+  chatStarted = false;
+  document.getElementById("chat-box").innerHTML = "";
+  document.getElementById("chat-main").classList.add("hidden");
+  document.getElementById("welcome-screen").classList.remove("hidden");
+  document.getElementById("new-chat-btn").classList.add("hidden");
+  document.getElementById("welcome-user-input").focus();
 }
 
 // -------------------------------------------------------
@@ -125,23 +135,74 @@ async function sendMessage() {
 
   const botDiv = document.createElement("div");
   botDiv.className = "message bot";
-  const botLabel = document.createElement("div");
-  botLabel.className = "bot-label";
-  botLabel.textContent = "LibBot";
-  botDiv.appendChild(botLabel);
   chatBox.appendChild(botDiv);
 
   const statusDiv = document.createElement("div");
   statusDiv.className = "loading-status";
-  statusDiv.innerHTML = `<div class="loading-spinner"></div><span class="status-text">Scanning sources...</span>`;
+  statusDiv.innerHTML = `<div class="loading-spinner"></div><span class="status-text"></span>`;
   chatBox.appendChild(statusDiv);
 
-  const phrases = ["Finding relevant info...", "Sifting through pages...", "Connecting the dots...", "Formulating answer..."];
-  let phraseIdx = 0;
+  const normalPhrases = [
+    "Thinking...",
+    "Pondering...",
+    "Scanning sources...",
+    "Reading through the docs...",
+    "Connecting the dots...",
+    "Searching the library...",
+    "Sifting through pages...",
+    "Finding relevant info...",
+    "Formulating a response...",
+    "Almost there...",
+    "Cross-referencing sources...",
+    "Reviewing the material...",
+    "Warming up the neurons...",
+    "Consulting the oracle...",
+    "Doing the math...",
+    "Summoning knowledge...",
+    "Thinking really hard...",
+    "Reading between the lines...",
+    "Interrogating the data...",
+    "Teaching myself things...",
+    "Negotiating with my training data...",
+    "Having a quick existential moment...",
+    "Converting electricity to wisdom...",
+    "Asking my inner monologue...",
+    "Pretending I knew this already...",
+    "Definitely not making this up...",
+    "Checking my notes...",
+    "One moment of genius incoming...",
+    "Staring into the void productively...",
+    "Running it by the committee...",
+  ];
+  const davisPhrases = [
+    "Tipping cows...",
+    "Waiting in line at Lawntopia...",
+    "Touching the Egghead...",
+    "Sleeping through my 8am...",
+    "Finding parking on campus...",
+    "Waiting for the Unitrans bus...",
+    "Petting the horses at the barn...",
+    "Counting bikes on the path...",
+    "Feeding the ducks at Putah Creek...",
+    "Dodging cyclists on the quad...",
+    "Checking the Silo menu...",
+    "Getting lost in the Death Star...",
+    "Trying to escape the Wellman Hall basement...",
+    "Waiting in line for lat pulldowns in the ARC...",
+    "Watching the cows chew...",
+    "Untangling the bike lock...",
+    "Chasing the geese off the quad...",
+  ];
+  const pickPhrase = () => Math.random() < 0.33
+    ? davisPhrases[Math.floor(Math.random() * davisPhrases.length)]
+    : normalPhrases[Math.floor(Math.random() * normalPhrases.length)];
+
+  // set a phrase immediately, then rotate every 2s
+  statusDiv.querySelector(".status-text").textContent = pickPhrase();
   const phraseInterval = setInterval(() => {
     const textSpan = statusDiv.querySelector(".status-text");
-    if (textSpan) textSpan.textContent = phrases[phraseIdx++ % phrases.length];
-  }, 3000);
+    if (textSpan) textSpan.textContent = pickPhrase();
+  }, 3500);
 
   const llmSpan = document.createElement("span");
   botDiv.appendChild(llmSpan);
@@ -215,8 +276,10 @@ async function sendMessage() {
     }
 
   } catch (error) {
+    clearInterval(phraseInterval);
+    const statusText = statusDiv.querySelector(".status-text");
+    if (statusText) statusText.textContent = "Failed to reach the server. Please try again.";
     console.error("Fetch error:", error);
-    botDiv.textContent = "Failed to reach the server. Please try again.";
   }
 
   chatBox.scrollTop = chatBox.scrollHeight;
@@ -252,24 +315,29 @@ console.log = function (...args) {
 };
 
 // -------------------------------------------------------
-// Dark mode toggle
+// Dark mode toggle + persistence
 // -------------------------------------------------------
 const modeToggle = document.getElementById("mode-toggle");
 const iconMoon = document.getElementById("icon-moon");
 const iconSun = document.getElementById("icon-sun");
 
-modeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  const isDark = document.body.classList.contains("dark");
-
+function applyTheme(isDark) {
+  document.body.classList.toggle("dark", isDark);
   iconMoon.style.display = isDark ? "none" : "block";
   iconSun.style.display  = isDark ? "block" : "none";
-
   logo.src = isDark ? "assets/datalab-logo-gold.svg" : "assets/datalab-logo-black.svg";
-
   if (!evilMode) {
     welcomeLogo.src = isDark ? "assets/logo-dark.svg" : "assets/logo-light-transparent.svg";
   }
+}
+
+// Restore saved preference on load
+applyTheme(localStorage.getItem("theme") === "dark");
+
+modeToggle.addEventListener("click", () => {
+  const isDark = !document.body.classList.contains("dark");
+  applyTheme(isDark);
+  localStorage.setItem("theme", isDark ? "dark" : "light");
 });
 
 // -------------------------------------------------------

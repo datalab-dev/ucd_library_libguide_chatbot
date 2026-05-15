@@ -38,6 +38,10 @@
   --radius-sm:      4px;
 }
 
+body.dark .header {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
 body.dark {
   --bg:             #0D1117;
   --surface:        #161B22;
@@ -50,9 +54,9 @@ body.dark {
   --text-2:         #8B949E;
   --text-3:         #484F58;
 
-  --accent:         #4493F8;
-  --accent-hover:   #388BFD;
-  --accent-ring:    rgba(68, 147, 248, 0.15);
+  --accent:         #C49A0E;
+  --accent-hover:   #A8820C;
+  --accent-ring:    rgba(196, 154, 14, 0.18);
 
   --user-bg:        #1C3751;
   --user-text:      #C5D7E4;
@@ -64,7 +68,7 @@ body.dark {
   --code-text:      #79C0FF;
   --code-border:    #30363D;
 
-  --spinner-color:  #4493F8;
+  --spinner-color:  #C49A0E;
 
   --dot:            rgba(48, 54, 61, 1);
 
@@ -99,7 +103,7 @@ body {
   padding: 0 32px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 10px rgba(12, 27, 42, 0.09);
+  box-shadow: 0 6px 24px rgba(12, 27, 42, 0.18);
   flex-shrink: 0;
   height: 78px;
   position: relative;
@@ -110,6 +114,44 @@ body {
 .header-logo-link { display: flex; align-items: center; }
 
 .logo { height: 52px; display: block; }
+
+/* ─── New Chat Button ─── */
+.new-chat-btn {
+  position: fixed;
+  top: calc(78px + 18px);
+  right: 24px;
+  z-index: 5;
+  padding: 16px 36px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: rgba(26, 58, 92, 0.72);
+  color: #fff;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(12, 27, 42, 0.15);
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.new-chat-btn:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 20px rgba(12, 27, 42, 0.22);
+}
+
+body.dark .new-chat-btn {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .new-chat-btn:hover {
+  background: rgba(196, 154, 14, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
 
 /* ─── Theme Toggle — square ─── */
 .mode-toggle {
@@ -139,11 +181,13 @@ body {
 /* ─── Welcome Screen ─── */
 .welcome-screen {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   flex: 1;
   overflow: hidden;
   min-height: 0;
+  padding-bottom: 140px;
   /* dot pattern continues from body background */
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
@@ -174,7 +218,7 @@ body {
 }
 
 .welcome-logo {
-  height: 155px;
+  height: 250px;
   margin-bottom: 10px;
   filter: drop-shadow(0 6px 28px rgba(26, 58, 92, 0.12));
 }
@@ -186,6 +230,17 @@ body {
   margin: 0;
   color: var(--text);
   line-height: 1.15;
+}
+
+.title-libbot {
+  display: inline-block;
+  animation: titlePower 2.4s ease-in-out 0.4s 1 both;
+}
+
+@keyframes titlePower {
+  0%   { transform: scale(1);    color: inherit; }
+  50%  { transform: scale(1.05); color: #C49A0E; }
+  100% { transform: scale(1);    color: inherit; }
 }
 
 .welcome-subtitle {
@@ -208,7 +263,7 @@ body {
 /* ─── Input Row ─── */
 .input-row {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 8px;
   background: var(--surface);
   border: 1px solid var(--border-strong);
@@ -258,6 +313,7 @@ body {
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
+  align-self: flex-end;
   transition: background 0.15s;
 }
 
@@ -266,6 +322,8 @@ body {
 
 /* ─── Chat Wrapper ─── */
 .chat-wrapper {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -315,7 +373,7 @@ body {
   background: var(--user-bg);
   color: var(--user-text);
   padding: 9px 14px;
-  border-radius: 8px 8px 2px 8px;
+  border-radius: 5px 5px 2px 5px;
   max-width: 72%;
   word-wrap: break-word;
   text-align: left;
@@ -421,6 +479,40 @@ a:hover { color: var(--link-hover); text-decoration: underline; }
 @keyframes fadeInSoft {
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Side panel logo (chat mode gutters) ─── */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  top: 78px;
+  bottom: 0;
+  width: max(0px, calc((100vw - 780px) / 2));
+  background-image: url('assets/datalab-logo-background-black.svg');
+  background-repeat: no-repeat;
+  background-size: 280% auto;
+  filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(185deg) brightness(36%);
+  opacity: 0.055;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  left: 0;
+  background-position: left center;
+}
+
+body::after {
+  right: 0;
+  background-position: right center;
+}
+
+body.dark::before,
+body.dark::after {
+  background-image: url('assets/datalab-logo-background-gold.svg');
+  filter: none;
+  opacity: 0.04;
 }
 
 /* ─── Responsive ─── */
