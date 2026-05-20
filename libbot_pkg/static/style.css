@@ -14,7 +14,9 @@
   --text-4: #0A5EB1;
 
   /* Guide title bold color in bot summary — separate from link and header colors */
-  --guide-title: #1A3A5C;
+  /* --guide-title: #1A3A5C; */
+  --guide-title: #214a76;
+
 
   --accent: #1A3A5C;
   --accent-hover: #0D2440;
@@ -23,8 +25,8 @@
   --user-bg: #C5D7E4;
   --user-text: #0C1B2A;
 
-  --link: #1D6FA4;
-  --link-hover: #155A87;
+  --link: #214a76;
+  --link-hover: #1A3A5C;
 
   --code-bg: #EDF2F7;
   --code-text: #1A3A5C;
@@ -532,14 +534,25 @@ a:hover {
 .message.bot code a,
 .message.bot code a:hover {
   color: inherit;
-  text-decoration: underline;
-  text-decoration-style: dotted;
+  /* text-decoration: underline;
+  text-decoration-style: dotted; */
+  /* text-decoration: none; */
 }
 
 /* Sources block header — styled independently from guide titles and links */
 .sources-header {
   font-weight: 700;
   color: var(--text);
+}
+
+/* Guide title links in the bot summary — always use --guide-title color so
+   tagged (<strong>/<em>) and plain-text variants look identical */
+.message.bot a.guide-title-link,
+.message.bot a.guide-title-link:hover {
+  color: var(--guide-title);
+  /* text-decoration: underline;
+  text-decoration-style: dotted; */
+  /* text-decoration: none; */
 }
 
 /* Main guide link in sources list — bold to show hierarchy, standard link color */

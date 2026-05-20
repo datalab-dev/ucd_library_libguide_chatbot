@@ -115,6 +115,24 @@ function linkSummaryToSources(llmSpan, ragResults) {
 
   const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+  // Normalize any Unicode dash/hyphen variant and collapsing whitespace to a
+  // single space. Applied to both map keys and text-node content before
+  // comparison, so "Journals A–Z" (en-dash) matches "Journals A-Z" (hyphen).
+  const norm = s => s
+    .replace(/[\u00AD\u2010\u2011\u2012\u2013\u2014\u2015\u2212\uFE58\uFE63\uFF0D]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Build a secondary lookup keyed by normalized title so we can find the
+  // canonical key (and its URL) when matching normalized text.
+  function buildNormMap(sourceMap) {
+    const normMap = new Map(); // normalized title -> { url, canonical }
+    sourceMap.forEach((url, title) => {
+      normMap.set(norm(title), { url, canonical: title });
+    });
+    return normMap;
+  }
+
   // Helper: is this node inside an <a> tag already?
   function insideAnchor(node) {
     let p = node.parentNode;
@@ -128,8 +146,20 @@ function linkSummaryToSources(llmSpan, ragResults) {
   // Walk all text nodes in llmSpan, skipping nodes already inside <a>.
   // For each matching title, split the text node and insert an <a> (and
   // optionally a wrapping <code>) in its place.
-  function linkTextNodes(titleMap, wrapCode) {
-    // Collect text nodes first (walking mutates the tree)
+  // titleMap   : the original Map (title -> url)
+  // wrapCode   : true for section names (wrap in <code>), false for guide titles
+  // isGuide    : true adds the guide-title-link class for consistent color
+  function linkTextNodes(titleMap, wrapCode, isGuide) {
+    const normMap = buildNormMap(titleMap);
+    // Sort normalized keys longest-first to prevent short titles eating longer ones
+    const sortedNorm = [...normMap.keys()].sort((a, b) => b.length - a.length);
+    if (!sortedNorm.length) return;
+
+    // Build regex from normalized keys (so the regex also uses normalized form)
+    const pattern = sortedNorm.map(esc).join('|');
+    const re = new RegExp(`(${pattern})`, 'gi');
+
+    // Collect text nodes first (DOM walk mutates the tree)
     const walker = document.createTreeWalker(llmSpan, NodeFilter.SHOW_TEXT);
     const textNodes = [];
     let n;
@@ -138,41 +168,38 @@ function linkSummaryToSources(llmSpan, ragResults) {
     textNodes.forEach(textNode => {
       if (insideAnchor(textNode)) return;
 
-      // Build one big alternation regex from all titles (longest first to
-      // avoid partial matches swallowing a longer title)
-      const sorted = [...titleMap.keys()].sort((a, b) => b.length - a.length);
-      if (!sorted.length) return;
-      const pattern = sorted.map(esc).join('|');
-      const re = new RegExp(`(${pattern})`, 'gi');
+      const rawText = textNode.textContent;
+      const normText = norm(rawText);
 
-      const text = textNode.textContent;
-      if (!re.test(text)) return;
+      if (!re.test(normText)) return;
       re.lastIndex = 0;
 
+      // We'll walk normText for matches, but splice from rawText so the
+      // original characters (including any odd dashes) are preserved visually.
       const frag = document.createDocumentFragment();
       let lastIndex = 0;
       let match;
 
-      while ((match = re.exec(text)) !== null) {
-        const matched = match[0];
-        // Find the canonical-case key
-        const canonicalKey = sorted.find(
-          k => k.toLowerCase() === matched.toLowerCase()
+      while ((match = re.exec(normText)) !== null) {
+        const normMatched = match[0];
+        const entry = normMap.get(
+          sortedNorm.find(k => k.toLowerCase() === normMatched.toLowerCase())
         );
-        if (!canonicalKey) continue;
-        const url = titleMap.get(canonicalKey);
+        if (!entry) continue;
 
-        // Text before the match
+        // Splice from rawText using the same index/length (safe because norm()
+        // only replaces single characters 1-for-1, preserving offsets)
         if (match.index > lastIndex) {
-          frag.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+          frag.appendChild(document.createTextNode(rawText.slice(lastIndex, match.index)));
         }
 
-        // Build the link (and optional code wrapper)
         const a = document.createElement('a');
-        a.href = url;
+        a.href = entry.url;
         a.target = '_blank';
-        if (!wrapCode) a.style.textDecoration = 'none';
-        a.textContent = matched;
+        a.textContent = rawText.slice(match.index, match.index + normMatched.length);
+        if (isGuide) {
+          a.className = 'guide-title-link';
+        }
 
         if (wrapCode) {
           const code = document.createElement('code');
@@ -182,12 +209,12 @@ function linkSummaryToSources(llmSpan, ragResults) {
           frag.appendChild(a);
         }
 
-        lastIndex = match.index + matched.length;
+        lastIndex = match.index + normMatched.length;
       }
 
       if (lastIndex === 0) return; // no matches — leave node alone
-      if (lastIndex < text.length) {
-        frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+      if (lastIndex < rawText.length) {
+        frag.appendChild(document.createTextNode(rawText.slice(lastIndex)));
       }
 
       textNode.parentNode.replaceChild(frag, textNode);
@@ -196,27 +223,29 @@ function linkSummaryToSources(llmSpan, ragResults) {
 
   // ── Guide titles ──────────────────────────────────────────
   // Pass 1: tag-based matches (<strong> / <em>) — wrap the whole element in <a>
+  // Use guide-title-link class so color is always var(--guide-title), regardless
+  // of whether the <strong> color override fires or not.
   let html = llmSpan.innerHTML;
   guideMap.forEach((url, title) => {
     ['strong', 'em'].forEach(tag => {
       const re = new RegExp(
-        `(?<!<a[^>]*>)(<${tag}>)(${esc(title)})(<\\/${tag}>)(?!<\\/a>)`, 'gi'
+        `(?<!<a[^>]*>)(<${tag}>)(${esc(norm(title))})(<\\/${tag}>)(?!<\\/a>)`, 'gi'
       );
       html = html.replace(re,
-        `<a href="${url}" target="_blank" style="text-decoration:none">$1$2$3</a>`
+        `<a href="${url}" target="_blank" class="guide-title-link">$1$2$3</a>`
       );
     });
   });
   llmSpan.innerHTML = DOMPurify.sanitize(html);
 
-  // Pass 2: plain-text matches (DOM walk, skips existing <a> nodes)
-  linkTextNodes(guideMap, false);
+  // Pass 2: plain-text guide title matches
+  linkTextNodes(guideMap, false, true);
 
   // ── Section names ─────────────────────────────────────────
   // Pass 1: <code>SectionName</code> tag-based matches
   html = llmSpan.innerHTML;
   sectionMap.forEach((url, title) => {
-    const re = new RegExp(`<code>(${esc(title)})<\\/code>`, 'gi');
+    const re = new RegExp(`<code>(${esc(norm(title))})<\\/code>`, 'gi');
     html = html.replace(re,
       `<code><a href="${url}" target="_blank">${title}</a></code>`
     );
@@ -224,7 +253,7 @@ function linkSummaryToSources(llmSpan, ragResults) {
   llmSpan.innerHTML = DOMPurify.sanitize(html);
 
   // Pass 2: plain-text section matches (wrapped in <code> for visual consistency)
-  linkTextNodes(sectionMap, true);
+  linkTextNodes(sectionMap, true, false);
 }
 
 // -------------------------------------------------------
