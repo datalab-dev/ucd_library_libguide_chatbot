@@ -324,7 +324,7 @@ const iconSun = document.getElementById("icon-sun");
 function applyTheme(isDark) {
   document.body.classList.toggle("dark", isDark);
   iconMoon.style.display = isDark ? "none" : "block";
-  iconSun.style.display  = isDark ? "block" : "none";
+  iconSun.style.display = isDark ? "block" : "none";
   logo.src = isDark ? "assets/datalab-logo-gold.svg" : "assets/datalab-logo-black.svg";
   if (!evilMode) {
     welcomeLogo.src = isDark ? "assets/logo-dark.svg" : "assets/logo-light-transparent.svg";
