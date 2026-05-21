@@ -52,8 +52,8 @@ function typeHTML(element, html, speed = 10) {
 // -------------------------------------------------------
 function buildSourcesHTML(ragResults) {
   let html =
-    `<br><br><br><br><strong>Reliable LibGuide resources from the UC Davis Library:</strong><br>` +
-    `<i>(Some resource links may require you to be signed into Kerberos or on ` +
+    `<br><br><br><br><span class="sources-header">Reliable LibGuide resources from the UC Davis Library:</span>` +
+    ` <i>(Some resource links may require you to be signed into Kerberos or on ` +
     `the UC Davis Library VPN)</i><br><br>`;
 
   const grouped = new Map();
@@ -75,7 +75,7 @@ function buildSourcesHTML(ragResults) {
   });
 
   grouped.forEach((guide, title) => {
-    html += `• <a href="${guide.section_url}" target="_blank"><strong>${title}</strong></a><br>`;
+    html += `• <a href="${guide.section_url}" target="_blank" class="sources-guide-link">${title}</a><br>`;
     guide.resources.forEach((urls, section_title) => {
       html += `&nbsp;&nbsp;&nbsp;&nbsp;↳ <a href="${urls.external_url}" target="_blank">${section_title}</a><br>`;
     });
@@ -83,6 +83,185 @@ function buildSourcesHTML(ragResults) {
   });
 
   return html;
+}
+
+// -------------------------------------------------------
+// Auto-link guide titles and section names in the summary.
+//
+// Guide titles: matched inside <strong>, <em>, or as plain
+// text. The link wraps whatever tag is present (or just the
+// text) so bold/italic styling is preserved.
+//
+// Section names: matched inside <code> (LLM backtick style)
+// OR as plain text. Plain-text matches are wrapped in <code>
+// so they visually match the existing section-name style.
+//
+// Both use a DOM-walk approach to avoid regex false-positives
+// inside existing <a> tags or HTML attributes.
+// Runs once after both LLM text and sources are fully rendered.
+// -------------------------------------------------------
+function linkSummaryToSources(llmSpan, ragResults) {
+  const guideMap = new Map();   // libguide_title -> section_url
+  const sectionMap = new Map(); // section_title  -> external_url
+
+  ragResults.forEach(result => {
+    result.sources.forEach(src => {
+      if (src.libguide_title && src.section_url)
+        guideMap.set(src.libguide_title, src.section_url);
+      if (src.section_title && src.external_url)
+        sectionMap.set(src.section_title, src.external_url);
+    });
+  });
+
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  // Normalize any Unicode dash/hyphen variant and collapsing whitespace to a
+  // single space. Applied to both map keys and text-node content before
+  // comparison, so "Journals A–Z" (en-dash) matches "Journals A-Z" (hyphen).
+  const norm = s => s
+    .replace(/[\u00AD\u2010\u2011\u2012\u2013\u2014\u2015\u2212\uFE58\uFE63\uFF0D]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Build a secondary lookup keyed by normalized title so we can find the
+  // canonical key (and its URL) when matching normalized text.
+  function buildNormMap(sourceMap) {
+    const normMap = new Map(); // normalized title -> { url, canonical }
+    sourceMap.forEach((url, title) => {
+      normMap.set(norm(title), { url, canonical: title });
+    });
+    return normMap;
+  }
+
+  // Helper: is this node inside an <a> tag already?
+  function insideAnchor(node) {
+    let p = node.parentNode;
+    while (p && p !== llmSpan) {
+      if (p.nodeName === 'A') return true;
+      p = p.parentNode;
+    }
+    return false;
+  }
+
+  // Walk all text nodes in llmSpan, skipping nodes already inside <a>.
+  // For each matching title, split the text node and insert an <a> (and
+  // optionally a wrapping <code>) in its place.
+  // titleMap   : the original Map (title -> url)
+  // wrapCode   : true for section names (wrap in <code>), false for guide titles
+  // isGuide    : true adds the guide-title-link class for consistent color
+  function linkTextNodes(titleMap, wrapCode, isGuide) {
+    const normMap = buildNormMap(titleMap);
+    // Sort normalized keys longest-first to prevent short titles eating longer ones
+    const sortedNorm = [...normMap.keys()].sort((a, b) => b.length - a.length);
+    if (!sortedNorm.length) return;
+
+    // Build regex from normalized keys (so the regex also uses normalized form)
+    const pattern = sortedNorm.map(esc).join('|');
+    const re = new RegExp(`(${pattern})`, 'gi');
+
+    // Collect text nodes first (DOM walk mutates the tree)
+    const walker = document.createTreeWalker(llmSpan, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    let n;
+    while ((n = walker.nextNode())) textNodes.push(n);
+
+    textNodes.forEach(textNode => {
+      if (insideAnchor(textNode)) return;
+
+      // If wrapCode is set and the text node is already inside a <code> element
+      // (i.e. the LLM used backticks), we still want to link it — we just skip
+      // adding another <code> wrapper around the <a>.
+      const alreadyInCode = wrapCode && textNode.parentNode.nodeName === 'CODE';
+
+      const rawText = textNode.textContent;
+      const normText = norm(rawText);
+
+      if (!re.test(normText)) return;
+      re.lastIndex = 0;
+
+      // We'll walk normText for matches, but splice from rawText so the
+      // original characters (including any odd dashes) are preserved visually.
+      const frag = document.createDocumentFragment();
+      let lastIndex = 0;
+      let match;
+
+      while ((match = re.exec(normText)) !== null) {
+        const normMatched = match[0];
+        const entry = normMap.get(
+          sortedNorm.find(k => k.toLowerCase() === normMatched.toLowerCase())
+        );
+        if (!entry) continue;
+
+        // Splice from rawText using the same index/length (safe because norm()
+        // only replaces single characters 1-for-1, preserving offsets)
+        if (match.index > lastIndex) {
+          frag.appendChild(document.createTextNode(rawText.slice(lastIndex, match.index)));
+        }
+
+        const a = document.createElement('a');
+        a.href = entry.url;
+        a.target = '_blank';
+        a.textContent = rawText.slice(match.index, match.index + normMatched.length);
+        if (isGuide) {
+          a.className = 'guide-title-link';
+        }
+
+        if (wrapCode && !alreadyInCode) {
+          // Plain-text section name: wrap in <code> for visual consistency
+          const code = document.createElement('code');
+          code.appendChild(a);
+          frag.appendChild(code);
+        } else {
+          // Either a guide title, or a section name already inside <code>:
+          // just insert the <a> directly without an extra wrapper.
+          frag.appendChild(a);
+        }
+
+        lastIndex = match.index + normMatched.length;
+      }
+
+      if (lastIndex === 0) return; // no matches — leave node alone
+      if (lastIndex < rawText.length) {
+        frag.appendChild(document.createTextNode(rawText.slice(lastIndex)));
+      }
+
+      textNode.parentNode.replaceChild(frag, textNode);
+    });
+  }
+
+  // ── Guide titles ──────────────────────────────────────────
+  // Pass 1: tag-based matches (<strong> / <em>) — wrap the whole element in <a>
+  // Use guide-title-link class so color is always var(--guide-title), regardless
+  // of whether the <strong> color override fires or not.
+  let html = llmSpan.innerHTML;
+  guideMap.forEach((url, title) => {
+    ['strong', 'em'].forEach(tag => {
+      const re = new RegExp(
+        `(?<!<a[^>]*>)(<${tag}>)(${esc(norm(title))})(<\\/${tag}>)(?!<\\/a>)`, 'gi'
+      );
+      html = html.replace(re,
+        `<a href="${url}" target="_blank" class="guide-title-link">$1$2$3</a>`
+      );
+    });
+  });
+  llmSpan.innerHTML = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
+
+  // Pass 2: plain-text guide title matches
+  linkTextNodes(guideMap, false, true);
+
+  // ── Section names ─────────────────────────────────────────
+  // Pass 1: <code>SectionName</code> tag-based matches
+  html = llmSpan.innerHTML;
+  sectionMap.forEach((url, title) => {
+    const re = new RegExp(`<code>(${esc(norm(title))})<\\/code>`, 'gi');
+    html = html.replace(re,
+      `<code><a href="${url}" target="_blank">${title}</a></code>`
+    );
+  });
+  llmSpan.innerHTML = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
+
+  // Pass 2: plain-text section matches (wrapped in <code> for visual consistency)
+  linkTextNodes(sectionMap, true, false);
 }
 
 // -------------------------------------------------------
@@ -259,7 +438,7 @@ async function sendMessage() {
         buffer = "";
 
         const rawHtml = marked.parse(fullLLMResponse);
-        llmSpan.innerHTML = DOMPurify.sanitize(rawHtml);
+        llmSpan.innerHTML = DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['target', 'rel'] });
 
         chatBox.scrollTop = chatBox.scrollHeight;
       }
@@ -269,6 +448,7 @@ async function sendMessage() {
       if (sourcesDiv._ragResults) {
         console.log("RAG results:", JSON.stringify(sourcesDiv._ragResults, null, 2));
         sourcesDiv.innerHTML = buildSourcesHTML(sourcesDiv._ragResults);
+        linkSummaryToSources(llmSpan, sourcesDiv._ragResults);
       }
     } catch (e) {
       console.error("Failed to render sources:", e);
@@ -297,10 +477,10 @@ function toggleEvilMode() {
   document.body.classList.toggle("evil", evilMode);
 
   if (evilMode) {
-    welcomeLogo.src = "assets/logo-dark.svg";
+    welcomeLogo.src = "assets/evil-dark.svg";
   } else {
     const isDark = document.body.classList.contains("dark");
-    welcomeLogo.src = isDark ? "assets/logo-dark.svg" : "assets/logo-light-transparent.svg";
+    welcomeLogo.src = isDark ? "assets/evil-dark.svg" : "assets/logo-light-transparent.svg";
   }
 }
 
@@ -324,10 +504,10 @@ const iconSun = document.getElementById("icon-sun");
 function applyTheme(isDark) {
   document.body.classList.toggle("dark", isDark);
   iconMoon.style.display = isDark ? "none" : "block";
-  iconSun.style.display  = isDark ? "block" : "none";
+  iconSun.style.display = isDark ? "block" : "none";
   logo.src = isDark ? "assets/datalab-logo-gold.svg" : "assets/datalab-logo-black.svg";
   if (!evilMode) {
-    welcomeLogo.src = isDark ? "assets/logo-dark.svg" : "assets/logo-light-transparent.svg";
+    welcomeLogo.src = isDark ? "assets/logo-dark-transparent.svg" : "assets/logo-light-transparent.svg";
   }
 }
 

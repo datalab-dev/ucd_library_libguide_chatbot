@@ -8,9 +8,15 @@
   --border: #D6E0EB;
   --border-strong: #B0C4D6;
 
-  --text: #0C1B2A;
+  --text: #082239;
   --text-2: #4A6070;
   --text-3: #8299A8;
+  --text-4: #0A5EB1;
+
+  /* Guide title bold color in bot summary — separate from link and header colors */
+  /* --guide-title: #1A3A5C; */
+  --guide-title: #214a76;
+
 
   --accent: #1A3A5C;
   --accent-hover: #0D2440;
@@ -19,8 +25,8 @@
   --user-bg: #C5D7E4;
   --user-text: #0C1B2A;
 
-  --link: #1D6FA4;
-  --link-hover: #155A87;
+  --link: #214a76;
+  --link-hover: #1A3A5C;
 
   --code-bg: #EDF2F7;
   --code-text: #1A3A5C;
@@ -55,12 +61,14 @@ body.dark {
   --text-2: #8B949E;
   --text-3: #484F58;
 
+  --guide-title: #79B8FF;
+
   --accent: #C49A0E;
   --accent-hover: #A8820C;
   --accent-ring: rgba(196, 154, 14, 0.18);
 
   --user-bg: #1C3751;
-  --user-text: #C5D7E4;
+  --user-text: #E6EDF3;
 
   --link: #4493F8;
   --link-hover: #79B8FF;
@@ -121,6 +129,13 @@ body {
   align-items: center;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
 .logo {
   height: 52px;
   display: block;
@@ -128,46 +143,44 @@ body {
 
 /* ─── New Chat Button ─── */
 .new-chat-btn {
-  position: fixed;
-  top: calc(78px + 18px);
-  right: 24px;
-  z-index: 5;
-  padding: 16px 36px;
+  padding: 0px 20px;
+  height: 46px;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  background: rgba(26, 58, 92, 0.72);
-  color: #fff;
-  border: 1.5px solid transparent;
+  background: transparent;
+  color: var(--text-2);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   cursor: pointer;
-  box-shadow: 0 2px 12px rgba(12, 27, 42, 0.15);
-  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .new-chat-btn:hover {
-  background: var(--accent-hover);
-  box-shadow: 0 4px 20px rgba(12, 27, 42, 0.22);
+  background: var(--bg);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 body.dark .new-chat-btn {
   background: transparent;
-  color: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  color: var(--text-2);
+  border-color: var(--border-strong);
 }
 
 body.dark .new-chat-btn:hover {
-  background: rgba(196, 154, 14, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  background: var(--bg);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* ─── Theme Toggle — square ─── */
 .mode-toggle {
-  width: 34px;
-  height: 34px;
+  width: 46px;
+  height: 46px;
   border-radius: var(--radius);
   background: transparent;
   border: 1px solid var(--border-strong);
@@ -506,7 +519,7 @@ a:hover {
 }
 
 .message.bot strong {
-  color: var(--text);
+  color: var(--guide-title);
   font-weight: 600;
 }
 
@@ -519,6 +532,36 @@ a:hover {
   border-radius: var(--radius-sm);
   font-size: 0.875em;
   font-weight: 500;
+}
+
+/* Section name rendered as inline code but also a clickable link —
+   keep the code visual, just add a subtle dotted underline */
+.message.bot code a,
+.message.bot code a:hover {
+  color: inherit;
+  text-decoration: underline;
+  /* text-decoration-style: dotted; */
+}
+
+/* Sources block header — styled independently from guide titles and links */
+.sources-header {
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Guide title links in the bot summary — always use --guide-title color so
+   tagged (<strong>/<em>) and plain-text variants look identical */
+.message.bot a.guide-title-link,
+.message.bot a.guide-title-link:hover {
+  color: var(--guide-title);
+  /* text-decoration: underline;
+  text-decoration-style: dotted; */
+  /* text-decoration: none; */
+}
+
+/* Main guide link in sources list — bold to show hierarchy, standard link color */
+.sources-guide-link {
+  font-weight: 700;
 }
 
 .message.bot em {
