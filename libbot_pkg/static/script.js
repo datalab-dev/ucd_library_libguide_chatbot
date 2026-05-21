@@ -168,6 +168,11 @@ function linkSummaryToSources(llmSpan, ragResults) {
     textNodes.forEach(textNode => {
       if (insideAnchor(textNode)) return;
 
+      // If wrapCode is set and the text node is already inside a <code> element
+      // (i.e. the LLM used backticks), we still want to link it — we just skip
+      // adding another <code> wrapper around the <a>.
+      const alreadyInCode = wrapCode && textNode.parentNode.nodeName === 'CODE';
+
       const rawText = textNode.textContent;
       const normText = norm(rawText);
 
@@ -201,11 +206,14 @@ function linkSummaryToSources(llmSpan, ragResults) {
           a.className = 'guide-title-link';
         }
 
-        if (wrapCode) {
+        if (wrapCode && !alreadyInCode) {
+          // Plain-text section name: wrap in <code> for visual consistency
           const code = document.createElement('code');
           code.appendChild(a);
           frag.appendChild(code);
         } else {
+          // Either a guide title, or a section name already inside <code>:
+          // just insert the <a> directly without an extra wrapper.
           frag.appendChild(a);
         }
 
@@ -236,7 +244,7 @@ function linkSummaryToSources(llmSpan, ragResults) {
       );
     });
   });
-  llmSpan.innerHTML = DOMPurify.sanitize(html);
+  llmSpan.innerHTML = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
 
   // Pass 2: plain-text guide title matches
   linkTextNodes(guideMap, false, true);
@@ -250,7 +258,7 @@ function linkSummaryToSources(llmSpan, ragResults) {
       `<code><a href="${url}" target="_blank">${title}</a></code>`
     );
   });
-  llmSpan.innerHTML = DOMPurify.sanitize(html);
+  llmSpan.innerHTML = DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
 
   // Pass 2: plain-text section matches (wrapped in <code> for visual consistency)
   linkTextNodes(sectionMap, true, false);
@@ -430,7 +438,7 @@ async function sendMessage() {
         buffer = "";
 
         const rawHtml = marked.parse(fullLLMResponse);
-        llmSpan.innerHTML = DOMPurify.sanitize(rawHtml);
+        llmSpan.innerHTML = DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['target', 'rel'] });
 
         chatBox.scrollTop = chatBox.scrollHeight;
       }

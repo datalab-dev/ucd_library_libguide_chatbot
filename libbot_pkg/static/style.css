@@ -539,9 +539,8 @@ a:hover {
 .message.bot code a,
 .message.bot code a:hover {
   color: inherit;
-  /* text-decoration: underline;
-  text-decoration-style: dotted; */
-  /* text-decoration: none; */
+  text-decoration: underline;
+  text-decoration-style: dotted;
 }
 
 /* Sources block header — styled independently from guide titles and links */

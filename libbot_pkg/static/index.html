@@ -84,7 +84,17 @@
     </main>
 
     <script>
-        marked.setOptions({ breaks: true, gfm: true });
+        marked.use({
+            breaks: true,
+            gfm: true,
+            renderer: {
+                // marked v5+: link renderer receives a token object, not positional args
+                link({ href, title, tokens }) {
+                    const text = this.parser.parseInline(tokens);
+                    return `<a href="${href}" target="_blank" rel="noopener noreferrer"${title ? ` title="${title}"` : ''}>${text}</a>`;
+                }
+            }
+        });
     </script>
     <script src="script.js"></script>
 </body>
