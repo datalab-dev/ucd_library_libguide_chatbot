@@ -119,8 +119,11 @@ function linkSummaryToSources(llmSpan, ragResults) {
     result.sources.forEach(src => {
       if (src.libguide_title && src.section_url)
         guideMap.set(src.libguide_title, src.section_url);
-      if (src.section_title && src.external_url)
-        sectionMap.set(src.section_title, src.external_url);
+      // Prose rows have no external_url — fall back to the guide page so
+      // their section titles still get linked in the summary
+      const sectionHref = src.external_url || src.section_url;
+      if (src.section_title && sectionHref)
+        sectionMap.set(src.section_title, sectionHref);
     });
   });
 

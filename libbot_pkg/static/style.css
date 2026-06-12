@@ -565,9 +565,12 @@ a:hover {
 }
 
 /* Author byline under each guide title in the sources list — muted, smaller
-   than resource links so it reads as metadata rather than content */
-.sources-byline {
-  font-size: 0.82rem;
+   than resource links so it reads as metadata rather than content.
+   Selector must out-rank `.message.bot span` (which sets display:block and
+   would otherwise put the byline on its own block and double-space it) */
+.message.bot span.sources-byline {
+  display: inline;
+  font-size: 0.88rem;
   color: var(--text-2);
 }
 
