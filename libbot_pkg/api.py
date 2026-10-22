@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import StreamingResponse
 from pathlib import Path
+# from Pydantic import Settings
 
 #from .config import settings
 from .models import QueryRequest, QueryResponse, ChatRequest
@@ -30,247 +31,252 @@ logger = logging.getLogger("libbot")
 
 retriever: Retriever | None = None
 
+# def create_app(settings: Settings) -> FastAPI:
+def create_app(settings) -> FastAPI:
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    global retriever
-    
-    # initialize RAG retriever
-    retriever = Retriever()
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        global retriever
+        
+        # initialize RAG retriever
+        retriever = Retriever(settings)
 
 
-    async with httpx.AsyncClient(timeout=300.0) as client:
-        # ONLY preload the local model (the one that actually needs RAM/CPU)
-        print(f"Preloading local model into RAM: {settings.ollama_local_model}...")
-        try:
-            await client.post(
-                # Ensure this is your LOCAL endpoint specifically
-                f"{settings.ollama_url}", 
-                json={"model": settings.ollama_local_model, "prompt": "", "keep_alive": -1}
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            # ONLY preload the local model (the one that actually needs RAM/CPU)
+            print(f"Preloading local model into RAM: {settings.ollama_local_model}...")
+            try:
+                await client.post(
+                    # Ensure this is your LOCAL endpoint specifically
+                    f"{settings.ollama_url}", 
+                    json={"model": settings.ollama_local_model, "prompt": "", "keep_alive": -1}
+                )
+            except Exception as e:
+                print(f"Warning: Local model preload failed: {e}")
+
+            # For the cloud model, just do a simple reachability test or skip entirely
+            print(f"Cloud mode active: {settings.ollama_cloud_model}")
+            
+        yield
+        retriever = None
+
+
+    # --------------------------------------------------------------------------
+    # App
+    # --------------------------------------------------------------------------
+
+    app = FastAPI(
+        title="LibBot",
+        description="Semantic search over LibGuides using Qwen3-Embedding.",
+        version="0.1.0",
+        lifespan=lifespan,
+    )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["GET", "POST"],
+        allow_headers=["*"],
+    )
+
+    STATIC_DIR = Path(__file__).parent / "static"
+
+
+    # --------------------------------------------------------------------------
+    # Helpers
+    # --------------------------------------------------------------------------
+
+    def build_context_prompt(user_message: str, rag_results: list, history: list) -> str:
+        """
+        Builds a context-rich prompt for the LLM by combining:
+        - The current user message
+        - The retrieved RAG results (merged into a single text blob)
+        - A memory block of previous conversation turns (if any)
+        """
+
+        # Merge retrieved doc texts into a single blob
+        # Giving it combined_text to have the LLM see the text with appended titles as labels, was a little bit worse than just creating the combined text manually
+        # doc_blob = "\n\n".join(r.combined_text for r in rag_results)
+
+        # Giving LLM titles + text
+        doc_blob = "\n\n".join(
+            f"LibGuide Title: {r.sources[0].libguide_title}\n"
+            f"Section Title: {r.sources[0].section_title}\n"
+            f"{r.text}"
+            for r in rag_results
             )
-        except Exception as e:
-            print(f"Warning: Local model preload failed: {e}")
-
-        # For the cloud model, just do a simple reachability test or skip entirely
-        print(f"Cloud mode active: {settings.ollama_cloud_model}")
-        
-    yield
-    retriever = None
 
 
-# --------------------------------------------------------------------------
-# App
-# --------------------------------------------------------------------------
+        # Build memory block: always turn 1, plus up to 2 most recent turns
+        # (excluding turn 1 to avoid duplication)
+        memory_turns = []
+        if history:
+            memory_turns.append(history[0])           # always anchor turn 1
+            recent = history[1:][-2:]                 # last 2 of the rest
+            memory_turns.extend(recent)
 
-app = FastAPI(
-    title="LibBot",
-    description="Semantic search over LibGuides using Qwen3-Embedding.",
-    version="0.1.0",
-    lifespan=lifespan,
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["GET", "POST"],
-    allow_headers=["*"],
-)
-
-STATIC_DIR = Path(__file__).parent / "static"
+        memory_block = ""
+        if memory_turns:
+            pairs = []
+            for turn in memory_turns:
+                pairs.append(f"User: {turn.prompt}\nAssistant: {turn.response}")
+            memory_block = (
+                "=== Previous Conversation ===\n"
+                + "\n\n".join(pairs)
+                + "\n\n"
+            )
 
 
-# --------------------------------------------------------------------------
-# Helpers
-# --------------------------------------------------------------------------
-
-def build_context_prompt(user_message: str, rag_results: list, history: list) -> str:
-    """
-    Builds a context-rich prompt for the LLM by combining:
-    - The current user message
-    - The retrieved RAG results (merged into a single text blob)
-    - A memory block of previous conversation turns (if any)
-    """
-
-    # Merge retrieved doc texts into a single blob
-    # Giving it combined_text to have the LLM see the text with appended titles as labels, was a little bit worse than just creating the combined text manually
-    # doc_blob = "\n\n".join(r.combined_text for r in rag_results)
-
-    # Giving LLM titles + text
-    doc_blob = "\n\n".join(
-        f"LibGuide Title: {r.sources[0].libguide_title}\n"
-        f"Section Title: {r.sources[0].section_title}\n"
-        f"{r.text}"
-        for r in rag_results
+        return (
+            f"{memory_block}"
+            f"=== Library Documents ===\n{doc_blob}\n\n"
+            f"=== Current User Query ===\n{user_message}"
         )
 
 
-    # Build memory block: always turn 1, plus up to 2 most recent turns
-    # (excluding turn 1 to avoid duplication)
-    memory_turns = []
-    if history:
-        memory_turns.append(history[0])           # always anchor turn 1
-        recent = history[1:][-2:]                 # last 2 of the rest
-        memory_turns.extend(recent)
+    async def stream_ollama(prompt: str, model_name: str) -> AsyncGenerator[str, None]:
+        """
+        Streams the Ollama response token by token back to the browser.
+        Each chunk is a plain text string as it arrives from the LLM.
+        """
+        timeout = httpx.Timeout(connect=10.0, read=300.0, write=10.0, pool=10.0)
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            async with client.stream(
+                "POST",
+                settings.ollama_url,
+                json={"model": model_name, "prompt": prompt, "stream": True},
+            ) as response:
+                # Important: raise_for_status() triggers the fallback block in the chat route
+                response.raise_for_status() 
+                async for line in response.aiter_lines():
+                    if line:
+                        try:
+                            chunk = json.loads(line)
+                            token = chunk.get("response", "")
+                            if token:
+                                yield token
+                            if chunk.get("done", False):
+                                break
+                        except json.JSONDecodeError:
+                            continue
 
-    memory_block = ""
-    if memory_turns:
-        pairs = []
-        for turn in memory_turns:
-            pairs.append(f"User: {turn.prompt}\nAssistant: {turn.response}")
-        memory_block = (
-            "=== Previous Conversation ===\n"
-            + "\n\n".join(pairs)
-            + "\n\n"
+
+    # --------------------------------------------------------------------------
+    # API Routes — defined BEFORE static mount so they aren't swallowed.
+    # --------------------------------------------------------------------------
+
+    @app.get("/health", tags=["Meta"])
+    def health():
+        """Simple liveness check."""
+        return {"status": "ok"}
+
+
+    @app.post("/search", response_model=QueryResponse, tags=["Search"])
+    def search(request: QueryRequest):
+        """
+        Raw semantic search — returns ranked RAG results with no LLM involvement.
+
+        - **query**: the user's natural language question
+        - **top_k**: how many unique results to return (1–20, default 3)
+        """
+        if retriever is None:
+            raise HTTPException(status_code=503, detail="Retriever not initialized.")
+
+        results = retriever.search(query=request.query, top_k=request.top_k)
+
+        return QueryResponse(
+            query=request.query,
+            top_k=request.top_k,
+            results=results,
         )
 
 
-    return (
-        f"{memory_block}"
-        f"=== Library Documents ===\n{doc_blob}\n\n"
-        f"=== Current User Query ===\n{user_message}"
-    )
+    @app.post("/chat", tags=["Chat"])
+    async def chat(request: ChatRequest):
+        """
+        Full chat endpoint — retrieves relevant library documents, builds a
+        context-aware prompt, and streams the LLM response back token by token.
+
+        - **message**: the user's chat message
+        - **top_k**: how many RAG results to retrieve (1–20, default 3)
+
+        Returns a plain text stream. The browser receives tokens as they are
+        generated rather than waiting for the full response.
+        """
+
+        t0 = time.perf_counter()
+
+        if retriever is None:
+            raise HTTPException(status_code=503, detail="Retriever not initialized.")
+
+        # --- 1. Retrieve relevant documents ---
+        rag_results = retriever.search(query=request.message, top_k=request.top_k)
+        t1 = time.perf_counter()
+
+        # --- Server-side logging (scores/text never sent to frontend) ---
+        logger.info(f"Query: {request.message!r}")
+        logger.info(f"Retrieval time: {t1 - t0:.3f}s | Results: {len(rag_results)}")
+        for i, r in enumerate(rag_results, 1):
+            logger.info(f"  [{i}] score={r.score:.4f} | preview={r.text[:80]!r}")
+            for s in r.sources:
+                logger.info(f"       {s.libguide_title} → {s.section_title} | {s.libguide_url}")
+                logger.info(f"       {s.libguide_title} → {s.section_title} | {s.section_url}")
+                logger.info(f"       {s.libguide_title} → {s.section_title} | {s.external_url}")
 
 
-async def stream_ollama(prompt: str, model_name: str) -> AsyncGenerator[str, None]:
-    """
-    Streams the Ollama response token by token back to the browser.
-    Each chunk is a plain text string as it arrives from the LLM.
-    """
-    timeout = httpx.Timeout(connect=10.0, read=300.0, write=10.0, pool=10.0)
-    async with httpx.AsyncClient(timeout=timeout) as client:
-        async with client.stream(
-            "POST",
-            settings.ollama_url,
-            json={"model": model_name, "prompt": prompt, "stream": True},
-        ) as response:
-            # Important: raise_for_status() triggers the fallback block in the chat route
-            response.raise_for_status() 
-            async for line in response.aiter_lines():
-                if line:
-                    try:
-                        chunk = json.loads(line)
-                        token = chunk.get("response", "")
-                        if token:
-                            yield token
-                        if chunk.get("done", False):
-                            break
-                    except json.JSONDecodeError:
-                        continue
-
-
-# --------------------------------------------------------------------------
-# API Routes — defined BEFORE static mount so they aren't swallowed.
-# --------------------------------------------------------------------------
-
-@app.get("/health", tags=["Meta"])
-def health():
-    """Simple liveness check."""
-    return {"status": "ok"}
-
-
-@app.post("/search", response_model=QueryResponse, tags=["Search"])
-def search(request: QueryRequest):
-    """
-    Raw semantic search — returns ranked RAG results with no LLM involvement.
-
-    - **query**: the user's natural language question
-    - **top_k**: how many unique results to return (1–20, default 3)
-    """
-    if retriever is None:
-        raise HTTPException(status_code=503, detail="Retriever not initialized.")
-
-    results = retriever.search(query=request.query, top_k=request.top_k)
-
-    return QueryResponse(
-        query=request.query,
-        top_k=request.top_k,
-        results=results,
-    )
-
-
-@app.post("/chat", tags=["Chat"])
-async def chat(request: ChatRequest):
-    """
-    Full chat endpoint — retrieves relevant library documents, builds a
-    context-aware prompt, and streams the LLM response back token by token.
-
-    - **message**: the user's chat message
-    - **top_k**: how many RAG results to retrieve (1–20, default 3)
-
-    Returns a plain text stream. The browser receives tokens as they are
-    generated rather than waiting for the full response.
-    """
-
-    t0 = time.perf_counter()
-
-    if retriever is None:
-        raise HTTPException(status_code=503, detail="Retriever not initialized.")
-
-    # --- 1. Retrieve relevant documents ---
-    rag_results = retriever.search(query=request.message, top_k=request.top_k)
-    t1 = time.perf_counter()
-
-    # --- Server-side logging (scores/text never sent to frontend) ---
-    logger.info(f"Query: {request.message!r}")
-    logger.info(f"Retrieval time: {t1 - t0:.3f}s | Results: {len(rag_results)}")
-    for i, r in enumerate(rag_results, 1):
-        logger.info(f"  [{i}] score={r.score:.4f} | preview={r.text[:80]!r}")
-        for s in r.sources:
-            logger.info(f"       {s.libguide_title} → {s.section_title} | {s.libguide_url}")
-            logger.info(f"       {s.libguide_title} → {s.section_title} | {s.section_url}")
-            logger.info(f"       {s.libguide_title} → {s.section_title} | {s.external_url}")
-
-
-    # --- 2. Build context-aware prompt ---
-    prompt = build_context_prompt(request.message, rag_results, request.history)
-    logger.info(f"Prompt length (chars): {len(prompt)} | approx tokens: {len(prompt)//4}")
-    
-    # --- 3. Sources payload — titles and URLs only, scores/text stripped ---
-    sources_payload = [
-        {
-            "text": r.text,
-            "sources": [s.model_dump() for s in r.sources]
-        }
-        for r in rag_results
-    ]
-
-    async def response_stream() -> AsyncGenerator[str, None]:
-        # Always yield sources first so the UI can render them immediately
-        yield f"SOURCES:{json.dumps(sources_payload)}\n"
+        # --- 2. Build context-aware prompt ---
+        prompt = build_context_prompt(request.message, rag_results, request.history)
+        logger.info(f"Prompt length (chars): {len(prompt)} | approx tokens: {len(prompt)//4}")
         
-        target_model = settings.ollama_model # Cloud if set in .env
-        fallback_happened = False
-        
-        try:
-            # --- Attempt 1: Primary Model (Cloud) ---
-            t_start = time.perf_counter()
-            async for token in stream_ollama(prompt, target_model):
-                yield token
-            logger.info(f"Stream finished using {target_model} in {time.perf_counter() - t_start:.3f}s")
+        # --- 3. Sources payload — titles and URLs only, scores/text stripped ---
+        sources_payload = [
+            {
+                "text": r.text,
+                "sources": [s.model_dump() for s in r.sources]
+            }
+            for r in rag_results
+        ]
 
-        except Exception as e:
-            # --- Attempt 2: Fallback to Local ---
-            if settings.active_llm_mode == "cloud":
-                logger.error(f"Cloud model ({target_model}) failed: {e}")
-                logger.info(f"Falling back to local model: {settings.ollama_local_model}")
-                
-                # Visual cue for the user (Optional)
-                yield "\n\n*(Cloud quota reached. Switching to local CPU synthesis...)*\n\n"
-                
-                t_fallback = time.perf_counter()
-                async for token in stream_ollama(prompt, settings.ollama_local_model):
+        async def response_stream() -> AsyncGenerator[str, None]:
+            # Always yield sources first so the UI can render them immediately
+            yield f"SOURCES:{json.dumps(sources_payload)}\n"
+            
+            target_model = settings.ollama_model # Cloud if set in .env
+            fallback_happened = False
+            
+            try:
+                # --- Attempt 1: Primary Model (Cloud) ---
+                t_start = time.perf_counter()
+                async for token in stream_ollama(prompt, target_model):
                     yield token
-                logger.info(f"Fallback stream finished in {time.perf_counter() - t_fallback:.3f}s")
-            else:
-                # If we were already in local mode, there is nothing to fall back to
-                logger.error(f"Local model failed: {e}")
-                yield f"\n\n[Error: The LLM server is currently unavailable.]"
+                logger.info(f"Stream finished using {target_model} in {time.perf_counter() - t_start:.3f}s")
 
-    return StreamingResponse(response_stream(), media_type="text/plain")
+            except Exception as e:
+                # --- Attempt 2: Fallback to Local ---
+                if settings.active_llm_mode == "cloud":
+                    logger.error(f"Cloud model ({target_model}) failed: {e}")
+                    logger.info(f"Falling back to local model: {settings.ollama_local_model}")
+                    
+                    # Visual cue for the user (Optional)
+                    yield "\n\n*(Cloud quota reached. Switching to local CPU synthesis...)*\n\n"
+                    
+                    t_fallback = time.perf_counter()
+                    async for token in stream_ollama(prompt, settings.ollama_local_model):
+                        yield token
+                    logger.info(f"Fallback stream finished in {time.perf_counter() - t_fallback:.3f}s")
+                else:
+                    # If we were already in local mode, there is nothing to fall back to
+                    logger.error(f"Local model failed: {e}")
+                    yield f"\n\n[Error: The LLM server is currently unavailable.]"
 
-# --------------------------------------------------------------------------
-# Static files — mounted LAST so it doesn't swallow API routes.
-# html=True makes StaticFiles automatically serve index.html for GET /
-# --------------------------------------------------------------------------
+        return StreamingResponse(response_stream(), media_type="text/plain")
 
-app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+
+    # --------------------------------------------------------------------------
+    # Static files — mounted LAST so it doesn't swallow API routes.
+    # html=True makes StaticFiles automatically serve index.html for GET /
+    # --------------------------------------------------------------------------
+
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+
+    return app
