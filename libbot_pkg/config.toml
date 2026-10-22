@@ -17,7 +17,8 @@ combined_text_csv = "test-install/combined_text_full_libguide_new.csv"
 combined_text_parquet = "test-install/combined_text_full_libguide_new.parquet"
 embeddings_file = "test-install/embeddings_qwen_new.npy"
 reuse_embeddings = true
-chroma_db_path = "test-install/chroma_db_new"
+chroma_db_path = "test-install/chroma_db"
+collection_name = "libguides"
 encode_batch_size = 16
 chroma_batch_size = 1000
 device = "mps"
@@ -32,4 +33,28 @@ row_drop_warn = 0.5      # warn if a guide lost >50% of its baseline rows
 # ------------------------------
 
 
+#[]
+hf_home = "test-install/huggingface_cache"
+sentence_transformers_home = "test-install/huggingface_cache"
+
+
+#[embedding_model]
 embedding_model_name = "Qwen/Qwen3-Embedding-0.6B"
+torch_num_threads = 16
+top_k = 3
+
+# [ollama]
+# Set this to "local" or "cloud" to switch easily
+active_llm_mode = "local"
+
+# The models assigned to each mode
+#ollama_local_model=libbot_gemma3n-4b-32
+ollama_local_model = "gemma3:4b"
+ollama_cloud_model = "libbot-gemma4-cloud"
+# ollama_cloud_model=libbot-gpt-oss-cloud
+
+ollama_url = "http://127.0.0.1:11434/api/generate"
+
+#[api_server]
+host = "0.0.0.0"
+port = 8075
