@@ -351,6 +351,14 @@ def main():
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
+    # use command line args to override defaults:
+    overrides = {
+        key: value
+        for key, value in vars(args).items()
+        if value is not None
+    }
+    settings = load_settings(overrides)
+
     logging.basicConfig(
         level=logging.DEBUG if args.verbose else logging.INFO,
         format="%(asctime)s %(levelname)s %(message)s",

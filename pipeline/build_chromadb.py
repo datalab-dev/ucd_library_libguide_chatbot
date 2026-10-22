@@ -151,6 +151,14 @@ def main():
                         help="Skip encoding and load --embeddings from disk")
     args = parser.parse_args()
 
+    # use command line args to override defaults:
+    overrides = {
+        key: value
+        for key, value in vars(args).items()
+        if value is not None
+    }
+    settings = load_settings(overrides)
+
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(message)s",
                         stream=sys.stderr)

@@ -3,13 +3,17 @@
 
 import json
 import sys
-from libbot_pkg import Retriever, settings, QueryResponse
+from libbot_pkg import Retriever, QueryResponse
+from libbot_pkg.config import load_settings
 
 if __name__ == "__main__":
     # --- get the prompt from the user ---
     if len(sys.argv) < 2:
         print("Usage: python test_retriever.py \"your query here\"")
         sys.exit(1)
+
+    # run with default settings
+    settings = load_settings()
 
     base_query = sys.argv[1]
     print(f"\n\033[1;30mQuery:\033[0m {base_query}\n")

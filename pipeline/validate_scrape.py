@@ -231,6 +231,14 @@ def main():
 
     print(f"Validating {args.input}")
     df = pd.read_csv(args.input, encoding="utf-8")
+    # use command line args to override defaults:
+    overrides = {
+        key: value
+        for key, value in vars(args).items()
+        if value is not None
+    }
+    settings = load_settings(overrides)
+
     print(f"{len(df)} rows")
 
     check_schema(df)
