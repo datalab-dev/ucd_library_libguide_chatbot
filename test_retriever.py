@@ -28,7 +28,7 @@ if __name__ == "__main__":
     # loadin the retriever (connects to ChromaDB + loads model)
 
     print("\n=== Loading Retriever ===")
-    retriever = Retriever()
+    retriever = Retriever(settings)
 
     # -------------------------------------------------------
     # running test
@@ -54,7 +54,7 @@ if __name__ == "__main__":
             print(f"  Sources ({len(r.sources)}):")
             for src in r.sources:
                 print(f"    • {src.libguide_title} → {src.section_title}")
-                print(f"      {src.url}")
+                #print(f"      {src.url}")
             print()
 
     # -------------------------------------------------------
