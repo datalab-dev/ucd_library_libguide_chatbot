@@ -9,48 +9,48 @@ version = "0.1.0"
 
 [tasks.ollama-serve]
 cmd = "ollama serve"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "test-install/ollama_cache"
 
 [tasks.ollama-pull]
 cmd = "ollama pull"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "test-install/ollama_cache"
 
 [tasks.ollama-list]
 cmd = "ollama list"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "test-install/ollama_cache"
 
 [tasks.ollama-run]
 cmd = "ollama run"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "test-install/ollama_cache"
 
 [tasks.ollama-rm]
 cmd = "ollama rm"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "test-install/ollama_cache"
 
 [dependencies]
-python = "==3.10"
-numpy = "*"
-pandas = "*"
-pytorch = "*"
-transformers = "*"
-sentence-transformers = "*"
-pyarrow = "<14"
-einops = ">=0.8.1,<0.9"
-ollama-python = "*"
-chromadb = ">=1.2.1,<2"
-psutil = ">=7.2.1,<8"
-scikit-learn = ">=1.7.2,<2"
-matplotlib = ">=3.10.8,<4"
+python = ">=3.14.8,<3.15"
+numpy = ">=2.5.4,<3"
+pandas = ">=3.0.6,<4"
+pytorch = ">=2.14.1,<3"
+transformers = ">=5.20.2,<6"
+sentence-transformers = ">=6.1.0,<7"
+pyarrow = ">=25.0.0,<26"
+einops = ">=0.8.2,<0.9"
+ollama-python = ">=0.6.3,<0.7"
+chromadb = ">=1.5.9,<2"
+psutil = ">=7.2.2,<8"
+scikit-learn = ">=1.9.1,<2"
+matplotlib = ">=3.11.2,<4"
 seaborn = ">=0.13.2,<0.14"
-pydantic = ">=2.12.5,<3"
-fastapi = ">=0.115.9,<0.116"
-pydantic-settings = ">=2.13.0,<3"
-uvicorn = ">=0.41.0,<0.42"
+pydantic = ">=2.14.1,<3"
+fastapi = ">=0.154.0,<0.155"
+pydantic-settings = ">=2.16.1,<3"
+uvicorn = ">=0.54.0,<0.55"
 httpx = ">=0.28.1,<0.29"
-ollama = ">=0.20.4,<0.21"
+ollama = ">=0.32.15,<0.33"
 jupyter = ">=1.1.1,<2"
-ipykernel = ">=7.2.0,<8"
-nltk = ">=3.9.3,<4"
+ipykernel = ">=7.4.0,<8"
+nltk = ">=3.10.3,<4"
 
 
 

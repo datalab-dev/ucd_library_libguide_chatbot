@@ -1,0 +1,34 @@
+#[scrape_guides]
+# ---------- Defaults ----------
+url_list_path = "test-install/url_list.csv"
+request_delay = 0.3  # seconds between HTTP requests
+request_timeout = 30.0
+max_retries = 3
+user_agent = "LibBot-scraper/1.0 (UC Davis Library DataLab; fgaprile@ucdavis.edu)"
+min_prose_chars = 40  # ignore box prose shorter than this
+# ------------------------------
+
+
+
+#[build_chromadb]
+# ---------- Defaults ----------
+guide_text_csv = "test-install/text_full_libguide_new.csv"
+combined_text_csv = "test-install/combined_text_full_libguide_new.csv"
+combined_text_parquet = "test-install/combined_text_full_libguide_new.parquet"
+embeddings_file = "test-install/embeddings_qwen_new.npy"
+reuse_embeddings = true
+chroma_db_path = "test-install/chroma_db_new"
+encode_batch_size = 16
+chroma_batch_size = 1000
+device = "mps"
+# ------------------------------
+
+
+#[validate_scrape]
+# ---------- Defaults ----------
+baseline_guide_text_csv = "test-install/text_full_libguide.csv"
+min_text_chars = 20      # texts shorter than this are flagged
+row_drop_warn = 0.5      # warn if a guide lost >50% of its baseline rows
+# ------------------------------
+
+

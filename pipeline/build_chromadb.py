@@ -28,8 +28,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-os.environ.setdefault("HF_HOME", "/dsl/libbot/data/huggingface_cache")
-os.environ.setdefault("SENTENCE_TRANSFORMERS_HOME", "/dsl/libbot/data/huggingface_cache")
+os.environ.setdefault("HF_HOME", "test-install/huggingface_cache")
+os.environ.setdefault("SENTENCE_TRANSFORMERS_HOME", "test-install/huggingface_cache")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from libbot_pkg.config import load_settings  # noqa: E402  (needs repo root on path)
