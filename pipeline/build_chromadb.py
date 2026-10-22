@@ -62,24 +62,25 @@ def add_combined_text(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def generate_embeddings(texts: list[str]) -> np.ndarray:
+def generate_embeddings(texts: list[str], torch_num_threads: int, model_name: str, encode_batch_size: int, device: str) -> np.ndarray:
     import torch
     from sentence_transformers import SentenceTransformer
 
-    torch.set_num_threads(settings.torch_num_threads)
-    log.info("Loading embedding model %s ...", settings.model_name)
+    torch.set_num_threads(torch_num_threads)
+    log.info("Loading embedding model %s ...", model_name)
     model = SentenceTransformer(
-        settings.model_name,
-        device="cpu",
+        model_name,
+        device=device,
         model_kwargs={"torch_dtype": torch.float32},
-        tokenizer_kwargs={"padding_side": "left"},
+        #tokenizer_kwargs={"padding_side": "left"},
+        processor_kwargs={"padding_side": "left"},
         trust_remote_code=True,
     )
-    log.info("Encoding %d documents (batch_size=%d) ...", len(texts), ENCODE_BATCH_SIZE)
+    log.info("Encoding %d documents (batch_size=%d) ...", len(texts), encode_batch_size)
     started = time.monotonic()
     embeddings = model.encode(
         texts,
-        batch_size=ENCODE_BATCH_SIZE,
+        batch_size=encode_batch_size,
         show_progress_bar=True,
         convert_to_numpy=True,
         normalize_embeddings=True,
@@ -88,7 +89,7 @@ def generate_embeddings(texts: list[str]) -> np.ndarray:
     return embeddings.astype(np.float32)
 
 
-def build_collection(df: pd.DataFrame, embeddings: np.ndarray, db_path: str):
+def build_collection(df: pd.DataFrame, embeddings: np.ndarray, db_path: str, collection_name: str, chroma_batch_size: int):
     import chromadb
 
     assert len(embeddings) == len(df), \
@@ -96,13 +97,13 @@ def build_collection(df: pd.DataFrame, embeddings: np.ndarray, db_path: str):
 
     client = chromadb.PersistentClient(path=db_path)
     try:
-        client.delete_collection(settings.collection_name)
-        log.info("Dropped existing collection %r in %s", settings.collection_name, db_path)
+        client.delete_collection(collection_name)
+        log.info("Dropped existing collection %r in %s", collection_name, db_path)
     except Exception:
         pass
     collection = client.create_collection(
-        name=settings.collection_name,
-        metadata={"hnsw:space": "cosine"},
+        name = collection_name,
+        metadata = {"hnsw:space": "cosine"},
     )
 
     def as_str(value) -> str:
@@ -123,18 +124,18 @@ def build_collection(df: pd.DataFrame, embeddings: np.ndarray, db_path: str):
             "combined_text": as_str(row.combined_text),
         })
 
-    for i in range(0, len(ids), CHROMA_BATCH_SIZE):
+    for i in range(0, len(ids), chroma_batch_size):
         collection.add(
-            ids=ids[i:i + CHROMA_BATCH_SIZE],
-            embeddings=embeddings[i:i + CHROMA_BATCH_SIZE].tolist(),
-            metadatas=metadatas[i:i + CHROMA_BATCH_SIZE],
+            ids=ids[i:i + chroma_batch_size],
+            embeddings=embeddings[i:i + chroma_batch_size].tolist(),
+            metadatas=metadatas[i:i + chroma_batch_size],
         )
-        log.info("Inserted %d/%d documents", min(i + CHROMA_BATCH_SIZE, len(ids)), len(ids))
+        log.info("Inserted %d/%d documents", min(i + chroma_batch_size, len(ids)), len(ids))
 
     count = collection.count()
     assert count == len(ids), f"Collection has {count} documents, expected {len(ids)}"
     log.info("Collection %r in %s verified: %d documents",
-             settings.collection_name, db_path, count)
+            collection_name, db_path, count)
 
 
 def main():
