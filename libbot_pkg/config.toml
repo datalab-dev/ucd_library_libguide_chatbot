@@ -32,3 +32,4 @@ row_drop_warn = 0.5      # warn if a guide lost >50% of its baseline rows
 # ------------------------------
 
 
+embedding_model_name = "Qwen/Qwen3-Embedding-0.6B"

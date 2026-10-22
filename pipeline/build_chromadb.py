@@ -183,7 +183,7 @@ def main():
         embeddings = generate_embeddings(
             df["combined_text"].tolist(),
             torch_num_threads = settings.torch_num_threads,
-            model_name = settings.model_name,
+            model_name = settings.embedding_model_name,
             encode_batch_size = settings.encode_batch_size,
             device = settings.device
             )

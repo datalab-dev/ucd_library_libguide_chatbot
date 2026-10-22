@@ -35,9 +35,9 @@ class Retriever:
         self.client = chromadb.PersistentClient(path=settings.chroma_db_path)
         self.collection = self.client.get_collection(name=settings.collection_name)
 
-        print(f"\033[1;30mLoading embedding model:\033[0m [\033[36m{settings.model_name}\033[0m]")
+        print(f"\033[1;30mLoading embedding model:\033[0m [\033[36m{settings.embedding_model_name}\033[0m]")
         self.model = SentenceTransformer(
-            settings.model_name,
+            settings.embedding_model_name,
             device=settings.device,
             model_kwargs={"torch_dtype": torch.float32},
             tokenizer_kwargs={"padding_side": "left"},

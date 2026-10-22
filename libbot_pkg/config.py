@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     collection_name: str
 
     # --- Embedding Model ---
-    model_name: str
+    embedding_model_name: str
     torch_num_threads: int = 16
     top_k: int = 3
 
