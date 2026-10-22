@@ -32,17 +32,17 @@ os.environ.setdefault("HF_HOME", "/dsl/libbot/data/huggingface_cache")
 os.environ.setdefault("SENTENCE_TRANSFORMERS_HOME", "/dsl/libbot/data/huggingface_cache")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from libbot_pkg.config import settings  # noqa: E402  (needs repo root on path)
+from libbot_pkg.config import load_settings  # noqa: E402  (needs repo root on path)
 
-# ---------- Defaults ----------
-INPUT_CSV = "/dsl/libbot/data/text_full_libguide_new.csv"
-OUTPUT_CSV = "/dsl/libbot/data/combined_text_full_libguide_new.csv"
-OUTPUT_PARQUET = "/dsl/libbot/data/combined_text_full_libguide_new.parquet"
-OUTPUT_EMBEDDINGS = "/dsl/libbot/data/embeddings_qwen_new.npy"
-CHROMA_DB_PATH = "/dsl/libbot/data/chroma_db_new"
-ENCODE_BATCH_SIZE = 16
-CHROMA_BATCH_SIZE = 1000
-# ------------------------------
+# # ---------- Defaults ----------
+# INPUT_CSV = "/dsl/libbot/data/text_full_libguide_new.csv"
+# OUTPUT_CSV = "/dsl/libbot/data/combined_text_full_libguide_new.csv"
+# OUTPUT_PARQUET = "/dsl/libbot/data/combined_text_full_libguide_new.parquet"
+# OUTPUT_EMBEDDINGS = "/dsl/libbot/data/embeddings_qwen_new.npy"
+# CHROMA_DB_PATH = "/dsl/libbot/data/chroma_db_new"
+# ENCODE_BATCH_SIZE = 16
+# CHROMA_BATCH_SIZE = 1000
+# # ------------------------------
 
 EXPECTED_COLUMNS = ["local_id", "parent_id", "text", "libguide_title",
                     "libguide_url", "chunk_title", "chunk_url", "external_url",
@@ -139,13 +139,13 @@ def build_collection(df: pd.DataFrame, embeddings: np.ndarray, db_path: str):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--input", default=INPUT_CSV,
+    parser.add_argument("--input", default=None,
                         help="Scraped corpus CSV (8 columns)")
-    parser.add_argument("--output-csv", default=OUTPUT_CSV)
-    parser.add_argument("--output-parquet", default=OUTPUT_PARQUET)
-    parser.add_argument("--embeddings", default=OUTPUT_EMBEDDINGS,
+    parser.add_argument("--output-csv", default=None)
+    parser.add_argument("--output-parquet", default=None)
+    parser.add_argument("--embeddings", default=None,
                         help="Path to save (or reuse) the embeddings .npy")
-    parser.add_argument("--chroma-path", default=CHROMA_DB_PATH,
+    parser.add_argument("--chroma-path", default=None,
                         help="ChromaDB directory to (re)build")
     parser.add_argument("--reuse-embeddings", action="store_true",
                         help="Skip encoding and load --embeddings from disk")

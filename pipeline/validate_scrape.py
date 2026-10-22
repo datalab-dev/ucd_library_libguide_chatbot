@@ -217,10 +217,10 @@ def check_against_baseline(df: pd.DataFrame, baseline_path: str):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--input", default=INPUT_CSV, help="Scraped CSV to validate")
-    parser.add_argument("--baseline", default=BASELINE_CSV,
+    parser.add_argument("--input", default=None, help="Scraped CSV to validate", dest = "guide_text_csv")
+    parser.add_argument("--baseline", default=None, dest = "baseline_guide_text_csv",
                         help="Previous corpus CSV to compare against")
-    parser.add_argument("--url-list", default=URL_LIST_PATH)
+    parser.add_argument("--url-list", default=None)
     parser.add_argument("--no-baseline", action="store_true",
                         help="Skip the baseline comparison")
     args = parser.parse_args()

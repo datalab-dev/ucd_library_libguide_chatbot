@@ -36,17 +36,17 @@ from urllib.parse import parse_qs, urljoin, urlparse
 import httpx
 from bs4 import BeautifulSoup
 
-# ---------- Defaults ----------
-URL_LIST_PATH = "/dsl/libbot/data/url_list.csv"
-OUTPUT_PATH = "/dsl/libbot/data/text_full_libguide_new.csv"
-REQUEST_DELAY = 0.3  # seconds between HTTP requests
-REQUEST_TIMEOUT = 30.0
-MAX_RETRIES = 3
-USER_AGENT = (
-    "LibBot-scraper/1.0 (UC Davis Library DataLab; fgaprile@ucdavis.edu)"
-)
-MIN_PROSE_CHARS = 40  # ignore box prose shorter than this
-# ------------------------------
+# # ---------- Defaults ----------
+# URL_LIST_PATH = "/dsl/libbot/data/url_list.csv"
+# OUTPUT_PATH = "/dsl/libbot/data/text_full_libguide_new.csv"
+# REQUEST_DELAY = 0.3  # seconds between HTTP requests
+# REQUEST_TIMEOUT = 30.0
+# MAX_RETRIES = 3
+# USER_AGENT = (
+#     "LibBot-scraper/1.0 (UC Davis Library DataLab; fgaprile@ucdavis.edu)"
+# )
+# MIN_PROSE_CHARS = 40  # ignore box prose shorter than this
+# # ------------------------------
 
 GUIDES_HOST = "guides.library.ucdavis.edu"
 
@@ -340,11 +340,11 @@ def scrape_guide(fetcher: Fetcher, guide_id_csv: int, guide_url: str) -> list[di
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--url-list", default=URL_LIST_PATH,
+    parser.add_argument("--url-list", default=None,
                         help="CSV of guides to scrape (id,url)")
-    parser.add_argument("--output", default=OUTPUT_PATH,
+    parser.add_argument("--output", default=None, dest="guide_text_csv",
                         help="Output CSV path")
-    parser.add_argument("--delay", type=float, default=REQUEST_DELAY,
+    parser.add_argument("--delay", type=float, default=None,
                         help="Seconds between HTTP requests")
     parser.add_argument("--limit", type=int, default=None,
                         help="Only scrape the first N guides (for testing)")
