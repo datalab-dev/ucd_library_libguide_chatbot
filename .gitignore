@@ -10,3 +10,7 @@ pixi.lock
 !.pixi/config.toml
 .env
 .claude/
+.Rproj.user
+*.Rproj
+
+test-install/
