@@ -5,7 +5,7 @@ import chromadb
 import torch
 from sentence_transformers import SentenceTransformer
 import time
-from .config import settings
+#from .config import settings
 from .models import Author, SearchResult, Source
 
 

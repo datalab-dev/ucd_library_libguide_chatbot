@@ -21,6 +21,10 @@ import json
 import sys
 from urllib.parse import urlparse
 
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from libbot_pkg.config import load_settings 
+
 import pandas as pd
 
 # ---------- Defaults ----------

@@ -17,7 +17,7 @@ Use the retriever directly in Python:
 
 from .retriever import Retriever
 from .models import QueryRequest, QueryResponse, SearchResult, Source
-from .config import settings
+#from .config import settings
 
 __all__ = [
     "Retriever",
@@ -25,5 +25,5 @@ __all__ = [
     "QueryResponse",
     "SearchResult",
     "Source",
-    "settings",
+    #"settings",
 ]

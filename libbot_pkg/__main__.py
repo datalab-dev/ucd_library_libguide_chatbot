@@ -1,5 +1,6 @@
 import uvicorn
-from .config import settings
+from .config import load_settings
+settings = load_settings()
 
 # Unvicorn is an ASGI server that can run FastAPI applications.
 # Here we specify the app location and server settings.

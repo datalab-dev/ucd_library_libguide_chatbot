@@ -12,7 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import StreamingResponse
 from pathlib import Path
 
-from .config import settings
+#from .config import settings
 from .models import QueryRequest, QueryResponse, ChatRequest
 from .retriever import Retriever
 
