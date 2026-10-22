@@ -360,20 +360,20 @@ def main():
     settings = load_settings(overrides)
 
     logging.basicConfig(
-        level=logging.DEBUG if args.verbose else logging.INFO,
+        level=logging.DEBUG if settings.verbose else logging.INFO,
         format="%(asctime)s %(levelname)s %(message)s",
         stream=sys.stderr,
     )
-    if not args.verbose:
+    if not settings.verbose:
         logging.getLogger("httpx").setLevel(logging.WARNING)
 
-    with open(args.url_list, newline="", encoding="utf-8") as f:
+    with open(settings.url_list, newline="", encoding="utf-8") as f:
         guides = [(int(row["id"]), row["url"]) for row in csv.DictReader(f)]
-    if args.limit:
-        guides = guides[: args.limit]
-    log.info("Scraping %d guides from %s", len(guides), args.url_list)
+    if settings.limit:
+        guides = guides[: settings.limit]
+    log.info("Scraping %d guides from %s", len(guides), settings.url_list)
 
-    fetcher = Fetcher(delay=args.delay)
+    fetcher = Fetcher(delay=settings.delay)
     all_rows = []
     failed_guides = []
     started = time.monotonic()
@@ -393,7 +393,7 @@ def main():
     fieldnames = ["local_id", "parent_id", "text", "libguide_title",
                   "libguide_url", "chunk_title", "chunk_url", "external_url",
                   "authors"]
-    with open(args.output, "w", newline="", encoding="utf-8") as f:
+    with open(settings.guide_text_csv, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for local_id, row in enumerate(all_rows, 1):
@@ -402,7 +402,7 @@ def main():
     elapsed = time.monotonic() - started
     log.info("Done in %.0fs: %d chunks from %d/%d guides -> %s",
              elapsed, len(all_rows), len(guides) - len(failed_guides),
-             len(guides), args.output)
+             len(guides), settings.guide_text_csv)
     if failed_guides:
         log.warning("Guides with no content (%d):", len(failed_guides))
         for gid, url in failed_guides:

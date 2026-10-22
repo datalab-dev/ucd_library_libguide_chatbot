@@ -163,29 +163,40 @@ def main():
                         format="%(asctime)s %(levelname)s %(message)s",
                         stream=sys.stderr)
 
-    log.info("Reading %s", args.input)
-    df = pd.read_csv(args.input, encoding="utf-8")
+    log.info("Reading %s", settings.guide_text_csv)
+    df = pd.read_csv(settings.guide_text_csv, encoding="utf-8")
     missing = set(EXPECTED_COLUMNS) - set(df.columns)
     if missing:
-        sys.exit(f"Input is missing required columns: {sorted(missing)}")
+        sys.exit(f"guide_text_csv is missing required columns: {sorted(missing)}")
     log.info("%d rows, %d guides", len(df), df["parent_id"].nunique())
 
     df = add_combined_text(df)
-    df.to_csv(args.output_csv, index=False, encoding="utf-8")
-    df.to_parquet(args.output_parquet, index=False)
-    log.info("Wrote %s and %s", args.output_csv, args.output_parquet)
+    df.to_csv(settings.combined_text_csv, index=False, encoding="utf-8")
+    df.to_parquet(settings.combined_text_parquet, index=False)
+    log.info("Wrote %s and %s", settings.combined_text_csv, settings.combined_text_parquet)
 
-    if args.reuse_embeddings:
-        log.info("Reusing embeddings from %s", args.embeddings)
-        embeddings = np.load(args.embeddings)
+    if settings.reuse_embeddings:
+        log.info("Reusing embeddings from %s", settings.embeddings_file)
+        embeddings = np.load(settings.embeddings_file)
     else:
-        embeddings = generate_embeddings(df["combined_text"].tolist())
-        np.save(args.embeddings, embeddings)
-        log.info("Saved embeddings to %s", args.embeddings)
+        embeddings = generate_embeddings(
+            df["combined_text"].tolist(),
+            torch_num_threads = settings.torch_num_threads,
+            model_name = settings.model_name,
+            encode_batch_size = settings.encode_batch_size,
+            device = settings.device
+            )
+        np.save(settings.embeddings_file, embeddings)
+        log.info("Saved embeddings to %s", settings.embeddings_file)
 
-    build_collection(df, embeddings, args.chroma_path)
-    log.info("Done. To deploy, point CHROMA_DB_PATH in .env at %s "
-             "(or swap it with the production chroma_db directory).", args.chroma_path)
+    build_collection(
+        df,
+        embeddings,
+        db_path = settings.chroma_db_path,
+        collection_name = settings.collection_name,
+        chroma_batch_size = settings.chroma_batch_size)
+    log.info("Done. To deploy, point chroma_db_path in config.toml at %s "
+             "(or swap it with the production chroma_db directory).", settings.chroma_db_path)
 
 
 if __name__ == "__main__":

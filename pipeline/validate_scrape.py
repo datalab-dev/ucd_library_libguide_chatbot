@@ -229,8 +229,6 @@ def main():
                         help="Skip the baseline comparison")
     args = parser.parse_args()
 
-    print(f"Validating {args.input}")
-    df = pd.read_csv(args.input, encoding="utf-8")
     # use command line args to override defaults:
     overrides = {
         key: value
@@ -239,14 +237,16 @@ def main():
     }
     settings = load_settings(overrides)
 
+    print(f"Validating {settings.guide_text_csv}")
+    df = pd.read_csv(settings.guide_text_csv, encoding="utf-8")
     print(f"{len(df)} rows")
 
     check_schema(df)
     check_content(df)
     check_authors(df)
-    check_coverage(df, args.url_list)
+    check_coverage(df, settings.url_list_path)
     if not args.no_baseline:
-        check_against_baseline(df, args.baseline)
+        check_against_baseline(df, settings.baseline_guide_text_csv)
 
     print(f"\n{'=' * 50}")
     print(f"RESULT: {len(failures)} failures, {len(warnings)} warnings")

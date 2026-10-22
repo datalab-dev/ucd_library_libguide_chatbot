@@ -28,7 +28,7 @@ class Retriever:
     Loaded once at server startup and reused across requests.
     """
 
-    def __init__(self):
+    def __init__(self, settings):
         torch.set_num_threads(settings.torch_num_threads)
 
         print(f"\033[1;30m\nConnecting to ChromaDB at:\033[0m [\033[36m{settings.chroma_db_path}]\033[0m]")
@@ -38,7 +38,7 @@ class Retriever:
         print(f"\033[1;30mLoading embedding model:\033[0m [\033[36m{settings.model_name}\033[0m]")
         self.model = SentenceTransformer(
             settings.model_name,
-            device="cpu",
+            device=settings.device,
             model_kwargs={"torch_dtype": torch.float32},
             tokenizer_kwargs={"padding_side": "left"},
             trust_remote_code=True,
@@ -52,7 +52,7 @@ class Retriever:
 
 
 
-    def search(self, query: str, top_k: int = settings.top_k) -> list[SearchResult]:
+    def search(self, query: str, top_k: int) -> list[SearchResult]:
         """
         Embed the query, search ChromaDB, deduplicate results, and
         aggregate sources for texts that appear across multiple guides.
