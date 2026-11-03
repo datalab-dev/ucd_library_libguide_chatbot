@@ -282,6 +282,7 @@ function linkSummaryToSources(llmSpan, ragResults) {
 // Welcome screen → chat swap on first message
 // -------------------------------------------------------
 let chatStarted = false;
+let chatHistory = [];
 
 function activateChat() {
   if (chatStarted) return;
@@ -293,6 +294,7 @@ function activateChat() {
 
 function newChat() {
   chatStarted = false;
+  chatHistory = [];
   document.getElementById("chat-box").innerHTML = "";
   document.getElementById("chat-main").classList.add("hidden");
   document.getElementById("welcome-screen").classList.remove("hidden");
@@ -409,7 +411,7 @@ async function sendMessage() {
     const response = await fetch("/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: userMessage, top_k: 3 }),
+      body: JSON.stringify({ message: userMessage, top_k: 3, history: chatHistory }),
     });
 
     if (!response.ok) {
@@ -457,6 +459,8 @@ async function sendMessage() {
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     }
+
+    chatHistory.push({prompt: userMessage, response: fullLLMResponse});
 
     try {
       if (sourcesDiv._ragResults) {
