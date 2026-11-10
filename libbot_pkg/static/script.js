@@ -463,7 +463,7 @@ async function sendMessage() {
     chatHistory.push({prompt: userMessage, response: fullLLMResponse});
 
     try {
-      if (sourcesDiv._ragResults) {
+      if (sourcesDiv._ragResults && sourcesDiv._ragResults.length) {
         console.log("RAG results:", JSON.stringify(sourcesDiv._ragResults, null, 2));
         sourcesDiv.innerHTML = buildSourcesHTML(sourcesDiv._ragResults);
         linkSummaryToSources(llmSpan, sourcesDiv._ragResults);
