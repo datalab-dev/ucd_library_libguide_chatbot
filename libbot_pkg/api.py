@@ -81,7 +81,10 @@ def create_app(settings) -> FastAPI:
 
     STATIC_DIR = Path(__file__).parent / "static"
 
-
+    FOLLOWUP_SYSTEM_PROMPT = (
+    "You are a helpful UC Davis Library assistant. This is a follow-up question. "
+    "Use the library documents and previous conversation when they are relevant, "
+    "and your general knowledge when they are not. Do not invent URLs.")
     # --------------------------------------------------------------------------
     # Helpers
     # --------------------------------------------------------------------------
@@ -134,17 +137,20 @@ def create_app(settings) -> FastAPI:
         )
 
 
-    async def stream_ollama(prompt: str, model_name: str) -> AsyncGenerator[str, None]:
+    async def stream_ollama(prompt: str, model_name: str, system: str | None = None) -> AsyncGenerator[str, None]:
         """
         Streams the Ollama response token by token back to the browser.
         Each chunk is a plain text string as it arrives from the LLM.
         """
+        payload = {"model": model_name, "prompt": prompt, "stream": True}
+        if system:
+            payload["system"] = system
         timeout = httpx.Timeout(connect=10.0, read=300.0, write=10.0, pool=10.0)
         async with httpx.AsyncClient(timeout=timeout) as client:
             async with client.stream(
                 "POST",
                 settings.ollama_url,
-                json={"model": model_name, "prompt": prompt, "stream": True},
+                json=payload,
             ) as response:
                 # Important: raise_for_status() triggers the fallback block in the chat route
                 response.raise_for_status() 
@@ -210,7 +216,12 @@ def create_app(settings) -> FastAPI:
             raise HTTPException(status_code=503, detail="Retriever not initialized.")
 
         # --- 1. Retrieve relevant documents ---
-        rag_results = retriever.search(query=request.message, top_k=request.top_k)
+        if request.history: # Follow up LLM
+            rag_results = retriever.search(query=request.history[0].prompt, top_k=request.top_k)
+            system_prompt = FOLLOWUP_SYSTEM_PROMPT
+        else: # Normal RAG
+            rag_results = retriever.search(query=request.message, top_k=request.top_k)
+            system_prompt = None # Original prompt
         t1 = time.perf_counter()
 
         # --- Server-side logging (scores/text never sent to frontend) ---
@@ -236,6 +247,8 @@ def create_app(settings) -> FastAPI:
             }
             for r in rag_results
         ]
+        if request.history:
+            sources_payload = []
 
         async def response_stream() -> AsyncGenerator[str, None]:
             # Always yield sources first so the UI can render them immediately
@@ -247,7 +260,7 @@ def create_app(settings) -> FastAPI:
             try:
                 # --- Attempt 1: Primary Model (Cloud) ---
                 t_start = time.perf_counter()
-                async for token in stream_ollama(prompt, target_model):
+                async for token in stream_ollama(prompt, target_model, system_prompt):
                     yield token
                 logger.info(f"Stream finished using {target_model} in {time.perf_counter() - t_start:.3f}s")
 
@@ -261,7 +274,7 @@ def create_app(settings) -> FastAPI:
                     yield "\n\n*(Cloud quota reached. Switching to local CPU synthesis...)*\n\n"
                     
                     t_fallback = time.perf_counter()
-                    async for token in stream_ollama(prompt, settings.ollama_local_model):
+                    async for token in stream_ollama(prompt, settings.ollama_local_model, system_prompt):
                         yield token
                     logger.info(f"Fallback stream finished in {time.perf_counter() - t_fallback:.3f}s")
                 else:
